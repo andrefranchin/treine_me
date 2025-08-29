@@ -18,6 +18,39 @@ dependencies {
     implementation(libs.logback)
     implementation(libs.ktor.serverCore)
     implementation(libs.ktor.serverNetty)
+    
+    // Serialization
+    implementation("io.ktor:ktor-serialization-kotlinx-json:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-content-negotiation:${libs.versions.ktor.get()}")
+    
+    // Authentication & JWT
+    implementation("io.ktor:ktor-server-auth:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-auth-jwt:${libs.versions.ktor.get()}")
+    
+    // Database
+    implementation("org.jetbrains.exposed:exposed-core:0.57.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.57.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.57.0")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.57.0")
+    implementation("com.h2database:h2:2.2.224") // Para desenvolvimento
+    implementation("org.postgresql:postgresql:42.7.3") // Para produção
+    
+    // Validation
+    implementation("io.ktor:ktor-server-request-validation:${libs.versions.ktor.get()}")
+    
+    // CORS
+    implementation("io.ktor:ktor-server-cors:${libs.versions.ktor.get()}")
+    
+    // Status Pages (Exception Handling)
+    implementation("io.ktor:ktor-server-status-pages:${libs.versions.ktor.get()}")
+    
+    // Password Hashing
+    implementation("org.mindrot:jbcrypt:0.4")
+    
+    // DateTime
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+    implementation(libs.protolite.well.known.types)
+
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)
 }

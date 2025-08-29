@@ -1,0 +1,88 @@
+---
+alwaysApply: true
+---
+Estrutura Geral da API (Padrão de Resposta)
+A sua ideia de padronizar a resposta da API é uma ótima prática. Ela melhora a previsibilidade e facilita o desenvolvimento do frontend. A estrutura que você sugeriu é excelente:
+JSON
+{
+  "success": true, // ou false
+  "data": { ... }, // O objeto de dados, presente apenas se success for true
+  "error": { // Objeto de erro, presente apenas se success for false
+    "message": "Mensagem clara para o usuário.",
+    "details": "Detalhes técnicos do erro (opcional, útil para debug).",
+    "field": "nome_do_campo" // Opcional, para erros de validação de formulário
+  }
+}
+Para implementar isso de forma elegante no Spring, você pode criar uma classe ApiResponse<T> genérica e um ControllerAdvice para capturar exceções e formatar a resposta de erro padronizada automaticamente.
+Modelo de Dados (Entidades com Soft Delete)
+Com base na sua descrição, podemos definir as seguintes entidades. Todas elas devem herdar de uma classe base para incluir os campos de auditoria e o soft delete.
+1. Entidade Base (Auditável)
+Crie uma classe base que será estendida por quase todas as outras.
+BaseEntity:
+id (UUID ou Long) - Chave Primária
+dt_ins (Timestamp) - Data de inserção (preenchido automaticamente)
+dt_upd (Timestamp) - Data da última atualização (preenchido automaticamente)
+id_user_ins (UUID/Long) - ID do usuário que inseriu
+id_user_upd (UUID/Long) - ID do usuário que atualizou
+is_active (Boolean, default: true) - Para o soft delete. Quando false, o registro é considerado "excluído".
+2. Entidades Principais
+Aqui está a descrição das tabelas principais e seus relacionamentos:
+Entidade
+Campos Principais
+Relacionamentos e Observações
+Professor
+nome, email, senha_hash, bio, foto_perfil_url
+Herda de BaseEntity. Representa o prestador de serviço.
+Aluno
+nome, email, senha_hash, foto_perfil_url
+Herda de BaseEntity. Representa o cliente final.
+Plano
+nome, descricao, valor (Decimal), recorrencia (ex: MENSAL, ANUAL)
+professor_id (Muitos-para-Um com Professor). Um professor pode ter vários planos.
+Inscricao
+dt_inicio, dt_fim, status (ex: ATIVA, CANCELADA)
+Tabela de ligação: aluno_id e plano_id. Registra qual aluno contratou qual plano.
+Produto
+titulo, descricao, tipo (CURSO, MENTORIA, EBOOK), capa_url, video_intro_url
+professor_id (Muitos-para-Um com Professor). Entidade genérica para cursos, e-books, etc.
+ProdutoPlano
+(nenhum campo extra)
+Tabela de ligação: produto_id e plano_id. Define quais produtos (cursos) estão inclusos em cada plano.
+Modulo
+titulo, descricao, ordem (Integer)
+produto_id (Muitos-para-Um com Produto). Controla a ordem dos módulos dentro de um curso.
+Aula
+titulo, descricao, ordem (Integer), tipo_conteudo (VIDEO, TEXTO, ATIVIDADE)
+modulo_id (Muitos-para-Um com Modulo). Controla a ordem das aulas dentro de um módulo.
+Conteudo
+url_video, texto_markdown, arquivo_url (para ebooks/PDFs)
+aula_id (Um-para-Um com Aula). Armazena o material didático da aula.
+Este modelo permite que um professor crie múltiplos planos, e cada plano pode dar acesso a um ou mais "Produtos" (sejam eles cursos, e-books, etc.). O aluno se inscreve em um plano e ganha acesso a tudo que está contido nele.
+Arquitetura e Endpoints da API (REST)
+Aqui estão os principais endpoints que você precisará criar, agrupados por funcionalidade.
+1. Autenticação (/auth)
+POST /auth/login: Recebe email e senha. Valida as credenciais e retorna um token JWT (JSON Web Token). O token conterá o user_id e o role (PROFESSOR ou ALUNO).
+POST /auth/register/aluno: Cadastra um novo aluno.
+POST /auth/register/professor: Cadastra um novo professor.
+2. Área do Professor (/professores/{professorId}/...)
+GET /professores/me: Retorna os dados do professor logado (usa o token).
+Planos:
+POST /planos: Cria um novo plano para o professor logado.
+GET /planos: Lista os planos do professor logado.
+PUT /planos/{planoId}: Atualiza um plano.
+DELETE /planos/{planoId}: Desativa (soft delete) um plano.
+Produtos (Cursos, E-books):
+POST /produtos: Cria um novo produto (curso, etc.).
+GET /produtos: Lista os produtos do professor.
+PUT /produtos/{produtoId}: Atualiza um produto.
+POST /produtos/{produtoId}/modulos: Cria um módulo dentro de um produto.
+GET /produtos/{produtoId}/modulos: Lista os módulos de um produto.
+Módulos e Aulas:
+POST /modulos/{moduloId}/aulas: Cria uma aula dentro de um módulo.
+PUT /aulas/ordem: Endpoint para reordenar aulas (recebe uma lista de IDs na nova ordem).
+3. Área do Aluno (/alunos/me/...)
+GET /alunos/me: Retorna os dados do aluno logado.
+GET /alunos/me/inscricoes: Lista os planos que o aluno contratou.
+GET /alunos/me/produtos: Lista os produtos (cursos) aos quais o aluno tem acesso através de suas inscrições ativas.
+GET /produtos/{produtoId}/conteudo: Retorna a estrutura completa de um curso (módulos e aulas) para o aluno assistir.
+GET /aulas/{aulaId}/conteudo: Retorna o conteúdo específico de uma aula (vídeo, texto, etc.).
