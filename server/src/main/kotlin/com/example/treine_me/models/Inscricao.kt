@@ -68,6 +68,6 @@ data class InscricaoResponse(
     val dtInicio: Instant,
     val dtFim: Instant? = null,
     val status: StatusInscricao,
-    val aluno: AlunoResponse,
+    val aluno: com.example.treine_me.api.AlunoResponse,
     val plano: PlanoResponse
 )

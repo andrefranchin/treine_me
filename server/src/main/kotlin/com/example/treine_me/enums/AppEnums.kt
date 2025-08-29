@@ -1,28 +1,8 @@
 package com.example.treine_me.enums
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-enum class UserRole {
-    ADMIN, PROFESSOR, ALUNO
-}
-
-@Serializable
-enum class Recorrencia {
-    MENSAL, ANUAL
-}
-
-@Serializable
-enum class StatusInscricao {
-    ATIVA, CANCELADA, PENDENTE, EXPIRADA
-}
-
-@Serializable
-enum class TipoProduto {
-    CURSO, MENTORIA, EBOOK
-}
-
-@Serializable
-enum class TipoConteudo {
-    VIDEO, TEXTO, ATIVIDADE
-}
+// Reexport enums from shared to keep package names stable on server side
+typealias UserRole = com.example.treine_me.api.UserRole
+typealias Recorrencia = com.example.treine_me.api.Recorrencia
+typealias StatusInscricao = com.example.treine_me.api.StatusInscricao
+typealias TipoProduto = com.example.treine_me.api.TipoProduto
+typealias TipoConteudo = com.example.treine_me.api.TipoConteudo

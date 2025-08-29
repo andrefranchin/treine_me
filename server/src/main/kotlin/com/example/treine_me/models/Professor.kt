@@ -1,6 +1,5 @@
 package com.example.treine_me.models
 
-import com.example.treine_me.enums.UserRole
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.UUIDEntity
@@ -45,14 +44,8 @@ data class Professor(
     override val isActive: Boolean
 ) : BaseEntity()
 
-@Serializable
-data class ProfessorCreateRequest(
-    val nome: String,
-    val email: String,
-    val senha: String,
-    val bio: String? = null,
-    val fotoPerfilUrl: String? = null
-)
+// Use shared DTOs to avoid duplication
+typealias ProfessorCreateRequest = com.example.treine_me.api.ProfessorCreateRequest
 
 @Serializable
 data class ProfessorUpdateRequest(
@@ -61,12 +54,4 @@ data class ProfessorUpdateRequest(
     val fotoPerfilUrl: String? = null
 )
 
-@Serializable
-data class ProfessorResponse(
-    val id: String,
-    val nome: String,
-    val email: String,
-    val bio: String? = null,
-    val fotoPerfilUrl: String? = null,
-    val role: UserRole = UserRole.PROFESSOR
-)
+typealias ProfessorResponse = com.example.treine_me.api.ProfessorResponse

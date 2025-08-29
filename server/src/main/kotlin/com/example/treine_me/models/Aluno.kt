@@ -1,6 +1,5 @@
 package com.example.treine_me.models
 
-import com.example.treine_me.enums.UserRole
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.UUIDEntity
@@ -42,13 +41,8 @@ data class Aluno(
     override val isActive: Boolean
 ) : BaseEntity()
 
-@Serializable
-data class AlunoCreateRequest(
-    val nome: String,
-    val email: String,
-    val senha: String,
-    val fotoPerfilUrl: String? = null
-)
+// Use shared DTOs to avoid duplication
+typealias AlunoCreateRequest = com.example.treine_me.api.AlunoCreateRequest
 
 @Serializable
 data class AlunoUpdateRequest(
@@ -56,11 +50,4 @@ data class AlunoUpdateRequest(
     val fotoPerfilUrl: String? = null
 )
 
-@Serializable
-data class AlunoResponse(
-    val id: String,
-    val nome: String,
-    val email: String,
-    val fotoPerfilUrl: String? = null,
-    val role: UserRole = UserRole.ALUNO
-)
+typealias AlunoResponse = com.example.treine_me.api.AlunoResponse

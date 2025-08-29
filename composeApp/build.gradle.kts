@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+val ktor_version: String by project
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -68,6 +69,15 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.shared)
+            implementation("io.ktor:ktor-client-core:${ktor_version}")
+            implementation("io.ktor:ktor-client-cio:${ktor_version}")
+            implementation("io.ktor:ktor-client-content-negotiation:${ktor_version}")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:${ktor_version}")
+
+
+            // Logging
+            implementation("io.ktor:ktor-client-logging:${ktor_version}")
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
