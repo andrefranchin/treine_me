@@ -56,8 +56,10 @@ object ApiClient {
         return handleApiResponse(response)
     }
 
-    private inline fun <reified T> handleApiResponse(api: ApiResponse<T>): T {
-        if (api.success && api.data != null) return api.data
+    @PublishedApi
+    internal fun <T> handleApiResponse(api: ApiResponse<T>): T {
+        val data = api.data
+        if (api.success && data != null) return data
         val error: ApiError? = api.error
         throw ApiException(
             message = error?.message ?: "Erro desconhecido da API",

@@ -29,6 +29,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbinary=bundleId=com.example.treine_me.composeapp")
         }
     }
     
@@ -100,6 +101,27 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    flavorDimensions += "role"
+    productFlavors {
+        create("aluno") {
+            dimension = "role"
+            applicationIdSuffix = ".aluno"
+            versionNameSuffix = "-aluno"
+            resValue("string", "app_name", "TreineMe Aluno")
+        }
+        create("professor") {
+            dimension = "role"
+            applicationIdSuffix = ".professor"
+            versionNameSuffix = "-professor"
+            resValue("string", "app_name", "TreineMe Professor")
+        }
+        create("admin") {
+            dimension = "role"
+            applicationIdSuffix = ".admin"
+            versionNameSuffix = "-admin"
+            resValue("string", "app_name", "TreineMe Admin")
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -113,6 +135,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
