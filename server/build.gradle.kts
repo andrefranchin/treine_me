@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
     application
 }
 
@@ -44,12 +45,24 @@ dependencies {
     // Status Pages (Exception Handling)
     implementation("io.ktor:ktor-server-status-pages:${libs.versions.ktor.get()}")
     
+    // OpenAPI/Swagger Documentation
+    implementation("io.ktor:ktor-server-openapi:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-swagger:${libs.versions.ktor.get()}")
+    
     // Password Hashing
     implementation("org.mindrot:jbcrypt:0.4")
     
     // DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation(libs.protolite.well.known.types)
+    
+    // HTTP Client para Cloudflare R2
+    implementation("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-client-cio:${libs.versions.ktor.get()}")
+    
+    // File Upload
+    implementation("io.ktor:ktor-server-partial-content:${libs.versions.ktor.get()}")
+    implementation("io.ktor:ktor-server-auto-head-response:${libs.versions.ktor.get()}")
 
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)

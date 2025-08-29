@@ -1,0 +1,1460 @@
+openapi: 3.0.3
+info:
+  title: Treine Me API
+  description: |
+    API completa para plataforma de cursos online onde professores podem criar planos, cursos e conteúdos,
+    e alunos podem se inscrever e acessar o material didático.
+
+    ## Funcionalidades Principais
+    - **Autenticação**: Login e registro para admins, professores e alunos
+    - **Gestão de Professores**: Admin cadastra e gerencia professores
+    - **Gestão de Planos**: Professores criam planos de assinatura
+    - **Produtos**: Cursos, e-books e mentorias
+    - **Upload de Arquivos**: Integração com Cloudflare R2
+    - **Atribuição Manual**: Professor atribui planos aos alunos
+
+    ## Credenciais Padrão
+    **Admin:** `admin@treine-me.com` / `admin123`
+
+    ## Estrutura de Resposta
+    Todas as respostas seguem o padrão:
+    ```json
+    {
+      "success": true|false,
+      "data": { ... }, // Presente apenas se success = true
+      "error": {       // Presente apenas se success = false
+        "message": "Mensagem clara para o usuário",
+        "details": "Detalhes técnicos (opcional)",
+        "field": "campo_com_erro" // Para erros de validação
+      }
+    }
+    ```
+  version: 1.0.0
+  contact:
+    name: Treine Me API Support
+    email: support@treine-me.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor de desenvolvimento
+  - url: https://api.treine-me.com
+    description: Servidor de produção
+
+tags:
+  - name: Authentication
+    description: Endpoints de autenticação e registro
+  - name: Admin
+    description: Operações exclusivas do administrador
+  - name: Professores
+    description: Operações específicas para professores
+  - name: Alunos
+    description: Operações específicas para alunos
+  - name: Upload
+    description: Endpoints de upload de arquivos
+  - name: Health
+    description: Verificação de status da API
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtido através do endpoint de login
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indica se a operação foi bem-sucedida
+        data:
+          type: object
+          description: Dados da resposta (presente apenas se success = true)
+        error:
+          $ref: '#/components/schemas/ApiError'
+      required:
+        - success
+
+    ApiError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensagem clara para o usuário
+        details:
+          type: string
+          description: Detalhes técnicos do erro (opcional)
+        field:
+          type: string
+          description: Campo específico com erro (para validações)
+      required:
+        - message
+
+    UserRole:
+      type: string
+      enum:
+        - ADMIN
+        - PROFESSOR
+        - ALUNO
+      description: Tipo de usuário no sistema
+
+    Recorrencia:
+      type: string
+      enum:
+        - MENSAL
+        - ANUAL
+      description: Tipo de recorrência do plano
+
+    TipoProduto:
+      type: string
+      enum:
+        - CURSO
+        - MENTORIA
+        - EBOOK
+      description: Tipo de produto/conteúdo
+
+    StatusInscricao:
+      type: string
+      enum:
+        - ATIVA
+        - CANCELADA
+        - PENDENTE
+        - EXPIRADA
+      description: Status da inscrição do aluno
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "admin@treine-me.com"
+        senha:
+          type: string
+          format: password
+          example: "admin123"
+      required:
+        - email
+        - senha
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token JWT para autenticação
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        user:
+          $ref: '#/components/schemas/UserInfo'
+      required:
+        - token
+        - user
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        nome:
+          type: string
+          example: "João Silva"
+        email:
+          type: string
+          format: email
+          example: "joao@exemplo.com"
+        role:
+          $ref: '#/components/schemas/UserRole'
+        fotoPerfilUrl:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://exemplo.com/foto.jpg"
+      required:
+        - id
+        - nome
+        - email
+        - role
+
+    ProfessorCreateRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "Maria Santos"
+          minLength: 1
+        email:
+          type: string
+          format: email
+          example: "maria@exemplo.com"
+        senha:
+          type: string
+          format: password
+          minLength: 6
+          example: "senhasegura123"
+        bio:
+          type: string
+          nullable: true
+          example: "Professora de programação com 10 anos de experiência"
+        fotoPerfilUrl:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://exemplo.com/maria.jpg"
+      required:
+        - nome
+        - email
+        - senha
+
+    ProfessorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+        email:
+          type: string
+          format: email
+        bio:
+          type: string
+          nullable: true
+        fotoPerfilUrl:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          $ref: '#/components/schemas/UserRole'
+      required:
+        - id
+        - nome
+        - email
+        - role
+
+    AlunoCreateRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "Carlos Oliveira"
+          minLength: 1
+        email:
+          type: string
+          format: email
+          example: "carlos@exemplo.com"
+        senha:
+          type: string
+          format: password
+          minLength: 6
+          example: "minhasenha123"
+        fotoPerfilUrl:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://exemplo.com/carlos.jpg"
+      required:
+        - nome
+        - email
+        - senha
+
+    AlunoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+        email:
+          type: string
+          format: email
+        fotoPerfilUrl:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          $ref: '#/components/schemas/UserRole'
+      required:
+        - id
+        - nome
+        - email
+        - role
+
+    PlanoCreateRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "Plano Básico"
+          minLength: 1
+        descricao:
+          type: string
+          example: "Acesso a cursos básicos de programação"
+          minLength: 1
+        valor:
+          type: string
+          example: "29.90"
+          pattern: '^[0-9]+(\.[0-9]{1,2})?$'
+        recorrencia:
+          $ref: '#/components/schemas/Recorrencia'
+      required:
+        - nome
+        - descricao
+        - valor
+        - recorrencia
+
+    PlanoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+        descricao:
+          type: string
+        valor:
+          type: string
+        recorrencia:
+          $ref: '#/components/schemas/Recorrencia'
+        professorId:
+          type: string
+          format: uuid
+        professorNome:
+          type: string
+      required:
+        - id
+        - nome
+        - descricao
+        - valor
+        - recorrencia
+        - professorId
+        - professorNome
+
+    ProdutoCreateRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+          example: "JavaScript Fundamentals"
+          minLength: 1
+        descricao:
+          type: string
+          example: "Aprenda JavaScript do zero ao avançado"
+          minLength: 1
+        tipo:
+          $ref: '#/components/schemas/TipoProduto'
+        capaUrl:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://exemplo.com/capa.jpg"
+        videoIntroUrl:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://exemplo.com/intro.mp4"
+      required:
+        - titulo
+        - descricao
+        - tipo
+
+    ProdutoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descricao:
+          type: string
+        tipo:
+          $ref: '#/components/schemas/TipoProduto'
+        capaUrl:
+          type: string
+          format: uri
+          nullable: true
+        videoIntroUrl:
+          type: string
+          format: uri
+          nullable: true
+        professorId:
+          type: string
+          format: uuid
+        professorNome:
+          type: string
+      required:
+        - id
+        - titulo
+        - descricao
+        - tipo
+        - professorId
+        - professorNome
+
+    PaginatedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        page:
+          type: integer
+          example: 1
+        size:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 150
+        totalPages:
+          type: integer
+          example: 8
+      required:
+        - data
+        - page
+        - size
+        - total
+        - totalPages
+
+    FileUploadResponse:
+      type: object
+      properties:
+        fileName:
+          type: string
+          example: "profile_1234567890_abc123.jpg"
+        url:
+          type: string
+          format: uri
+          example: "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/profile-images/profile_1234567890_abc123.jpg"
+        contentType:
+          type: string
+          example: "image/jpeg"
+        size:
+          type: integer
+          example: 1024000
+      required:
+        - fileName
+        - url
+        - contentType
+        - size
+
+    InscricaoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        dtInicio:
+          type: string
+          format: date-time
+        dtFim:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusInscricao'
+        aluno:
+          $ref: '#/components/schemas/AlunoResponse'
+        plano:
+          $ref: '#/components/schemas/PlanoResponse'
+      required:
+        - id
+        - dtInicio
+        - status
+        - aluno
+        - plano
+
+    ResetPasswordRequest:
+      type: object
+      properties:
+        newPassword:
+          type: string
+          format: password
+          minLength: 6
+          example: "novasenha123"
+      required:
+        - newPassword
+
+paths:
+  /:
+    get:
+      summary: Health check básico
+      description: Endpoint simples para verificar se a API está funcionando
+      tags:
+        - Health
+      responses:
+        '200':
+          description: API funcionando
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Treine Me API - Hello World!"
+
+  /health:
+    get:
+      summary: Status da API
+      description: Endpoint detalhado para verificar o status da API
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Status da API
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  message:
+                    type: string
+                    example: "API está funcionando"
+
+  /auth/login:
+    post:
+      summary: Login de usuário
+      description: |
+        Autentica um usuário (admin, professor ou aluno) e retorna um token JWT.
+        O sistema automaticamente identifica o tipo de usuário baseado no email.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              admin:
+                summary: Login como admin
+                value:
+                  email: "admin@treine-me.com"
+                  senha: "admin123"
+              professor:
+                summary: Login como professor
+                value:
+                  email: "professor@exemplo.com"
+                  senha: "minhasenha123"
+              aluno:
+                summary: Login como aluno
+                value:
+                  email: "aluno@exemplo.com"
+                  senha: "minhasenha123"
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Dados de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /auth/register/professor:
+    post:
+      summary: Registro de professor
+      description: Cria uma nova conta de professor no sistema
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessorCreateRequest'
+      responses:
+        '200':
+          description: Professor registrado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProfessorResponse'
+        '400':
+          description: Dados de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '409':
+          description: Email já está em uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /auth/register/aluno:
+    post:
+      summary: Registro de aluno
+      description: Cria uma nova conta de aluno no sistema
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlunoCreateRequest'
+      responses:
+        '200':
+          description: Aluno registrado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AlunoResponse'
+        '400':
+          description: Dados de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '409':
+          description: Email já está em uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /admin/professores:
+    post:
+      summary: Criar professor (Admin)
+      description: Admin cria uma nova conta de professor
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessorCreateRequest'
+      responses:
+        '200':
+          description: Professor criado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProfessorResponse'
+        '401':
+          description: Token inválido ou expirado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '403':
+          description: Acesso negado - apenas admins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    get:
+      summary: Listar professores (Admin)
+      description: Admin lista todos os professores cadastrados
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: Tamanho da página
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de professores
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PaginatedResponse'
+
+  /admin/professores/{id}:
+    get:
+      summary: Ver professor (Admin)
+      description: Admin visualiza detalhes de um professor específico
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do professor
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do professor
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProfessorResponse'
+    put:
+      summary: Editar professor (Admin)
+      description: Admin edita dados de um professor
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do professor
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                bio:
+                  type: string
+                fotoPerfilUrl:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Professor atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProfessorResponse'
+    delete:
+      summary: Desativar professor (Admin)
+      description: Admin desativa um professor (soft delete)
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do professor
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Professor desativado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+
+  /admin/professores/{id}/reset-password:
+    post:
+      summary: Resetar senha do professor (Admin)
+      description: Admin reseta a senha de um professor
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do professor
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Senha resetada com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+  /professores/me/planos:
+    post:
+      summary: Criar plano
+      description: Professor cria um novo plano de assinatura
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanoCreateRequest'
+      responses:
+        '200':
+          description: Plano criado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PlanoResponse'
+    get:
+      summary: Listar meus planos
+      description: Professor lista seus próprios planos
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: Tamanho da página
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de planos do professor
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PaginatedResponse'
+
+  /professores/me/planos/{id}:
+    get:
+      summary: Ver plano
+      description: Professor visualiza detalhes de um plano específico
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do plano
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do plano
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PlanoResponse'
+    put:
+      summary: Editar plano
+      description: Professor edita um plano existente
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do plano
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                descricao:
+                  type: string
+                valor:
+                  type: string
+                recorrencia:
+                  $ref: '#/components/schemas/Recorrencia'
+      responses:
+        '200':
+          description: Plano atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PlanoResponse'
+    delete:
+      summary: Excluir plano
+      description: Professor desativa um plano (soft delete)
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do plano
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Plano excluído com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+
+  /professores/me/planos/{id}/produtos:
+    get:
+      summary: Produtos do plano
+      description: Professor lista produtos associados a um plano
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do plano
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de produtos do plano
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProdutoResponse'
+
+  /professores/me/planos/{planoId}/produtos/{produtoId}:
+    post:
+      summary: Adicionar produto ao plano
+      description: Professor associa um produto a um plano
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: planoId
+          in: path
+          required: true
+          description: ID do plano
+          schema:
+            type: string
+            format: uuid
+        - name: produtoId
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Produto adicionado ao plano com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+    delete:
+      summary: Remover produto do plano
+      description: Professor remove a associação produto-plano
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: planoId
+          in: path
+          required: true
+          description: ID do plano
+          schema:
+            type: string
+            format: uuid
+        - name: produtoId
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Produto removido do plano com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+
+  /professores/me/planos/{planoId}/alunos/{alunoId}:
+    post:
+      summary: Atribuir plano ao aluno
+      description: Professor atribui manualmente um plano a um aluno
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: planoId
+          in: path
+          required: true
+          description: ID do plano
+          schema:
+            type: string
+            format: uuid
+        - name: alunoId
+          in: path
+          required: true
+          description: ID do aluno
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Plano atribuído ao aluno com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/InscricaoResponse'
+
+  /professores/me/produtos:
+    post:
+      summary: Criar produto
+      description: Professor cria um novo produto (curso, e-book, mentoria)
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProdutoCreateRequest'
+      responses:
+        '200':
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProdutoResponse'
+    get:
+      summary: Listar meus produtos
+      description: Professor lista seus próprios produtos
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: Tamanho da página
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de produtos do professor
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PaginatedResponse'
+
+  /professores/me/produtos/{id}:
+    get:
+      summary: Ver produto
+      description: Professor visualiza detalhes de um produto específico
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do produto
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProdutoResponse'
+    put:
+      summary: Editar produto
+      description: Professor edita um produto existente
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                descricao:
+                  type: string
+                tipo:
+                  $ref: '#/components/schemas/TipoProduto'
+                capaUrl:
+                  type: string
+                  format: uri
+                videoIntroUrl:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Produto atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProdutoResponse'
+    delete:
+      summary: Excluir produto
+      description: Professor desativa um produto (soft delete)
+      tags:
+        - Professores
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Produto excluído com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+
+  /upload/profile-image:
+    post:
+      summary: Upload de imagem de perfil
+      description: Upload de imagem de perfil para Cloudflare R2
+      tags:
+        - Upload
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem (JPEG, PNG, WebP)
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+        '400':
+          description: Arquivo inválido ou muito grande
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /upload/course-cover:
+    post:
+      summary: Upload de capa de curso
+      description: Upload de imagem de capa para cursos
+      tags:
+        - Upload
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem (JPEG, PNG, WebP)
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+
+  /upload/video:
+    post:
+      summary: Upload de vídeo
+      description: Upload de vídeos para aulas
+      tags:
+        - Upload
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de vídeo (MP4, WebM, QuickTime)
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+
+  /upload/document:
+    post:
+      summary: Upload de documento
+      description: Upload de documentos e e-books
+      tags:
+        - Upload
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de documento (PDF, DOC, DOCX)
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'

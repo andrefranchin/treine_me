@@ -10,6 +10,7 @@ import com.example.treine_me.exceptions.AuthenticationException
 import com.example.treine_me.exceptions.ConflictException
 import com.example.treine_me.exceptions.ValidationException
 import com.example.treine_me.models.*
+import com.example.treine_me.Constants
 import kotlinx.datetime.Clock
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -21,7 +22,33 @@ class AuthService {
         validateLoginRequest(request)
         
         return transaction {
-            // Tentar encontrar professor primeiro
+            // Tentar encontrar admin primeiro
+            val admin = AdminEntity.find { 
+                (Admins.email eq request.email) and (Admins.isActive eq true) 
+            }.firstOrNull()
+            
+            if (admin != null) {
+                if (PasswordHelper.verifyPassword(request.senha, admin.senhaHash)) {
+                    val token = JwtConfig.generateToken(
+                        userId = admin.id.value.toString(),
+                        role = UserRole.ADMIN,
+                        email = admin.email
+                    )
+                    
+                    return@transaction LoginResponse(
+                        token = token,
+                        user = UserInfo(
+                            id = admin.id.value.toString(),
+                            nome = admin.nome,
+                            email = admin.email,
+                            role = UserRole.ADMIN,
+                            fotoPerfilUrl = null
+                        )
+                    )
+                }
+            }
+            
+            // Tentar encontrar professor
             val professor = ProfessorEntity.find { 
                 (Professores.email eq request.email) and (Professores.isActive eq true) 
             }.firstOrNull()
@@ -186,6 +213,27 @@ class AuthService {
         }
         if (request.senha.length < 6) {
             throw ValidationException("Senha deve ter pelo menos 6 caracteres", "senha")
+        }
+    }
+    
+    fun createDefaultAdminIfNotExists() {
+        transaction {
+            val existingAdmin = AdminEntity.find { Admins.email eq Constants.DEFAULT_ADMIN_EMAIL }.firstOrNull()
+            
+            if (existingAdmin == null) {
+                val now = Clock.System.now()
+                AdminEntity.new {
+                    nome = Constants.DEFAULT_ADMIN_NAME
+                    email = Constants.DEFAULT_ADMIN_EMAIL
+                    senhaHash = PasswordHelper.hashPassword(Constants.DEFAULT_ADMIN_PASSWORD)
+                    dtIns = now
+                    dtUpd = now
+                    idUserIns = UUID.randomUUID() // Sistema
+                    idUserUpd = UUID.randomUUID() // Sistema
+                    isActive = true
+                }
+                println("✅ Admin padrão criado: ${Constants.DEFAULT_ADMIN_EMAIL}")
+            }
         }
     }
 }

@@ -12,4 +12,6 @@ class NotFoundException(message: String) : AppException(message)
 
 class ConflictException(message: String) : AppException(message)
 
+class ForbiddenException(message: String) : AppException(message)
+
 class BusinessException(message: String) : AppException(message)

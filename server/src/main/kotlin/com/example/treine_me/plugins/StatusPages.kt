@@ -12,7 +12,7 @@ fun Application.configureStatusPages() {
         exception<ValidationException> { call, cause ->
             call.respond(
                 HttpStatusCode.BadRequest,
-                ApiResponse.error<Any>(
+                ApiResponse.error(
                     message = cause.message ?: "Erro de validação",
                     field = cause.field
                 )
@@ -22,7 +22,7 @@ fun Application.configureStatusPages() {
         exception<AuthenticationException> { call, cause ->
             call.respond(
                 HttpStatusCode.Unauthorized,
-                ApiResponse.error<Any>(
+                ApiResponse.error(
                     message = cause.message ?: "Falha na autenticação"
                 )
             )
@@ -31,7 +31,7 @@ fun Application.configureStatusPages() {
         exception<AuthorizationException> { call, cause ->
             call.respond(
                 HttpStatusCode.Forbidden,
-                ApiResponse.error<Any>(
+                ApiResponse.error(
                     message = cause.message ?: "Acesso negado"
                 )
             )
@@ -40,7 +40,7 @@ fun Application.configureStatusPages() {
         exception<NotFoundException> { call, cause ->
             call.respond(
                 HttpStatusCode.NotFound,
-                ApiResponse.error<Any>(
+                ApiResponse.error(
                     message = cause.message ?: "Recurso não encontrado"
                 )
             )
@@ -49,7 +49,7 @@ fun Application.configureStatusPages() {
         exception<ConflictException> { call, cause ->
             call.respond(
                 HttpStatusCode.Conflict,
-                ApiResponse.error<Any>(
+                ApiResponse.error(
                     message = cause.message ?: "Conflito de dados"
                 )
             )
@@ -58,7 +58,7 @@ fun Application.configureStatusPages() {
         exception<BusinessException> { call, cause ->
             call.respond(
                 HttpStatusCode.UnprocessableEntity,
-                ApiResponse.error<Any>(
+                ApiResponse.error(
                     message = cause.message ?: "Erro de regra de negócio"
                 )
             )
@@ -67,7 +67,7 @@ fun Application.configureStatusPages() {
         exception<Throwable> { call, cause ->
             call.respond(
                 HttpStatusCode.InternalServerError,
-                ApiResponse.error<Any>(
+                ApiResponse.error(
                     message = "Erro interno do servidor",
                     details = if (call.application.developmentMode) cause.message else null
                 )

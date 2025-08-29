@@ -13,6 +13,7 @@ object DatabaseConfig {
         
         transaction(database) {
             SchemaUtils.create(
+                Admins,
                 Professores,
                 Alunos,
                 Planos,
@@ -43,6 +44,7 @@ object DatabaseConfig {
         
         transaction(db) {
             SchemaUtils.create(
+                Admins,
                 Professores,
                 Alunos,
                 Planos,

@@ -14,10 +14,12 @@ data class ApiResponse<T>(
             data = data
         )
         
-        fun <T> error(message: String, details: String? = null, field: String? = null): ApiResponse<T> = ApiResponse(
-            success = false,
-            error = ApiError(message, details, field)
-        )
+        fun error(message: String, details: String? = null, field: String? = null): ApiResponse<Unit> =
+            ApiResponse(
+                success = false,
+                data = null,
+                error = ApiError(message, details, field)
+            )
     }
 }
 
