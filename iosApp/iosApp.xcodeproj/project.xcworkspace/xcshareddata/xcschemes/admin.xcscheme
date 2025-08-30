@@ -17,7 +17,7 @@
    </BuildAction>
    <LaunchAction
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
+      buildConfiguration = "Debug-admin"
       allowLocationSimulation = "YES">
       <EnvironmentVariables>
          <EnvironmentVariable

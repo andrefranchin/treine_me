@@ -1,0 +1,7 @@
+#include? "Config.xcconfig"
+
+PRODUCT_NAME = Treine_me Professor
+PRODUCT_BUNDLE_IDENTIFIER = com.example.treineme.professor
+APP_ROLE = professor
+
+
