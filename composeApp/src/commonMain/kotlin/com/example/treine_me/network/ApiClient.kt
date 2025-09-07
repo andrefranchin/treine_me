@@ -44,15 +44,28 @@ object ApiClient {
     }
 
     suspend inline fun <reified T> get(path: String): T {
-        val response: ApiResponse<T> = client.get(path).body()
+        val response = client.get(path).body<ApiResponse<T>>()
         return handleApiResponse(response)
     }
 
     suspend inline fun <reified T> post(path: String, body: Any): T {
-        val response: ApiResponse<T> = client.post(path) {
+        val response = client.post(path) {
             contentType(ContentType.Application.Json)
             setBody(body)
-        }.body()
+        }.body<ApiResponse<T>>()
+        return handleApiResponse(response)
+    }
+
+    suspend inline fun <reified T> put(path: String, body: Any): T {
+        val response = client.put(path) {
+            contentType(ContentType.Application.Json)
+            setBody(body)
+        }.body<ApiResponse<T>>()
+        return handleApiResponse(response)
+    }
+
+    suspend inline fun <reified T> delete(path: String): T {
+        val response = client.delete(path).body<ApiResponse<T>>()
         return handleApiResponse(response)
     }
 

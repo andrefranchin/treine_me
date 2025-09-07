@@ -17,8 +17,8 @@
 ## 🔑 **Credenciais Padrão**
 
 **Admin (você):**
-- **Email:** `admin@treine-me.com`
-- **Senha:** `admin123`
+- **Email:** `dedefranchin@gmail.com`
+- **Senha:** `bebaleite`
 
 ## 🌐 **Configuração do Cloudflare R2**
 
@@ -49,8 +49,8 @@ cd server
 ```bash
 POST /auth/login
 {
-  "email": "admin@treine-me.com",
-  "senha": "admin123"
+  "email": "dedefranchin@gmail.com",
+  "senha": "bebaleite"
 }
 ```
 

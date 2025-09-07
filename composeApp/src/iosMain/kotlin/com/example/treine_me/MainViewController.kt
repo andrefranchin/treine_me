@@ -4,15 +4,7 @@ import androidx.compose.ui.window.ComposeUIViewController
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
-fun MainViewController() = ComposeUIViewController {
-    RoleOnlyScreen()
-}
+fun MainViewController() = ComposeUIViewController { App() }
 
 @Composable
-private fun RoleOnlyScreen() {
-    when (defaultAppRole()) {
-        AppRole.ALUNO -> Text("Aluno")
-        AppRole.PROFESSOR -> Text("Professor")
-        AppRole.ADMIN -> Text("Admin")
-    }
-}
+private fun RoleOnlyScreenDeprecated() { /* kept for reference; not used */ }

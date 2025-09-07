@@ -19,9 +19,22 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Debug-admin"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B9DA97B02DC1472C00A4DA20"
+            BuildableName = "Treine_me.app"
+            BlueprintName = "iosApp"
+            ReferencedContainer = "container:iosApp.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-APP_ROLE admin"
+            argument = "-APP_ROLE"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "admin"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -37,16 +50,9 @@
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
-      <BuildableProductRunnable>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B9DA97B02DC1472C00A4DA20"
-            BuildableName = "Treine_me.app"
-            BlueprintName = "iosApp"
-            ReferencedContainer = "container:iosApp.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
+      <LocationScenarioReference
+         identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
+         referenceType = "1">
+      </LocationScenarioReference>
    </LaunchAction>
 </Scheme>
-
-

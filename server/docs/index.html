@@ -835,12 +835,12 @@
     "email" : {
       "type" : "string",
       "format" : "email",
-      "example" : "admin@treine-me.com"
+      "example" : "dedefranchin@gmail.com"
     },
     "senha" : {
       "type" : "string",
       "format" : "password",
-      "example" : "admin123"
+      "example" : "bebaleite"
     }
   }
 };
@@ -1264,7 +1264,7 @@ e alunos podem se inscrever e acessar o material didático.</p>
 <li><strong>Atribuição Manual</strong>: Professor atribui planos aos alunos</li>
 </ul>
 <h2>Credenciais Padrão</h2>
-<p><strong>Admin:</strong> <code>admin@treine-me.com</code> / <code>admin123</code></p>
+<p><strong>Admin:</strong> <code>dedefranchin@gmail.com</code> / <code>bebaleite</code></p>
 <h2>Estrutura de Resposta</h2>
 <p>Todas as respostas seguem o padrão:</p>
 <pre><code class="language-json">{
@@ -3461,8 +3461,8 @@ public class AuthenticationApiExample {
         LoginRequest body = {
   "summary" : "Login como admin",
   "value" : {
-    "email" : "admin@treine-me.com",
-    "senha" : "admin123"
+    "email" : "dedefranchin@gmail.com",
+    "senha" : "bebaleite"
   }
 }; // LoginRequest | 
         try {
@@ -3485,8 +3485,8 @@ public class AuthenticationApiExample {
         LoginRequest body = {
   "summary" : "Login como admin",
   "value" : {
-    "email" : "admin@treine-me.com",
-    "senha" : "admin123"
+    "email" : "dedefranchin@gmail.com",
+    "senha" : "bebaleite"
   }
 }; // LoginRequest | 
         try {
@@ -3506,8 +3506,8 @@ public class AuthenticationApiExample {
                               <pre class="prettyprint"><code class="language-cpp">LoginRequest *body = {
   "summary" : "Login como admin",
   "value" : {
-    "email" : "admin@treine-me.com",
-    "senha" : "admin123"
+    "email" : "dedefranchin@gmail.com",
+    "senha" : "bebaleite"
   }
 }; // 
 
@@ -3530,8 +3530,8 @@ var api = new TreineMeApi.AuthenticationApi()
 var body = {
   "summary" : "Login como admin",
   "value" : {
-    "email" : "admin@treine-me.com",
-    "senha" : "admin123"
+    "email" : "dedefranchin@gmail.com",
+    "senha" : "bebaleite"
   }
 }; // {{LoginRequest}} 
 
@@ -3589,8 +3589,8 @@ $api_instance = new Swagger\Client\ApiAuthenticationApi();
 $body = {
   "summary" : "Login como admin",
   "value" : {
-    "email" : "admin@treine-me.com",
-    "senha" : "admin123"
+    "email" : "dedefranchin@gmail.com",
+    "senha" : "bebaleite"
   }
 }; // LoginRequest | 
 
@@ -3630,8 +3630,8 @@ api_instance = swagger_client.AuthenticationApi()
 body = {
   "summary" : "Login como admin",
   "value" : {
-    "email" : "admin@treine-me.com",
-    "senha" : "admin123"
+    "email" : "dedefranchin@gmail.com",
+    "senha" : "bebaleite"
   }
 } # LoginRequest | 
 
@@ -3669,8 +3669,8 @@ except ApiException as e:
         "admin" : {
           "summary" : "Login como admin",
           "value" : {
-            "email" : "admin@treine-me.com",
-            "senha" : "admin123"
+            "email" : "dedefranchin@gmail.com",
+            "senha" : "bebaleite"
           }
         },
         "professor" : {

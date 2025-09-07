@@ -3,14 +3,14 @@ package com.example.treine_me
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.example.treine_me.ui.admin.AdminRoot
 
 @Composable
 @Preview
 fun App() {
-    val roleText = when (defaultAppRole()) {
-        AppRole.ALUNO -> "Aluno"
-        AppRole.PROFESSOR -> "Professor"
-        AppRole.ADMIN -> "Admin"
+    when (defaultAppRole()) {
+        AppRole.ALUNO -> Text("Aluno")
+        AppRole.PROFESSOR -> Text("Professor")
+        AppRole.ADMIN -> AdminRoot()
     }
-    Text(roleText)
 }
