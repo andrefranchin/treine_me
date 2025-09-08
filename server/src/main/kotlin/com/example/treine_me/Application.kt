@@ -5,6 +5,7 @@ import com.example.treine_me.plugins.*
 import com.example.treine_me.routes.authRoutes
 import com.example.treine_me.routes.adminRoutes
 import com.example.treine_me.routes.professorRoutes
+import com.example.treine_me.routes.professorAuthRoutes
 import com.example.treine_me.routes.fileUploadRoutes
 import com.example.treine_me.services.AuthService
 import io.ktor.server.application.*
@@ -44,6 +45,7 @@ fun Application.module() {
         }
         
         authRoutes()
+        professorAuthRoutes()
         adminRoutes()
         professorRoutes()
         fileUploadRoutes()

@@ -24,6 +24,7 @@ fun ProfessorFormScreen(
     var bio by remember { mutableStateOf("") }
     var foto by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(id) {
         if (id != null) {
@@ -36,6 +37,11 @@ fun ProfessorFormScreen(
     }
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
+        if (errorMessage != null) {
+            // Exemplo simples: exibe erro como texto vermelho. Substitua por Snackbar se desejar.
+            Text(errorMessage!!, color = androidx.compose.ui.graphics.Color.Red)
+            Spacer(Modifier.height(8.dp))
+        }
         Text(if (id == null) "Cadastrar Professor" else "Editar Professor")
         Spacer(Modifier.height(12.dp))
         OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
@@ -53,12 +59,16 @@ fun ProfessorFormScreen(
         Row {
             Button(onClick = {
                 scope.launch {
-                    if (id == null) {
-                        repo.create(ProfessorCreateRequest(nome = nome, email = email, senha = senha, bio = bio.ifBlank { null }, fotoPerfilUrl = foto.ifBlank { null }))
-                    } else {
-                        repo.update(id, ProfessorUpdateRequest(nome = nome, bio = bio.ifBlank { null }, fotoPerfilUrl = foto.ifBlank { null }))
+                    try {
+                        if (id == null) {
+                            repo.create(ProfessorCreateRequest(nome = nome, email = email, senha = senha, bio = bio.ifBlank { null }, fotoPerfilUrl = foto.ifBlank { null }))
+                        } else {
+                            repo.update(id, ProfessorUpdateRequest(nome = nome, bio = bio.ifBlank { null }, fotoPerfilUrl = foto.ifBlank { null }))
+                        }
+                        onDone()
+                    } catch (e: Exception) {
+                        errorMessage = e.message ?: "Erro desconhecido"
                     }
-                    onDone()
                 }
             }) { Text("Salvar") }
             Spacer(Modifier.width(8.dp))

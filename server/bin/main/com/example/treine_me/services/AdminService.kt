@@ -16,12 +16,9 @@ class AdminService {
         validateProfessorRequest(request)
         
         return transaction {
-            // Verificar se email já existe
-            val existingProfessor = ProfessorEntity.find { Professores.email eq request.email }.firstOrNull()
-            val existingAluno = AlunoEntity.find { Alunos.email eq request.email }.firstOrNull()
-            val existingAdmin = AdminEntity.find { Admins.email eq request.email }.firstOrNull()
-            
-            if (existingProfessor != null || existingAluno != null || existingAdmin != null) {
+            // Verificar se email já existe (apenas entre professores ativos)
+            val existingProfessor = ProfessorEntity.find { (Professores.email eq request.email) and (Professores.isActive eq true) }.firstOrNull()
+            if (existingProfessor != null) {
                 throw ConflictException("Email já está em uso")
             }
             

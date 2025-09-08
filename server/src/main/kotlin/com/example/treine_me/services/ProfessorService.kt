@@ -475,7 +475,7 @@ class ProfessorService {
         }
         try {
             val valor = BigDecimal(request.valor)
-            if (valor <= BigDecimal.ZERO) {
+            if (valor < BigDecimal.ZERO) {
                 throw ValidationException("Valor deve ser maior que zero", "valor")
             }
         } catch (e: NumberFormatException) {

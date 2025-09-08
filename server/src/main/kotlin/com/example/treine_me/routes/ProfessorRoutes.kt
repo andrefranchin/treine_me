@@ -4,36 +4,24 @@ import com.example.treine_me.dto.ApiResponse
 import com.example.treine_me.enums.UserRole
 import com.example.treine_me.models.*
 import com.example.treine_me.services.ProfessorService
+import com.example.treine_me.plugins.requireRole
 import io.ktor.server.application.*
-import io.ktor.server.application.createRouteScopedPlugin
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.pipeline.*
 
 fun Route.professorRoutes() {
     val professorService = ProfessorService()
     
     authenticate("auth-jwt") {
         route("/professores/me") {
-            // Middleware para verificar se é professor usando route scoped plugin
-            install(createRouteScopedPlugin("ProfessorCheck") {
-                onCall { call ->
-                    val principal = call.principal<JWTPrincipal>()
-                    val role = principal?.payload?.getClaim("role")?.asString()
-
-                    if (role != UserRole.PROFESSOR.name) {
-                        call.respond(ApiResponse.error("Acesso negado. Apenas professores podem acessar esta funcionalidade."))
-                        return@onCall
-                    }
-                }
-            })
             
             // ========== PLANOS ==========
             route("/planos") {
                 post {
+                    call.requireRole(UserRole.PROFESSOR)
                     val request = call.receive<PlanoCreateRequest>()
                     val principal = call.principal<JWTPrincipal>()
                     val professorId = principal!!.payload.getClaim("userId").asString()
@@ -43,6 +31,7 @@ fun Route.professorRoutes() {
                 }
                 
                 get {
+                    call.requireRole(UserRole.PROFESSOR)
                     val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                     val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 20
                     val principal = call.principal<JWTPrincipal>()
@@ -53,6 +42,7 @@ fun Route.professorRoutes() {
                 }
                 
                 get("/{id}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val planoId = call.parameters["id"] ?: return@get call.respond(
                         ApiResponse.error("ID do plano é obrigatório")
                     )
@@ -64,6 +54,7 @@ fun Route.professorRoutes() {
                 }
                 
                 put("/{id}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val planoId = call.parameters["id"] ?: return@put call.respond(
                         ApiResponse.error("ID do plano é obrigatório")
                     )
@@ -76,6 +67,7 @@ fun Route.professorRoutes() {
                 }
                 
                 delete("/{id}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val planoId = call.parameters["id"] ?: return@delete call.respond(
                         ApiResponse.error("ID do plano é obrigatório")
                     )
@@ -88,6 +80,7 @@ fun Route.professorRoutes() {
                 
                 // Produtos do plano
                 get("/{id}/produtos") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val planoId = call.parameters["id"] ?: return@get call.respond(
                         ApiResponse.error("ID do plano é obrigatório")
                     )
@@ -99,6 +92,7 @@ fun Route.professorRoutes() {
                 }
                 
                 post("/{planoId}/produtos/{produtoId}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val planoId = call.parameters["planoId"] ?: return@post call.respond(
                         ApiResponse.error("ID do plano é obrigatório")
                     )
@@ -113,6 +107,7 @@ fun Route.professorRoutes() {
                 }
                 
                 delete("/{planoId}/produtos/{produtoId}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val planoId = call.parameters["planoId"] ?: return@delete call.respond(
                         ApiResponse.error("ID do plano é obrigatório")
                     )
@@ -128,6 +123,7 @@ fun Route.professorRoutes() {
                 
                 // Atribuir plano a aluno
                 post("/{planoId}/alunos/{alunoId}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val planoId = call.parameters["planoId"] ?: return@post call.respond(
                         ApiResponse.error("ID do plano é obrigatório")
                     )
@@ -145,6 +141,7 @@ fun Route.professorRoutes() {
             // ========== PRODUTOS ==========
             route("/produtos") {
                 post {
+                    call.requireRole(UserRole.PROFESSOR)
                     val request = call.receive<ProdutoCreateRequest>()
                     val principal = call.principal<JWTPrincipal>()
                     val professorId = principal!!.payload.getClaim("userId").asString()
@@ -154,6 +151,7 @@ fun Route.professorRoutes() {
                 }
                 
                 get {
+                    call.requireRole(UserRole.PROFESSOR)
                     val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                     val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 20
                     val principal = call.principal<JWTPrincipal>()
@@ -164,6 +162,7 @@ fun Route.professorRoutes() {
                 }
                 
                 get("/{id}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val produtoId = call.parameters["id"] ?: return@get call.respond(
                         ApiResponse.error("ID do produto é obrigatório")
                     )
@@ -175,6 +174,7 @@ fun Route.professorRoutes() {
                 }
                 
                 put("/{id}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val produtoId = call.parameters["id"] ?: return@put call.respond(
                         ApiResponse.error("ID do produto é obrigatório")
                     )
@@ -187,6 +187,7 @@ fun Route.professorRoutes() {
                 }
                 
                 delete("/{id}") {
+                    call.requireRole(UserRole.PROFESSOR)
                     val produtoId = call.parameters["id"] ?: return@delete call.respond(
                         ApiResponse.error("ID do produto é obrigatório")
                     )
