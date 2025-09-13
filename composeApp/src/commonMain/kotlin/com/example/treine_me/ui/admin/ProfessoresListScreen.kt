@@ -44,52 +44,7 @@ fun ProfessoresListScreen(
             Button(onClick = { showCreate = true }) { Text("Novo") }
         }
         Spacer(Modifier.height(8.dp))
-        if (showCreate) {
-            AppDialog(
-                onDismissRequest = { showCreate = false },
-                iconName = "person_add",
-                title = { Text("Cadastrar Professor") },
-                content = {
-                    Column(Modifier.fillMaxWidth()) {
-                        OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
-                        Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-                        Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(value = senha, onValueChange = { senha = it }, label = { Text("Senha") }, modifier = Modifier.fillMaxWidth())
-                        Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(value = bio, onValueChange = { bio = it }, label = { Text("Bio") }, modifier = Modifier.fillMaxWidth())
-                        Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(value = foto, onValueChange = { foto = it }, label = { Text("Foto URL") }, modifier = Modifier.fillMaxWidth())
-                    }
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        scope.launch {
-                            repo.create(
-                                ProfessorCreateRequest(
-                                    nome = nome,
-                                    email = email,
-                                    senha = senha,
-                                    bio = bio.ifBlank { null },
-                                    fotoPerfilUrl = foto.ifBlank { null }
-                                )
-                            )
-                            val res = repo.list(page = page, size = 20)
-                            list = res.data
-                            nome = ""
-                            email = ""
-                            senha = ""
-                            bio = ""
-                            foto = ""
-                            showCreate = false
-                        }
-                    }) { Text("Salvar") }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showCreate = false }) { Text("Cancelar") }
-                }
-            )
-        }
+        
         LazyColumn(Modifier.fillMaxSize()) {
             items(list, key = { it.id }) { prof ->
                 Card(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {

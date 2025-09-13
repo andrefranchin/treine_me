@@ -19,12 +19,12 @@ fun CursoFormScreen(
     var foto by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    Column(Modifier.fillMaxSize().padding(16.dp)) {
+    Column(Modifier.fillMaxSize().padding(12.dp)) {
         if (errorMessage != null) {
             Text(errorMessage!!, color = androidx.compose.ui.graphics.Color.Red)
             Spacer(Modifier.height(8.dp))
         }
-        Text(if (id == null) "Cadastrar Curso" else "Editar Curso")
+
         Spacer(Modifier.height(12.dp))
         OutlinedTextField(value = titulo, onValueChange = { titulo = it }, label = { Text("Título") }, modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
