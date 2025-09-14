@@ -777,6 +777,90 @@
     }
   }
 };
+            defs["AulaCreateRequest"] = {
+  "required" : [ "descricao", "ordem", "tipoConteudo", "titulo" ],
+  "type" : "object",
+  "properties" : {
+    "titulo" : {
+      "minLength" : 1,
+      "type" : "string",
+      "example" : "Variáveis e Tipos de Dados"
+    },
+    "descricao" : {
+      "minLength" : 1,
+      "type" : "string",
+      "example" : "Aprenda sobre declaração de variáveis e tipos primitivos"
+    },
+    "ordem" : {
+      "minimum" : 1,
+      "type" : "integer",
+      "example" : 1
+    },
+    "tipoConteudo" : {
+      "$ref" : "#/components/schemas/TipoConteudo"
+    }
+  }
+};
+            defs["AulaResponse"] = {
+  "required" : [ "descricao", "id", "moduloId", "ordem", "tipoConteudo", "titulo" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "format" : "uuid"
+    },
+    "titulo" : {
+      "type" : "string"
+    },
+    "descricao" : {
+      "type" : "string"
+    },
+    "ordem" : {
+      "type" : "integer"
+    },
+    "tipoConteudo" : {
+      "$ref" : "#/components/schemas/TipoConteudo"
+    },
+    "moduloId" : {
+      "type" : "string",
+      "format" : "uuid"
+    },
+    "conteudo" : {
+      "$ref" : "#/components/schemas/ConteudoResponse"
+    }
+  }
+};
+            defs["ConteudoResponse"] = {
+  "required" : [ "aulaId", "id" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "format" : "uuid"
+    },
+    "urlVideo" : {
+      "type" : "string",
+      "format" : "uri",
+      "nullable" : true,
+      "example" : "https://exemplo.com/video.mp4"
+    },
+    "textoMarkdown" : {
+      "type" : "string",
+      "nullable" : true,
+      "example" : "# Título da Aula\n\nConteúdo em Markdown..."
+    },
+    "arquivoUrl" : {
+      "type" : "string",
+      "format" : "uri",
+      "nullable" : true,
+      "example" : "https://exemplo.com/arquivo.pdf"
+    },
+    "aulaId" : {
+      "type" : "string",
+      "format" : "uuid"
+    }
+  }
+};
             defs["FileUploadResponse"] = {
   "required" : [ "contentType", "fileName", "size", "url" ],
   "type" : "object",
@@ -855,6 +939,56 @@
     },
     "user" : {
       "$ref" : "#/components/schemas/UserInfo"
+    }
+  }
+};
+            defs["ModuloCreateRequest"] = {
+  "required" : [ "descricao", "ordem", "titulo" ],
+  "type" : "object",
+  "properties" : {
+    "titulo" : {
+      "minLength" : 1,
+      "type" : "string",
+      "example" : "Introdução ao JavaScript"
+    },
+    "descricao" : {
+      "minLength" : 1,
+      "type" : "string",
+      "example" : "Conceitos básicos e fundamentos da linguagem"
+    },
+    "ordem" : {
+      "minimum" : 1,
+      "type" : "integer",
+      "example" : 1
+    }
+  }
+};
+            defs["ModuloResponse"] = {
+  "required" : [ "descricao", "id", "ordem", "produtoId", "titulo" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "format" : "uuid"
+    },
+    "titulo" : {
+      "type" : "string"
+    },
+    "descricao" : {
+      "type" : "string"
+    },
+    "ordem" : {
+      "type" : "integer"
+    },
+    "produtoId" : {
+      "type" : "string",
+      "format" : "uuid"
+    },
+    "aulas" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/AulaResponse"
+      }
     }
   }
 };
@@ -1090,6 +1224,11 @@
   "description" : "Status da inscrição do aluno",
   "enum" : [ "ATIVA", "CANCELADA", "PENDENTE", "EXPIRADA" ]
 };
+            defs["TipoConteudo"] = {
+  "type" : "string",
+  "description" : "Tipo de conteúdo da aula",
+  "enum" : [ "VIDEO", "TEXTO", "ATIVIDADE" ]
+};
             defs["TipoProduto"] = {
   "type" : "string",
   "description" : "Tipo de produto/conteúdo",
@@ -1237,6 +1376,28 @@
                     <li data-group="Upload" data-name="uploadVideoPost" class="">
                       <a href="#api-Upload-uploadVideoPost">uploadVideoPost</a>
                     </li>
+                  <li class="nav-header" data-group="UploadContextual"><a href="#api-UploadContextual">API Methods - UploadContextual</a></li>
+                    <li data-group="UploadContextual" data-name="uploadCourseCoverPost" class="">
+                      <a href="#api-UploadContextual-uploadCourseCoverPost">uploadCourseCoverPost</a>
+                    </li>
+                    <li data-group="UploadContextual" data-name="uploadCourseGalleryPost" class="">
+                      <a href="#api-UploadContextual-uploadCourseGalleryPost">uploadCourseGalleryPost</a>
+                    </li>
+                    <li data-group="UploadContextual" data-name="uploadGeneralPhotosPost" class="">
+                      <a href="#api-UploadContextual-uploadGeneralPhotosPost">uploadGeneralPhotosPost</a>
+                    </li>
+                    <li data-group="UploadContextual" data-name="uploadLessonCoverPost" class="">
+                      <a href="#api-UploadContextual-uploadLessonCoverPost">uploadLessonCoverPost</a>
+                    </li>
+                    <li data-group="UploadContextual" data-name="uploadLessonGalleryPost" class="">
+                      <a href="#api-UploadContextual-uploadLessonGalleryPost">uploadLessonGalleryPost</a>
+                    </li>
+                    <li data-group="UploadContextual" data-name="uploadModuleCoverPost" class="">
+                      <a href="#api-UploadContextual-uploadModuleCoverPost">uploadModuleCoverPost</a>
+                    </li>
+                    <li data-group="UploadContextual" data-name="uploadModuleGalleryPost" class="">
+                      <a href="#api-UploadContextual-uploadModuleGalleryPost">uploadModuleGalleryPost</a>
+                    </li>
           </ul>
         </nav>
       </div>
@@ -1260,7 +1421,8 @@ e alunos podem se inscrever e acessar o material didático.</p>
 <li><strong>Gestão de Professores</strong>: Admin cadastra e gerencia professores</li>
 <li><strong>Gestão de Planos</strong>: Professores criam planos de assinatura</li>
 <li><strong>Produtos</strong>: Cursos, e-books e mentorias</li>
-<li><strong>Upload de Arquivos</strong>: Integração com Cloudflare R2</li>
+<li><strong>Upload de Arquivos</strong>: Integração com Cloudflare R2 para fotos, vídeos e documentos</li>
+<li><strong>Estrutura de Conteúdo</strong>: Módulos e aulas organizados hierarquicamente</li>
 <li><strong>Atribuição Manual</strong>: Professor atribui planos aos alunos</li>
 </ul>
 <h2>Credenciais Padrão</h2>
@@ -1276,6 +1438,62 @@ e alunos podem se inscrever e acessar o material didático.</p>
     &quot;field&quot;: &quot;campo_com_erro&quot; // Para erros de validação
   }
 }
+</code></pre>
+<h2>📁 Sistema de Upload de Arquivos</h2>
+<p>A API possui um sistema completo de upload integrado com Cloudflare R2:</p>
+<h3><strong>Tipos de Upload Disponíveis:</strong></h3>
+<h4><strong>Upload Básico:</strong></h4>
+<ul>
+<li><strong>Imagens de Perfil</strong> (<code>/upload/profile-image</code>) - Para fotos de professores e alunos</li>
+<li><strong>Capas de Curso</strong> (<code>/upload/course-cover</code>) - Para imagens de capa dos produtos</li>
+<li><strong>Vídeos</strong> (<code>/upload/video</code>) - Para conteúdo de aulas e cursos</li>
+<li><strong>Documentos</strong> (<code>/upload/document</code>) - Para e-books e materiais complementares</li>
+</ul>
+<h4><strong>Upload Contextual (Novo):</strong></h4>
+<ul>
+<li><strong>Capas de Curso</strong> (<code>/upload/course-cover</code>) - Capa principal do curso</li>
+<li><strong>Galeria de Curso</strong> (<code>/upload/course-gallery</code>) - Fotos adicionais do curso</li>
+<li><strong>Capa de Módulo</strong> (<code>/upload/module-cover</code>) - Capa do módulo</li>
+<li><strong>Galeria de Módulo</strong> (<code>/upload/module-gallery</code>) - Fotos do módulo</li>
+<li><strong>Capa de Aula</strong> (<code>/upload/lesson-cover</code>) - Capa da aula</li>
+<li><strong>Galeria de Aula</strong> (<code>/upload/lesson-gallery</code>) - Fotos da aula</li>
+<li><strong>Fotos Gerais</strong> (<code>/upload/general-photos</code>) - Uso flexível</li>
+</ul>
+<h3><strong>Fluxo de Trabalho com Uploads:</strong></h3>
+<ol>
+<li><strong>Upload do arquivo</strong> usando um dos endpoints de upload</li>
+<li><strong>Receba a URL</strong> retornada pela API</li>
+<li><strong>Use a URL</strong> nos campos apropriados (capaUrl, videoIntroUrl, etc.)</li>
+<li><strong>Arquivos são organizados</strong> automaticamente em pastas específicas</li>
+</ol>
+<h3><strong>Estrutura de Pastas no Storage:</strong></h3>
+<pre><code>treine-me/
+├── profile-images/     # Fotos de perfil
+├── course-covers/      # Capas de cursos
+├── course-gallery/     # Galeria de fotos do curso
+├── course-videos/      # Vídeos de aulas
+├── course-files/       # Materiais complementares
+├── module-covers/      # Capas de módulos
+├── module-gallery/     # Galeria de fotos do módulo
+├── lesson-covers/      # Capas de aulas
+├── lesson-gallery/     # Galeria de fotos da aula
+├── general-photos/     # Fotos de uso geral
+└── ebooks/            # E-books em PDF
+</code></pre>
+<h3><strong>Exemplo de Uso:</strong></h3>
+<pre><code class="language-bash"># 1. Upload da capa do curso
+curl -X POST &quot;http://localhost:8080/upload/course-cover&quot; \
+  -H &quot;Authorization: Bearer SEU_TOKEN&quot; \
+  -F &quot;file=@capa_curso.jpg&quot; \
+  -F &quot;produtoId=123e4567-e89b-12d3-a456-426614174000&quot;
+
+# Resposta: {&quot;success&quot;: true, &quot;data&quot;: {&quot;url&quot;: &quot;https://...&quot;}}
+
+# 2. Criar produto usando a URL da capa
+curl -X POST &quot;http://localhost:8080/professores/me/produtos&quot; \
+  -H &quot;Authorization: Bearer SEU_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{&quot;titulo&quot;: &quot;Curso JS&quot;, &quot;descricao&quot;: &quot;...&quot;, &quot;tipo&quot;: &quot;CURSO&quot;, &quot;capaUrl&quot;: &quot;https://...&quot;}'
 </code></pre>
 </div>
           </div>
@@ -9911,7 +10129,22 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Upload de imagem de capa para cursos</p>
+                        <p class="marked">Upload de imagem de capa para cursos e produtos.
+
+**Tipos de arquivo aceitos:**
+- JPEG (.jpg, .jpeg)
+- PNG (.png)
+- WebP (.webp)
+
+**Limitações:**
+- Tamanho máximo: 100MB
+- Arquivo será renomeado automaticamente para evitar conflitos
+- URL será retornada para uso nas capas dos cursos
+- Recomendado: 1200x630px para melhor visualização
+
+**Observações:**
+- É obrigatório informar o ID do produto/curso (&#x60;produtoId&#x60;) no corpo do &#x60;multipart/form-data&#x60; ou via query string.
+</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/course-cover</span></code></pre>
@@ -9957,8 +10190,9 @@ public class UploadApiExample {
 
         UploadApi apiInstance = new UploadApi();
         byte[] file = file_example; // byte[] | 
+        UUID produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | 
         try {
-            apiInstance.uploadCourseCoverPost(file);
+            apiInstance.uploadCourseCoverPost(file, produtoId);
         } catch (ApiException e) {
             System.err.println("Exception when calling UploadApi#uploadCourseCoverPost");
             e.printStackTrace();
@@ -9975,8 +10209,9 @@ public class UploadApiExample {
     public static void main(String[] args) {
         UploadApi apiInstance = new UploadApi();
         byte[] file = file_example; // byte[] | 
+        UUID produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | 
         try {
-            apiInstance.uploadCourseCoverPost(file);
+            apiInstance.uploadCourseCoverPost(file, produtoId);
         } catch (ApiException e) {
             System.err.println("Exception when calling UploadApi#uploadCourseCoverPost");
             e.printStackTrace();
@@ -9991,11 +10226,13 @@ public class UploadApiExample {
                             <div class="tab-pane" id="examples-Upload-uploadCourseCoverPost-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 byte[] *file = file_example; // 
+UUID *produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // 
 
 UploadApi *apiInstance = [[UploadApi alloc] init];
 
 // Upload de capa de curso
 [apiInstance uploadCourseCoverPostWith:file
+    produtoId:produtoId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -10011,6 +10248,7 @@ var defaultClient = TreineMeApi.ApiClient.instance;
 
 var api = new TreineMeApi.UploadApi()
 var file = file_example; // {{byte[]}} 
+var produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {{UUID}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -10019,7 +10257,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.uploadCourseCoverPost(file, callback);
+api.uploadCourseCoverPost(fileprodutoId, callback);
 </code></pre>
                             </div>
 
@@ -10043,11 +10281,12 @@ namespace Example
 
             var apiInstance = new UploadApi();
             var file = file_example;  // byte[] | 
+            var produtoId = new UUID(); // UUID | 
 
             try
             {
                 // Upload de capa de curso
-                apiInstance.uploadCourseCoverPost(file);
+                apiInstance.uploadCourseCoverPost(file, produtoId);
             }
             catch (Exception e)
             {
@@ -10066,9 +10305,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiUploadApi();
 $file = file_example; // byte[] | 
+$produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | 
 
 try {
-    $api_instance->uploadCourseCoverPost($file);
+    $api_instance->uploadCourseCoverPost($file, $produtoId);
 } catch (Exception $e) {
     echo 'Exception when calling UploadApi->uploadCourseCoverPost: ', $e->getMessage(), PHP_EOL;
 }
@@ -10083,9 +10323,10 @@ use WWW::SwaggerClient::UploadApi;
 
 my $api_instance = WWW::SwaggerClient::UploadApi->new();
 my $file = file_example; # byte[] | 
+my $produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | 
 
 eval { 
-    $api_instance->uploadCourseCoverPost(file => $file);
+    $api_instance->uploadCourseCoverPost(file => $file, produtoId => $produtoId);
 };
 if ($@) {
     warn "Exception when calling UploadApi->uploadCourseCoverPost: $@\n";
@@ -10103,10 +10344,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.UploadApi()
 file = file_example # byte[] | 
+produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | 
 
 try: 
     # Upload de capa de curso
-    api_instance.upload_course_cover_post(file)
+    api_instance.upload_course_cover_post(file, produtoId)
 except ApiException as e:
     print("Exception when calling UploadApi->uploadCourseCoverPost: %s\n" % e)</code></pre>
                             </div>
@@ -10135,6 +10377,28 @@ except ApiException as e:
                                                   </span>
                                                       <span class="format">
                                                           (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">produtoId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadCourseCoverPost_produtoId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      UUID
+                                                  </span>
+                                                      <span class="format">
+                                                          (uuid)
                                                       </span>
                                   
                                               </div>
@@ -10179,6 +10443,20 @@ except ApiException as e:
             }
           }
         } ]
+      },
+      "examples" : {
+        "success" : {
+          "summary" : "Upload bem-sucedido",
+          "value" : {
+            "success" : true,
+            "data" : {
+              "fileName" : "course_cover_1703123456_def456.jpg",
+              "url" : "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-covers/course_cover_1703123456_def456.jpg",
+              "contentType" : "image/jpeg",
+              "size" : 2048000
+            }
+          }
+        }
       }
     }
   }
@@ -10219,7 +10497,19 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Upload de documentos e e-books</p>
+                        <p class="marked">Upload de documentos, e-books e materiais complementares para cursos.
+
+**Tipos de arquivo aceitos:**
+- PDF (.pdf) - Para e-books e materiais de leitura
+- DOC (.doc) - Documentos do Microsoft Word
+- DOCX (.docx) - Documentos do Microsoft Word (formato moderno)
+
+**Limitações:**
+- Tamanho máximo: 100MB
+- Arquivo será renomeado automaticamente para evitar conflitos
+- URL será retornada para uso nos materiais do curso
+- PDFs são armazenados na pasta &quot;ebooks&quot;, outros na pasta &quot;course-files&quot;
+</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/document</span></code></pre>
@@ -10487,6 +10777,32 @@ except ApiException as e:
             }
           }
         } ]
+      },
+      "examples" : {
+        "success_pdf" : {
+          "summary" : "Upload de PDF bem-sucedido",
+          "value" : {
+            "success" : true,
+            "data" : {
+              "fileName" : "ebook_1703123456_jkl012.pdf",
+              "url" : "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/ebooks/ebook_1703123456_jkl012.pdf",
+              "contentType" : "application/pdf",
+              "size" : 10485760
+            }
+          }
+        },
+        "success_doc" : {
+          "summary" : "Upload de DOC bem-sucedido",
+          "value" : {
+            "success" : true,
+            "data" : {
+              "fileName" : "material_1703123456_mno345.docx",
+              "url" : "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-files/material_1703123456_mno345.docx",
+              "contentType" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "size" : 2097152
+            }
+          }
+        }
       }
     }
   }
@@ -10527,7 +10843,18 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Upload de imagem de perfil para Cloudflare R2</p>
+                        <p class="marked">Upload de imagem de perfil para usuários (professores e alunos).
+
+**Tipos de arquivo aceitos:**
+- JPEG (.jpg, .jpeg)
+- PNG (.png)
+- WebP (.webp)
+
+**Limitações:**
+- Tamanho máximo: 100MB
+- Arquivo será renomeado automaticamente para evitar conflitos
+- URL será retornada para uso nos perfis
+</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/profile-image</span></code></pre>
@@ -10795,6 +11122,20 @@ except ApiException as e:
             }
           }
         } ]
+      },
+      "examples" : {
+        "success" : {
+          "summary" : "Upload bem-sucedido",
+          "value" : {
+            "success" : true,
+            "data" : {
+              "fileName" : "profile_1703123456_abc123.jpg",
+              "url" : "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/profile-images/profile_1703123456_abc123.jpg",
+              "contentType" : "image/jpeg",
+              "size" : 1024000
+            }
+          }
+        }
       }
     }
   }
@@ -10843,6 +11184,26 @@ except ApiException as e:
     "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/ApiResponse"
+      },
+      "examples" : {
+        "invalid_file" : {
+          "summary" : "Arquivo inválido",
+          "value" : {
+            "success" : false,
+            "error" : {
+              "message" : "Tipo de arquivo não permitido. Tipos aceitos: image/jpeg, image/png, image/webp"
+            }
+          }
+        },
+        "file_too_large" : {
+          "summary" : "Arquivo muito grande",
+          "value" : {
+            "success" : false,
+            "error" : {
+              "message" : "Arquivo muito grande. Tamanho máximo: 100MB"
+            }
+          }
+        }
       }
     }
   }
@@ -10883,7 +11244,19 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Upload de vídeos para aulas</p>
+                        <p class="marked">Upload de vídeos para aulas e conteúdo de cursos.
+
+**Tipos de arquivo aceitos:**
+- MP4 (.mp4)
+- WebM (.webm)
+- QuickTime (.mov)
+
+**Limitações:**
+- Tamanho máximo: 100MB
+- Arquivo será renomeado automaticamente para evitar conflitos
+- URL será retornada para uso nas aulas
+- Recomendado: MP4 com codec H.264 para melhor compatibilidade
+</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/video</span></code></pre>
@@ -11151,6 +11524,20 @@ except ApiException as e:
             }
           }
         } ]
+      },
+      "examples" : {
+        "success" : {
+          "summary" : "Upload bem-sucedido",
+          "value" : {
+            "success" : true,
+            "data" : {
+              "fileName" : "video_1703123456_ghi789.mp4",
+              "url" : "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-videos/video_1703123456_ghi789.mp4",
+              "contentType" : "video/mp4",
+              "size" : 52428800
+            }
+          }
+        }
       }
     }
   }
@@ -11176,6 +11563,2261 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-uploadVideoPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-UploadContextual">
+                  <h1>UploadContextual</h1>
+                    <div id="api-UploadContextual-uploadCourseCoverPost">
+                      <article id="api-UploadContextual-uploadCourseCoverPost-0" data-group="User" data-name="uploadCourseCoverPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadCourseCoverPost</h1>
+                          <p>Upload de capa de curso</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Upload de imagem de capa para cursos e produtos.
+
+**Tipos de arquivo aceitos:**
+- JPEG (.jpg, .jpeg)
+- PNG (.png)
+- WebP (.webp)
+
+**Limitações:**
+- Tamanho máximo: 100MB
+- Arquivo será renomeado automaticamente para evitar conflitos
+- URL será retornada para uso nas capas dos cursos
+- Recomendado: 1200x630px para melhor visualização
+
+**Observações:**
+- É obrigatório informar o ID do produto/curso (&#x60;produtoId&#x60;) no corpo do &#x60;multipart/form-data&#x60; ou via query string.
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/course-cover</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-UploadContextual-uploadCourseCoverPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseCoverPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-UploadContextual-uploadCourseCoverPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: multipart/form-data"\
+"http://localhost:8080/upload/course-cover"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UploadContextualApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        UUID produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | 
+        try {
+            apiInstance.uploadCourseCoverPost(file, produtoId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadCourseCoverPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UploadContextualApi;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        UUID produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | 
+        try {
+            apiInstance.uploadCourseCoverPost(file, produtoId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadCourseCoverPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+byte[] *file = file_example; // 
+UUID *produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // 
+
+UploadContextualApi *apiInstance = [[UploadContextualApi alloc] init];
+
+// Upload de capa de curso
+[apiInstance uploadCourseCoverPostWith:file
+    produtoId:produtoId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.UploadContextualApi()
+var file = file_example; // {{byte[]}} 
+var produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {{UUID}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.uploadCourseCoverPost(fileprodutoId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadCourseCoverPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new UploadContextualApi();
+            var file = file_example;  // byte[] | 
+            var produtoId = new UUID(); // UUID | 
+
+            try
+            {
+                // Upload de capa de curso
+                apiInstance.uploadCourseCoverPost(file, produtoId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UploadContextualApi.uploadCourseCoverPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiUploadContextualApi();
+$file = file_example; // byte[] | 
+$produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | 
+
+try {
+    $api_instance->uploadCourseCoverPost($file, $produtoId);
+} catch (Exception $e) {
+    echo 'Exception when calling UploadContextualApi->uploadCourseCoverPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UploadContextualApi;
+
+
+my $api_instance = WWW::SwaggerClient::UploadContextualApi->new();
+my $file = file_example; # byte[] | 
+my $produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | 
+
+eval { 
+    $api_instance->uploadCourseCoverPost(file => $file, produtoId => $produtoId);
+};
+if ($@) {
+    warn "Exception when calling UploadContextualApi->uploadCourseCoverPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseCoverPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.UploadContextualApi()
+file = file_example # byte[] | 
+produtoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | 
+
+try: 
+    # Upload de capa de curso
+    api_instance.upload_course_cover_post(file, produtoId)
+except ApiException as e:
+    print("Exception when calling UploadContextualApi->uploadCourseCoverPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+                            <div class="methodsubtabletitle">Form parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">file*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadCourseCoverPost_file">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      byte[]
+                                                  </span>
+                                                      <span class="format">
+                                                          (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">produtoId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadCourseCoverPost_produtoId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      UUID
+                                                  </span>
+                                                      <span class="format">
+                                                          (uuid)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Upload realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadCourseCoverPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadCourseCoverPost-200-schema">
+                                  <div id='responses-uploadCourseCoverPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Upload realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/FileUploadResponse"
+            }
+          }
+        } ]
+      },
+      "examples" : {
+        "success" : {
+          "summary" : "Upload bem-sucedido",
+          "value" : {
+            "success" : true,
+            "data" : {
+              "fileName" : "course_cover_1703123456_def456.jpg",
+              "url" : "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-covers/course_cover_1703123456_def456.jpg",
+              "contentType" : "image/jpeg",
+              "size" : 2048000
+            }
+          }
+        }
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadCourseCoverPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadCourseCoverPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadCourseCoverPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-UploadContextual-uploadCourseGalleryPost">
+                      <article id="api-UploadContextual-uploadCourseGalleryPost-0" data-group="User" data-name="uploadCourseGalleryPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadCourseGalleryPost</h1>
+                          <p>Upload de galeria de curso</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Upload de fotos para galeria do curso.
+
+**Características:**
+- Armazenado em pasta: &#x60;course-gallery/&#x60;
+- Múltiplas fotos permitidas
+- Organização automática por curso
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/course-gallery</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadCourseGalleryPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-UploadContextual-uploadCourseGalleryPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: multipart/form-data"\
+"http://localhost:8080/upload/course-gallery"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UploadContextualApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadCourseGalleryPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadCourseGalleryPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UploadContextualApi;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadCourseGalleryPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadCourseGalleryPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+byte[] *file = file_example; // 
+
+UploadContextualApi *apiInstance = [[UploadContextualApi alloc] init];
+
+// Upload de galeria de curso
+[apiInstance uploadCourseGalleryPostWith:file
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.UploadContextualApi()
+var file = file_example; // {{byte[]}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.uploadCourseGalleryPost(file, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadCourseGalleryPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new UploadContextualApi();
+            var file = file_example;  // byte[] | 
+
+            try
+            {
+                // Upload de galeria de curso
+                apiInstance.uploadCourseGalleryPost(file);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UploadContextualApi.uploadCourseGalleryPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiUploadContextualApi();
+$file = file_example; // byte[] | 
+
+try {
+    $api_instance->uploadCourseGalleryPost($file);
+} catch (Exception $e) {
+    echo 'Exception when calling UploadContextualApi->uploadCourseGalleryPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UploadContextualApi;
+
+
+my $api_instance = WWW::SwaggerClient::UploadContextualApi->new();
+my $file = file_example; # byte[] | 
+
+eval { 
+    $api_instance->uploadCourseGalleryPost(file => $file);
+};
+if ($@) {
+    warn "Exception when calling UploadContextualApi->uploadCourseGalleryPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadCourseGalleryPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.UploadContextualApi()
+file = file_example # byte[] | 
+
+try: 
+    # Upload de galeria de curso
+    api_instance.upload_course_gallery_post(file)
+except ApiException as e:
+    print("Exception when calling UploadContextualApi->uploadCourseGalleryPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+                            <div class="methodsubtabletitle">Form parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">file*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadCourseGalleryPost_file">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      byte[]
+                                                  </span>
+                                                      <span class="format">
+                                                          (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Upload realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadCourseGalleryPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadCourseGalleryPost-200-schema">
+                                  <div id='responses-uploadCourseGalleryPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Upload realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/FileUploadResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadCourseGalleryPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadCourseGalleryPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadCourseGalleryPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-UploadContextual-uploadGeneralPhotosPost">
+                      <article id="api-UploadContextual-uploadGeneralPhotosPost-0" data-group="User" data-name="uploadGeneralPhotosPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadGeneralPhotosPost</h1>
+                          <p>Upload de fotos gerais</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Upload de fotos para uso geral na plataforma.
+
+**Características:**
+- Armazenado em pasta: &#x60;general-photos/&#x60;
+- Uso flexível
+- Organização geral
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/general-photos</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadGeneralPhotosPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-UploadContextual-uploadGeneralPhotosPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: multipart/form-data"\
+"http://localhost:8080/upload/general-photos"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UploadContextualApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadGeneralPhotosPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadGeneralPhotosPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UploadContextualApi;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadGeneralPhotosPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadGeneralPhotosPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+byte[] *file = file_example; // 
+
+UploadContextualApi *apiInstance = [[UploadContextualApi alloc] init];
+
+// Upload de fotos gerais
+[apiInstance uploadGeneralPhotosPostWith:file
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.UploadContextualApi()
+var file = file_example; // {{byte[]}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.uploadGeneralPhotosPost(file, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadGeneralPhotosPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new UploadContextualApi();
+            var file = file_example;  // byte[] | 
+
+            try
+            {
+                // Upload de fotos gerais
+                apiInstance.uploadGeneralPhotosPost(file);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UploadContextualApi.uploadGeneralPhotosPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiUploadContextualApi();
+$file = file_example; // byte[] | 
+
+try {
+    $api_instance->uploadGeneralPhotosPost($file);
+} catch (Exception $e) {
+    echo 'Exception when calling UploadContextualApi->uploadGeneralPhotosPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UploadContextualApi;
+
+
+my $api_instance = WWW::SwaggerClient::UploadContextualApi->new();
+my $file = file_example; # byte[] | 
+
+eval { 
+    $api_instance->uploadGeneralPhotosPost(file => $file);
+};
+if ($@) {
+    warn "Exception when calling UploadContextualApi->uploadGeneralPhotosPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadGeneralPhotosPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.UploadContextualApi()
+file = file_example # byte[] | 
+
+try: 
+    # Upload de fotos gerais
+    api_instance.upload_general_photos_post(file)
+except ApiException as e:
+    print("Exception when calling UploadContextualApi->uploadGeneralPhotosPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+                            <div class="methodsubtabletitle">Form parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">file*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadGeneralPhotosPost_file">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      byte[]
+                                                  </span>
+                                                      <span class="format">
+                                                          (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Upload realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadGeneralPhotosPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadGeneralPhotosPost-200-schema">
+                                  <div id='responses-uploadGeneralPhotosPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Upload realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/FileUploadResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadGeneralPhotosPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadGeneralPhotosPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadGeneralPhotosPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-UploadContextual-uploadLessonCoverPost">
+                      <article id="api-UploadContextual-uploadLessonCoverPost-0" data-group="User" data-name="uploadLessonCoverPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadLessonCoverPost</h1>
+                          <p>Upload de capa de aula</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Upload específico para capa de aula.
+
+**Características:**
+- Armazenado em pasta: &#x60;lesson-covers/&#x60;
+- Validação para aulas
+- Organização por aula
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/lesson-cover</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-UploadContextual-uploadLessonCoverPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonCoverPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-UploadContextual-uploadLessonCoverPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: multipart/form-data"\
+"http://localhost:8080/upload/lesson-cover"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UploadContextualApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadLessonCoverPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadLessonCoverPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UploadContextualApi;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadLessonCoverPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadLessonCoverPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+byte[] *file = file_example; // 
+
+UploadContextualApi *apiInstance = [[UploadContextualApi alloc] init];
+
+// Upload de capa de aula
+[apiInstance uploadLessonCoverPostWith:file
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.UploadContextualApi()
+var file = file_example; // {{byte[]}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.uploadLessonCoverPost(file, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadLessonCoverPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new UploadContextualApi();
+            var file = file_example;  // byte[] | 
+
+            try
+            {
+                // Upload de capa de aula
+                apiInstance.uploadLessonCoverPost(file);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UploadContextualApi.uploadLessonCoverPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiUploadContextualApi();
+$file = file_example; // byte[] | 
+
+try {
+    $api_instance->uploadLessonCoverPost($file);
+} catch (Exception $e) {
+    echo 'Exception when calling UploadContextualApi->uploadLessonCoverPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UploadContextualApi;
+
+
+my $api_instance = WWW::SwaggerClient::UploadContextualApi->new();
+my $file = file_example; # byte[] | 
+
+eval { 
+    $api_instance->uploadLessonCoverPost(file => $file);
+};
+if ($@) {
+    warn "Exception when calling UploadContextualApi->uploadLessonCoverPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonCoverPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.UploadContextualApi()
+file = file_example # byte[] | 
+
+try: 
+    # Upload de capa de aula
+    api_instance.upload_lesson_cover_post(file)
+except ApiException as e:
+    print("Exception when calling UploadContextualApi->uploadLessonCoverPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+                            <div class="methodsubtabletitle">Form parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">file*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadLessonCoverPost_file">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      byte[]
+                                                  </span>
+                                                      <span class="format">
+                                                          (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Upload realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadLessonCoverPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadLessonCoverPost-200-schema">
+                                  <div id='responses-uploadLessonCoverPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Upload realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/FileUploadResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadLessonCoverPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadLessonCoverPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadLessonCoverPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-UploadContextual-uploadLessonGalleryPost">
+                      <article id="api-UploadContextual-uploadLessonGalleryPost-0" data-group="User" data-name="uploadLessonGalleryPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadLessonGalleryPost</h1>
+                          <p>Upload de galeria de aula</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Upload de fotos para galeria da aula.
+
+**Características:**
+- Armazenado em pasta: &#x60;lesson-gallery/&#x60;
+- Fotos complementares da aula
+- Organização por aula
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/lesson-gallery</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadLessonGalleryPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-UploadContextual-uploadLessonGalleryPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: multipart/form-data"\
+"http://localhost:8080/upload/lesson-gallery"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UploadContextualApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadLessonGalleryPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadLessonGalleryPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UploadContextualApi;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadLessonGalleryPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadLessonGalleryPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+byte[] *file = file_example; // 
+
+UploadContextualApi *apiInstance = [[UploadContextualApi alloc] init];
+
+// Upload de galeria de aula
+[apiInstance uploadLessonGalleryPostWith:file
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.UploadContextualApi()
+var file = file_example; // {{byte[]}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.uploadLessonGalleryPost(file, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadLessonGalleryPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new UploadContextualApi();
+            var file = file_example;  // byte[] | 
+
+            try
+            {
+                // Upload de galeria de aula
+                apiInstance.uploadLessonGalleryPost(file);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UploadContextualApi.uploadLessonGalleryPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiUploadContextualApi();
+$file = file_example; // byte[] | 
+
+try {
+    $api_instance->uploadLessonGalleryPost($file);
+} catch (Exception $e) {
+    echo 'Exception when calling UploadContextualApi->uploadLessonGalleryPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UploadContextualApi;
+
+
+my $api_instance = WWW::SwaggerClient::UploadContextualApi->new();
+my $file = file_example; # byte[] | 
+
+eval { 
+    $api_instance->uploadLessonGalleryPost(file => $file);
+};
+if ($@) {
+    warn "Exception when calling UploadContextualApi->uploadLessonGalleryPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadLessonGalleryPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.UploadContextualApi()
+file = file_example # byte[] | 
+
+try: 
+    # Upload de galeria de aula
+    api_instance.upload_lesson_gallery_post(file)
+except ApiException as e:
+    print("Exception when calling UploadContextualApi->uploadLessonGalleryPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+                            <div class="methodsubtabletitle">Form parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">file*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadLessonGalleryPost_file">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      byte[]
+                                                  </span>
+                                                      <span class="format">
+                                                          (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Upload realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadLessonGalleryPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadLessonGalleryPost-200-schema">
+                                  <div id='responses-uploadLessonGalleryPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Upload realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/FileUploadResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadLessonGalleryPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadLessonGalleryPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadLessonGalleryPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-UploadContextual-uploadModuleCoverPost">
+                      <article id="api-UploadContextual-uploadModuleCoverPost-0" data-group="User" data-name="uploadModuleCoverPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadModuleCoverPost</h1>
+                          <p>Upload de capa de módulo</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Upload específico para capa de módulo.
+
+**Características:**
+- Armazenado em pasta: &#x60;module-covers/&#x60;
+- Validação otimizada para módulos
+- Organização hierárquica
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/module-cover</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-UploadContextual-uploadModuleCoverPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleCoverPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-UploadContextual-uploadModuleCoverPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: multipart/form-data"\
+"http://localhost:8080/upload/module-cover"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UploadContextualApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadModuleCoverPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadModuleCoverPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UploadContextualApi;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadModuleCoverPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadModuleCoverPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+byte[] *file = file_example; // 
+
+UploadContextualApi *apiInstance = [[UploadContextualApi alloc] init];
+
+// Upload de capa de módulo
+[apiInstance uploadModuleCoverPostWith:file
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.UploadContextualApi()
+var file = file_example; // {{byte[]}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.uploadModuleCoverPost(file, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadModuleCoverPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new UploadContextualApi();
+            var file = file_example;  // byte[] | 
+
+            try
+            {
+                // Upload de capa de módulo
+                apiInstance.uploadModuleCoverPost(file);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UploadContextualApi.uploadModuleCoverPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiUploadContextualApi();
+$file = file_example; // byte[] | 
+
+try {
+    $api_instance->uploadModuleCoverPost($file);
+} catch (Exception $e) {
+    echo 'Exception when calling UploadContextualApi->uploadModuleCoverPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UploadContextualApi;
+
+
+my $api_instance = WWW::SwaggerClient::UploadContextualApi->new();
+my $file = file_example; # byte[] | 
+
+eval { 
+    $api_instance->uploadModuleCoverPost(file => $file);
+};
+if ($@) {
+    warn "Exception when calling UploadContextualApi->uploadModuleCoverPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleCoverPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.UploadContextualApi()
+file = file_example # byte[] | 
+
+try: 
+    # Upload de capa de módulo
+    api_instance.upload_module_cover_post(file)
+except ApiException as e:
+    print("Exception when calling UploadContextualApi->uploadModuleCoverPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+                            <div class="methodsubtabletitle">Form parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">file*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadModuleCoverPost_file">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      byte[]
+                                                  </span>
+                                                      <span class="format">
+                                                          (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Upload realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadModuleCoverPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadModuleCoverPost-200-schema">
+                                  <div id='responses-uploadModuleCoverPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Upload realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/FileUploadResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadModuleCoverPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadModuleCoverPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadModuleCoverPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-UploadContextual-uploadModuleGalleryPost">
+                      <article id="api-UploadContextual-uploadModuleGalleryPost-0" data-group="User" data-name="uploadModuleGalleryPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadModuleGalleryPost</h1>
+                          <p>Upload de galeria de módulo</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Upload de fotos para galeria do módulo.
+
+**Características:**
+- Armazenado em pasta: &#x60;module-gallery/&#x60;
+- Fotos complementares do módulo
+- Organização por módulo
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/upload/module-gallery</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-UploadContextual-uploadModuleGalleryPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-UploadContextual-uploadModuleGalleryPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: multipart/form-data"\
+"http://localhost:8080/upload/module-gallery"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UploadContextualApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadModuleGalleryPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadModuleGalleryPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UploadContextualApi;
+
+public class UploadContextualApiExample {
+
+    public static void main(String[] args) {
+        UploadContextualApi apiInstance = new UploadContextualApi();
+        byte[] file = file_example; // byte[] | 
+        try {
+            apiInstance.uploadModuleGalleryPost(file);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UploadContextualApi#uploadModuleGalleryPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+byte[] *file = file_example; // 
+
+UploadContextualApi *apiInstance = [[UploadContextualApi alloc] init];
+
+// Upload de galeria de módulo
+[apiInstance uploadModuleGalleryPostWith:file
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.UploadContextualApi()
+var file = file_example; // {{byte[]}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.uploadModuleGalleryPost(file, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadModuleGalleryPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new UploadContextualApi();
+            var file = file_example;  // byte[] | 
+
+            try
+            {
+                // Upload de galeria de módulo
+                apiInstance.uploadModuleGalleryPost(file);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UploadContextualApi.uploadModuleGalleryPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiUploadContextualApi();
+$file = file_example; // byte[] | 
+
+try {
+    $api_instance->uploadModuleGalleryPost($file);
+} catch (Exception $e) {
+    echo 'Exception when calling UploadContextualApi->uploadModuleGalleryPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UploadContextualApi;
+
+
+my $api_instance = WWW::SwaggerClient::UploadContextualApi->new();
+my $file = file_example; # byte[] | 
+
+eval { 
+    $api_instance->uploadModuleGalleryPost(file => $file);
+};
+if ($@) {
+    warn "Exception when calling UploadContextualApi->uploadModuleGalleryPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-UploadContextual-uploadModuleGalleryPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.UploadContextualApi()
+file = file_example # byte[] | 
+
+try: 
+    # Upload de galeria de módulo
+    api_instance.upload_module_gallery_post(file)
+except ApiException as e:
+    print("Exception when calling UploadContextualApi->uploadModuleGalleryPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+                            <div class="methodsubtabletitle">Form parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">file*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadModuleGalleryPost_file">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      byte[]
+                                                  </span>
+                                                      <span class="format">
+                                                          (binary)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Upload realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadModuleGalleryPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadModuleGalleryPost-200-schema">
+                                  <div id='responses-uploadModuleGalleryPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Upload realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/FileUploadResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadModuleGalleryPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadModuleGalleryPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadModuleGalleryPost-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 

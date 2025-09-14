@@ -111,37 +111,183 @@ POST /professores/me/planos/{planoId}/alunos/{alunoId}
 Authorization: Bearer {token_professor}
 ```
 
-## 📁 **Endpoints de Upload**
+## 📁 **Sistema de Upload de Arquivos**
 
-### **Upload de Imagem de Perfil**
+A API possui um sistema completo de upload integrado com Cloudflare R2 para gerenciar todos os tipos de mídia da plataforma.
+
+### **Tipos de Upload Disponíveis:**
+
+#### **Upload Básico:**
+
+##### **1. Upload de Imagem de Perfil**
 ```bash
 POST /upload/profile-image
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
 
 # Arquivo: campo "file"
+# Tipos aceitos: JPEG, PNG, WebP
+# Tamanho máximo: 100MB
 ```
 
-### **Upload de Capa de Curso**
+##### **2. Upload de Capa de Curso**
 ```bash
 POST /upload/course-cover
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Tipos aceitos: JPEG, PNG, WebP
+# Recomendado: 1200x630px
 ```
 
-### **Upload de Vídeo**
+##### **3. Upload de Vídeo para Aulas**
 ```bash
 POST /upload/video
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Tipos aceitos: MP4, WebM, QuickTime
+# Recomendado: MP4 com codec H.264
 ```
 
-### **Upload de Documento/E-book**
+##### **4. Upload de Documento/E-book**
 ```bash
 POST /upload/document
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Tipos aceitos: PDF, DOC, DOCX
+# PDFs vão para pasta "ebooks", outros para "course-files"
 ```
+
+#### **Upload Contextual (Novo):**
+
+##### **5. Galeria de Curso**
+```bash
+POST /upload/course-gallery
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Múltiplas fotos permitidas
+# Armazenado em: course-gallery/
+```
+
+##### **6. Capa de Módulo**
+```bash
+POST /upload/module-cover
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Armazenado em: module-covers/
+```
+
+##### **7. Galeria de Módulo**
+```bash
+POST /upload/module-gallery
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Armazenado em: module-gallery/
+```
+
+##### **8. Capa de Aula**
+```bash
+POST /upload/lesson-cover
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Armazenado em: lesson-covers/
+```
+
+##### **9. Galeria de Aula**
+```bash
+POST /upload/lesson-gallery
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Armazenado em: lesson-gallery/
+```
+
+##### **10. Fotos Gerais**
+```bash
+POST /upload/general-photos
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+# Arquivo: campo "file"
+# Uso flexível
+# Armazenado em: general-photos/
+```
+
+### **Estrutura de Pastas no Storage:**
+```
+treine-me/
+├── profile-images/     # Fotos de perfil de usuários
+├── course-covers/      # Capas de cursos e produtos
+├── course-gallery/     # Galeria de fotos do curso
+├── course-videos/      # Vídeos de aulas e conteúdo
+├── course-files/       # Materiais complementares (DOC, DOCX)
+├── module-covers/      # Capas de módulos
+├── module-gallery/     # Galeria de fotos do módulo
+├── lesson-covers/      # Capas de aulas
+├── lesson-gallery/     # Galeria de fotos da aula
+├── general-photos/     # Fotos de uso geral
+└── ebooks/            # E-books em PDF
+```
+
+### **Fluxo de Trabalho com Uploads:**
+
+1. **Faça o upload** do arquivo usando o endpoint apropriado
+2. **Receba a URL** retornada pela API
+3. **Use a URL** nos campos correspondentes ao criar/editar recursos
+4. **Arquivos são organizados** automaticamente em pastas específicas
+
+### **Exemplo Prático:**
+
+```bash
+# 1. Upload da capa do curso
+curl -X POST "http://localhost:8080/upload/course-cover" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -F "file=@capa_curso.jpg"
+
+# Resposta:
+# {
+#   "success": true,
+#   "data": {
+#     "fileName": "course_cover_1703123456_def456.jpg",
+#     "url": "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-covers/course_cover_1703123456_def456.jpg",
+#     "contentType": "image/jpeg",
+#     "size": 2048000
+#   }
+# }
+
+# 2. Criar produto usando a URL da capa
+curl -X POST "http://localhost:8080/professores/me/produtos" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "titulo": "JavaScript Fundamentals",
+    "descricao": "Aprenda JavaScript do zero",
+    "tipo": "CURSO",
+    "capaUrl": "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-covers/course_cover_1703123456_def456.jpg"
+  }'
+```
+
+### **Características do Sistema:**
+- ✅ **Renomeação automática** para evitar conflitos
+- ✅ **Validação de tipos** de arquivo
+- ✅ **Limite de tamanho** (100MB por arquivo)
+- ✅ **Organização automática** em pastas
+- ✅ **URLs públicas** para acesso direto
+- ✅ **Integração completa** com Cloudflare R2
 
 ## 🔧 **Endpoints Principais**
 
@@ -214,15 +360,92 @@ class AWSS3Service : StorageService {
 val fileUploadService = FileUploadService(AWSS3Service()) // Em vez de CloudflareR2Service()
 ```
 
+## 📚 **Estrutura de Conteúdo (Módulos e Aulas)**
+
+A plataforma suporta uma estrutura hierárquica de conteúdo para organizar cursos:
+
+### **Hierarquia:**
+```
+Produto (Curso)
+├── Módulo 1
+│   ├── Aula 1.1 (Vídeo)
+│   ├── Aula 1.2 (Texto)
+│   └── Aula 1.3 (Atividade)
+├── Módulo 2
+│   ├── Aula 2.1 (Vídeo)
+│   └── Aula 2.2 (Documento)
+└── ...
+```
+
+### **Tipos de Conteúdo de Aula:**
+- **VIDEO** - Aulas em vídeo (usar `/upload/video`)
+- **TEXTO** - Conteúdo em Markdown
+- **ATIVIDADE** - Exercícios e atividades práticas
+
+### **Fluxo de Criação de Conteúdo:**
+
+1. **Criar Produto** (curso, e-book, mentoria)
+2. **Criar Módulos** dentro do produto
+3. **Criar Aulas** dentro dos módulos
+4. **Adicionar Conteúdo** (vídeo, texto, arquivo) às aulas
+5. **Associar Produto** aos planos
+
+### **Exemplo de Uso:**
+
+```bash
+# 1. Criar produto (curso)
+curl -X POST "http://localhost:8080/professores/me/produtos" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "titulo": "JavaScript Completo",
+    "descricao": "Curso completo de JavaScript",
+    "tipo": "CURSO"
+  }'
+
+# 2. Criar módulo no produto
+curl -X POST "http://localhost:8080/professores/me/produtos/{produtoId}/modulos" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "titulo": "Fundamentos",
+    "descricao": "Conceitos básicos do JavaScript",
+    "ordem": 1
+  }'
+
+# 3. Criar aula no módulo
+curl -X POST "http://localhost:8080/professores/me/modulos/{moduloId}/aulas" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "titulo": "Variáveis e Tipos",
+    "descricao": "Aprenda sobre declaração de variáveis",
+    "ordem": 1,
+    "tipoConteudo": "VIDEO"
+  }'
+
+# 4. Upload de vídeo para a aula
+curl -X POST "http://localhost:8080/upload/video" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -F "file=@aula_variaveis.mp4"
+
+# 5. Adicionar conteúdo à aula
+curl -X POST "http://localhost:8080/professores/me/aulas/{aulaId}/conteudo" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "urlVideo": "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-videos/video_1703123456_ghi789.mp4"
+  }'
+```
+
 ## 🎯 **Próximos Passos Sugeridos**
 
-1. **Módulos e Aulas** - Implementar CRUD para estruturar os cursos
-2. **Área do Aluno** - Endpoints para alunos acessarem conteúdo
-3. **Progresso do Aluno** - Sistema de tracking de progresso
-4. **Notificações** - Email/push quando aluno recebe novo plano
-5. **Relatórios** - Analytics para professores
-6. **Pagamentos** - Integração com gateway de pagamento
-7. **Certificados** - Geração automática ao completar cursos
+1. **Área do Aluno** - Endpoints para alunos acessarem conteúdo
+2. **Progresso do Aluno** - Sistema de tracking de progresso
+3. **Notificações** - Email/push quando aluno recebe novo plano
+4. **Relatórios** - Analytics para professores
+5. **Pagamentos** - Integração com gateway de pagamento
+6. **Certificados** - Geração automática ao completar cursos
 
 ## 🐛 **Resolução de Problemas**
 

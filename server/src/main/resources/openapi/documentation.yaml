@@ -10,7 +10,8 @@ info:
     - **Gestão de Professores**: Admin cadastra e gerencia professores
     - **Gestão de Planos**: Professores criam planos de assinatura
     - **Produtos**: Cursos, e-books e mentorias
-    - **Upload de Arquivos**: Integração com Cloudflare R2
+    - **Upload de Arquivos**: Integração com Cloudflare R2 para fotos, vídeos e documentos
+    - **Estrutura de Conteúdo**: Módulos e aulas organizados hierarquicamente
     - **Atribuição Manual**: Professor atribui planos aos alunos
 
     ## Credenciais Padrão
@@ -28,6 +29,66 @@ info:
         "field": "campo_com_erro" // Para erros de validação
       }
     }
+    ```
+
+    ## 📁 Sistema de Upload de Arquivos
+
+    A API possui um sistema completo de upload integrado com Cloudflare R2:
+
+    ### **Tipos de Upload Disponíveis:**
+    
+    #### **Upload Básico:**
+    - **Imagens de Perfil** (`/upload/profile-image`) - Para fotos de professores e alunos
+    - **Capas de Curso** (`/upload/course-cover`) - Para imagens de capa dos produtos
+    - **Vídeos** (`/upload/video`) - Para conteúdo de aulas e cursos
+    - **Documentos** (`/upload/document`) - Para e-books e materiais complementares
+    
+    #### **Upload Contextual (Novo):**
+    - **Capas de Curso** (`/upload/course-cover`) - Capa principal do curso
+    - **Galeria de Curso** (`/upload/course-gallery`) - Fotos adicionais do curso
+    - **Capa de Módulo** (`/upload/module-cover`) - Capa do módulo
+    - **Galeria de Módulo** (`/upload/module-gallery`) - Fotos do módulo
+    - **Capa de Aula** (`/upload/lesson-cover`) - Capa da aula
+    - **Galeria de Aula** (`/upload/lesson-gallery`) - Fotos da aula
+    - **Fotos Gerais** (`/upload/general-photos`) - Uso flexível
+
+    ### **Fluxo de Trabalho com Uploads:**
+    1. **Upload do arquivo** usando um dos endpoints de upload
+    2. **Receba a URL** retornada pela API
+    3. **Use a URL** nos campos apropriados (capaUrl, videoIntroUrl, etc.)
+    4. **Arquivos são organizados** automaticamente em pastas específicas
+
+    ### **Estrutura de Pastas no Storage:**
+    ```
+    treine-me/
+    ├── profile-images/     # Fotos de perfil
+    ├── course-covers/      # Capas de cursos
+    ├── course-gallery/     # Galeria de fotos do curso
+    ├── course-videos/      # Vídeos de aulas
+    ├── course-files/       # Materiais complementares
+    ├── module-covers/      # Capas de módulos
+    ├── module-gallery/     # Galeria de fotos do módulo
+    ├── lesson-covers/      # Capas de aulas
+    ├── lesson-gallery/     # Galeria de fotos da aula
+    ├── general-photos/     # Fotos de uso geral
+    └── ebooks/            # E-books em PDF
+    ```
+
+    ### **Exemplo de Uso:**
+    ```bash
+    # 1. Upload da capa do curso
+    curl -X POST "http://localhost:8080/upload/course-cover" \
+      -H "Authorization: Bearer SEU_TOKEN" \
+      -F "file=@capa_curso.jpg" \
+      -F "produtoId=123e4567-e89b-12d3-a456-426614174000"
+    
+    # Resposta: {"success": true, "data": {"url": "https://..."}}
+    
+    # 2. Criar produto usando a URL da capa
+    curl -X POST "http://localhost:8080/professores/me/produtos" \
+      -H "Authorization: Bearer SEU_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{"titulo": "Curso JS", "descricao": "...", "tipo": "CURSO", "capaUrl": "https://..."}'
     ```
   version: 1.0.0
   contact:
@@ -53,7 +114,11 @@ tags:
   - name: Alunos
     description: Operações específicas para alunos
   - name: Upload
-    description: Endpoints de upload de arquivos
+    description: Endpoints de upload de arquivos (fotos, vídeos, documentos)
+  - name: Upload Contextual
+    description: Endpoints específicos de upload por contexto (cursos, módulos, aulas)
+  - name: Módulos e Aulas
+    description: Gestão de estrutura de conteúdo dos cursos
   - name: Health
     description: Verificação de status da API
 
@@ -126,6 +191,137 @@ components:
         - PENDENTE
         - EXPIRADA
       description: Status da inscrição do aluno
+
+    TipoConteudo:
+      type: string
+      enum:
+        - VIDEO
+        - TEXTO
+        - ATIVIDADE
+      description: Tipo de conteúdo da aula
+
+    ModuloCreateRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+          example: "Introdução ao JavaScript"
+          minLength: 1
+        descricao:
+          type: string
+          example: "Conceitos básicos e fundamentos da linguagem"
+          minLength: 1
+        ordem:
+          type: integer
+          example: 1
+          minimum: 1
+      required:
+        - titulo
+        - descricao
+        - ordem
+
+    ModuloResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descricao:
+          type: string
+        ordem:
+          type: integer
+        produtoId:
+          type: string
+          format: uuid
+        aulas:
+          type: array
+          items:
+            $ref: '#/components/schemas/AulaResponse'
+      required:
+        - id
+        - titulo
+        - descricao
+        - ordem
+        - produtoId
+
+    AulaCreateRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+          example: "Variáveis e Tipos de Dados"
+          minLength: 1
+        descricao:
+          type: string
+          example: "Aprenda sobre declaração de variáveis e tipos primitivos"
+          minLength: 1
+        ordem:
+          type: integer
+          example: 1
+          minimum: 1
+        tipoConteudo:
+          $ref: '#/components/schemas/TipoConteudo'
+      required:
+        - titulo
+        - descricao
+        - ordem
+        - tipoConteudo
+
+    AulaResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descricao:
+          type: string
+        ordem:
+          type: integer
+        tipoConteudo:
+          $ref: '#/components/schemas/TipoConteudo'
+        moduloId:
+          type: string
+          format: uuid
+        conteudo:
+          $ref: '#/components/schemas/ConteudoResponse'
+      required:
+        - id
+        - titulo
+        - descricao
+        - ordem
+        - tipoConteudo
+        - moduloId
+
+    ConteudoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        urlVideo:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://exemplo.com/video.mp4"
+        textoMarkdown:
+          type: string
+          nullable: true
+          example: "# Título da Aula\n\nConteúdo em Markdown..."
+        arquivoUrl:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://exemplo.com/arquivo.pdf"
+        aulaId:
+          type: string
+          format: uuid
+      required:
+        - id
+        - aulaId
 
     LoginRequest:
       type: object
@@ -1328,7 +1524,18 @@ paths:
   /upload/profile-image:
     post:
       summary: Upload de imagem de perfil
-      description: Upload de imagem de perfil para Cloudflare R2
+      description: |
+        Upload de imagem de perfil para usuários (professores e alunos).
+        
+        **Tipos de arquivo aceitos:**
+        - JPEG (.jpg, .jpeg)
+        - PNG (.png)
+        - WebP (.webp)
+        
+        **Limitações:**
+        - Tamanho máximo: 100MB
+        - Arquivo será renomeado automaticamente para evitar conflitos
+        - URL será retornada para uso nos perfis
       tags:
         - Upload
       security:
@@ -1344,6 +1551,11 @@ paths:
                   type: string
                   format: binary
                   description: Arquivo de imagem (JPEG, PNG, WebP)
+            examples:
+              profile_image:
+                summary: Exemplo de upload de foto de perfil
+                value:
+                  file: "foto_perfil.jpg"
       responses:
         '200':
           description: Upload realizado com sucesso
@@ -1356,19 +1568,58 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/FileUploadResponse'
+              examples:
+                success:
+                  summary: Upload bem-sucedido
+                  value:
+                    success: true
+                    data:
+                      fileName: "profile_1703123456_abc123.jpg"
+                      url: "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/profile-images/profile_1703123456_abc123.jpg"
+                      contentType: "image/jpeg"
+                      size: 1024000
         '400':
           description: Arquivo inválido ou muito grande
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
+              examples:
+                invalid_file:
+                  summary: Arquivo inválido
+                  value:
+                    success: false
+                    error:
+                      message: "Tipo de arquivo não permitido. Tipos aceitos: image/jpeg, image/png, image/webp"
+                file_too_large:
+                  summary: Arquivo muito grande
+                  value:
+                    success: false
+                    error:
+                      message: "Arquivo muito grande. Tamanho máximo: 100MB"
 
   /upload/course-cover:
     post:
       summary: Upload de capa de curso
-      description: Upload de imagem de capa para cursos
+      description: |
+        Upload de imagem de capa para cursos e produtos.
+        
+        **Tipos de arquivo aceitos:**
+        - JPEG (.jpg, .jpeg)
+        - PNG (.png)
+        - WebP (.webp)
+        
+        **Limitações:**
+        - Tamanho máximo: 100MB
+        - Arquivo será renomeado automaticamente para evitar conflitos
+        - URL será retornada para uso nas capas dos cursos
+        - Recomendado: 1200x630px para melhor visualização
+        
+        **Observações:**
+        - É obrigatório informar o ID do produto/curso (`produtoId`) no corpo do `multipart/form-data` ou via query string.
       tags:
         - Upload
+        - Upload Contextual
       security:
         - BearerAuth: []
       requestBody:
@@ -1382,6 +1633,19 @@ paths:
                   type: string
                   format: binary
                   description: Arquivo de imagem (JPEG, PNG, WebP)
+                produtoId:
+                  type: string
+                  format: uuid
+                  description: ID do produto/curso ao qual a capa pertence
+              required:
+                - file
+                - produtoId
+            examples:
+              course_cover:
+                summary: Exemplo de upload de capa de curso
+                value:
+                  file: "capa_curso.jpg"
+                  produtoId: "123e4567-e89b-12d3-a456-426614174000"
       responses:
         '200':
           description: Upload realizado com sucesso
@@ -1394,11 +1658,33 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/FileUploadResponse'
+              examples:
+                success:
+                  summary: Upload bem-sucedido
+                  value:
+                    success: true
+                    data:
+                      fileName: "course_cover_1703123456_def456.jpg"
+                      url: "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-covers/course_cover_1703123456_def456.jpg"
+                      contentType: "image/jpeg"
+                      size: 2048000
 
   /upload/video:
     post:
       summary: Upload de vídeo
-      description: Upload de vídeos para aulas
+      description: |
+        Upload de vídeos para aulas e conteúdo de cursos.
+        
+        **Tipos de arquivo aceitos:**
+        - MP4 (.mp4)
+        - WebM (.webm)
+        - QuickTime (.mov)
+        
+        **Limitações:**
+        - Tamanho máximo: 100MB
+        - Arquivo será renomeado automaticamente para evitar conflitos
+        - URL será retornada para uso nas aulas
+        - Recomendado: MP4 com codec H.264 para melhor compatibilidade
       tags:
         - Upload
       security:
@@ -1414,6 +1700,11 @@ paths:
                   type: string
                   format: binary
                   description: Arquivo de vídeo (MP4, WebM, QuickTime)
+            examples:
+              lesson_video:
+                summary: Exemplo de upload de vídeo de aula
+                value:
+                  file: "aula_introducao.mp4"
       responses:
         '200':
           description: Upload realizado com sucesso
@@ -1426,11 +1717,33 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/FileUploadResponse'
+              examples:
+                success:
+                  summary: Upload bem-sucedido
+                  value:
+                    success: true
+                    data:
+                      fileName: "video_1703123456_ghi789.mp4"
+                      url: "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-videos/video_1703123456_ghi789.mp4"
+                      contentType: "video/mp4"
+                      size: 52428800
 
   /upload/document:
     post:
       summary: Upload de documento
-      description: Upload de documentos e e-books
+      description: |
+        Upload de documentos, e-books e materiais complementares para cursos.
+        
+        **Tipos de arquivo aceitos:**
+        - PDF (.pdf) - Para e-books e materiais de leitura
+        - DOC (.doc) - Documentos do Microsoft Word
+        - DOCX (.docx) - Documentos do Microsoft Word (formato moderno)
+        
+        **Limitações:**
+        - Tamanho máximo: 100MB
+        - Arquivo será renomeado automaticamente para evitar conflitos
+        - URL será retornada para uso nos materiais do curso
+        - PDFs são armazenados na pasta "ebooks", outros na pasta "course-files"
       tags:
         - Upload
       security:
@@ -1446,6 +1759,264 @@ paths:
                   type: string
                   format: binary
                   description: Arquivo de documento (PDF, DOC, DOCX)
+            examples:
+              ebook_pdf:
+                summary: Exemplo de upload de e-book PDF
+                value:
+                  file: "guia_javascript.pdf"
+              course_material:
+                summary: Exemplo de upload de material do curso
+                value:
+                  file: "exercicios.docx"
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+              examples:
+                success_pdf:
+                  summary: Upload de PDF bem-sucedido
+                  value:
+                    success: true
+                    data:
+                      fileName: "ebook_1703123456_jkl012.pdf"
+                      url: "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/ebooks/ebook_1703123456_jkl012.pdf"
+                      contentType: "application/pdf"
+                      size: 10485760
+                success_doc:
+                  summary: Upload de DOC bem-sucedido
+                  value:
+                    success: true
+                    data:
+                      fileName: "material_1703123456_mno345.docx"
+                      url: "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com/treine-me/course-files/material_1703123456_mno345.docx"
+                      contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      size: 2097152
+
+  # ========== UPLOAD CONTEXTUAL ==========
+
+  /upload/course-gallery:
+    post:
+      summary: Upload de galeria de curso
+      description: |
+        Upload de fotos para galeria do curso.
+        
+        **Características:**
+        - Armazenado em pasta: `course-gallery/`
+        - Múltiplas fotos permitidas
+        - Organização automática por curso
+      tags:
+        - Upload Contextual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem para galeria
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+
+  /upload/module-cover:
+    post:
+      summary: Upload de capa de módulo
+      description: |
+        Upload específico para capa de módulo.
+        
+        **Características:**
+        - Armazenado em pasta: `module-covers/`
+        - Validação otimizada para módulos
+        - Organização hierárquica
+      tags:
+        - Upload Contextual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem da capa do módulo
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+
+  /upload/module-gallery:
+    post:
+      summary: Upload de galeria de módulo
+      description: |
+        Upload de fotos para galeria do módulo.
+        
+        **Características:**
+        - Armazenado em pasta: `module-gallery/`
+        - Fotos complementares do módulo
+        - Organização por módulo
+      tags:
+        - Upload Contextual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem para galeria do módulo
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+
+  /upload/lesson-cover:
+    post:
+      summary: Upload de capa de aula
+      description: |
+        Upload específico para capa de aula.
+        
+        **Características:**
+        - Armazenado em pasta: `lesson-covers/`
+        - Validação para aulas
+        - Organização por aula
+      tags:
+        - Upload Contextual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem da capa da aula
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+
+  /upload/lesson-gallery:
+    post:
+      summary: Upload de galeria de aula
+      description: |
+        Upload de fotos para galeria da aula.
+        
+        **Características:**
+        - Armazenado em pasta: `lesson-gallery/`
+        - Fotos complementares da aula
+        - Organização por aula
+      tags:
+        - Upload Contextual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem para galeria da aula
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FileUploadResponse'
+
+  /upload/general-photos:
+    post:
+      summary: Upload de fotos gerais
+      description: |
+        Upload de fotos para uso geral na plataforma.
+        
+        **Características:**
+        - Armazenado em pasta: `general-photos/`
+        - Uso flexível
+        - Organização geral
+      tags:
+        - Upload Contextual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imagem para uso geral
       responses:
         '200':
           description: Upload realizado com sucesso

@@ -29,7 +29,7 @@ fun CursosListScreen(
             iconName = "person_add",
             title = { Text("Cadastrar Curso") },
             content = {
-                CursoFormScreen(null, onDone = { showCreate = false })
+                CursoTabsScreen(null, onDone = { showCreate = false })
             },
             confirmButton = {
                 TextButton(onClick = {

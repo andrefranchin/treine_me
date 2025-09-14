@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version libs.versions.kotlin.get()
 }
 
 kotlin {
@@ -81,6 +81,10 @@ kotlin {
             // Logging
             implementation("io.ktor:ktor-client-logging:${ktor_version}")
 
+            // FileKit for KMP file picking/dialogs (JS/Wasm supported)
+            implementation("io.github.vinceglb:filekit-core:0.11.0")
+            implementation("io.github.vinceglb:filekit-dialogs:0.11.0")
+            implementation("io.github.vinceglb:filekit-dialogs-compose:0.11.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

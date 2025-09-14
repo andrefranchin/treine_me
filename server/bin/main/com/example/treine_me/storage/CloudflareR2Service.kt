@@ -23,11 +23,13 @@ class CloudflareR2Service : StorageService {
     
     private val client = HttpClient(CIO)
     
-    // Configurações do R2 - em produção, usar variáveis de ambiente
-    private val baseUrl = "https://24be5a76d99e172619714a8eb94b63d9.r2.cloudflarestorage.com"
+    // Configurações do R2 - hardcoded a pedido do usuário
+    private val accountId = "24be5a76d99e172619714a8eb94b63d9"
+    private val baseUrl = "https://$accountId.r2.cloudflarestorage.com"
     private val bucketName = "treine-me"
-    private val accessKeyId = System.getenv("R2_ACCESS_KEY_ID") ?: ""
-    private val secretAccessKey = System.getenv("R2_SECRET_ACCESS_KEY") ?: ""
+    private val publicUrl = "https://pub-c6a5b3601e18469b8fd1c2631bb528f7.r2.dev"
+    private val accessKeyId = "d29b08824781d62ae302c1cce0dc973c"
+    private val secretAccessKey = "334c44d6c02c4fe47cc572b8131c2e37df42a760aec011d8990db32bab6fd243"
     private val region = "auto" // R2 usa "auto" como região padrão
     
     override suspend fun uploadFile(
@@ -37,7 +39,8 @@ class CloudflareR2Service : StorageService {
         folder: String
     ): UploadResult = withContext(Dispatchers.IO) {
         try {
-            val key = if (folder.isNotEmpty()) "$folder/$fileName" else fileName
+            // Para R2 (path-style), a URL deve incluir o bucket no caminho
+            val key = if (folder.isNotEmpty()) "$bucketName/$folder/$fileName" else "$bucketName/$fileName"
             val url = "$baseUrl/$key"
             
             val timestamp = Instant.now().atOffset(ZoneOffset.UTC)
@@ -47,7 +50,7 @@ class CloudflareR2Service : StorageService {
             val fileBytes = inputStream.readBytes()
             
             val headers = mutableMapOf<String, String>()
-            headers["Host"] = baseUrl.removePrefix("https://")
+            headers["Host"] = "$accountId.r2.cloudflarestorage.com"
             headers["Content-Type"] = contentType
             headers["Content-Length"] = fileBytes.size.toString()
             headers["X-Amz-Date"] = amzDate
@@ -67,14 +70,25 @@ class CloudflareR2Service : StorageService {
                 UploadResult(
                     success = true,
                     fileName = fileName,
-                    url = "$baseUrl/$key"
+                    // Retornar URL pública para consumo no app
+                    url = "$publicUrl/" + key.removePrefix("$bucketName/")
                 )
             } else {
+                val body = response.bodyAsText()
+                val status = response.status
+                val reason = status.description
+                val detailed = buildString {
+                    append("Erro no upload: ")
+                    append(status.value).append(" ").append(reason)
+                    if (body.isNotBlank()) {
+                        append(" | body: ").append(body.take(500))
+                    }
+                }
                 UploadResult(
                     success = false,
                     fileName = fileName,
                     url = "",
-                    message = "Erro no upload: ${response.status}"
+                    message = detailed
                 )
             }
         } catch (e: Exception) {
@@ -89,7 +103,7 @@ class CloudflareR2Service : StorageService {
     
     override suspend fun deleteFile(fileName: String, folder: String): Boolean = withContext(Dispatchers.IO) {
         try {
-            val key = if (folder.isNotEmpty()) "$folder/$fileName" else fileName
+            val key = if (folder.isNotEmpty()) "$bucketName/$folder/$fileName" else "$bucketName/$fileName"
             val url = "$baseUrl/$key"
             
             val timestamp = Instant.now().atOffset(ZoneOffset.UTC)
@@ -97,7 +111,7 @@ class CloudflareR2Service : StorageService {
             val amzDate = timestamp.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"))
             
             val headers = mutableMapOf<String, String>()
-            headers["Host"] = baseUrl.removePrefix("https://")
+            headers["Host"] = "$accountId.r2.cloudflarestorage.com"
             headers["X-Amz-Date"] = amzDate
             headers["X-Amz-Content-Sha256"] = sha256Hash("")
             
@@ -118,7 +132,7 @@ class CloudflareR2Service : StorageService {
     
     override suspend fun getFileUrl(fileName: String, folder: String): String {
         val key = if (folder.isNotEmpty()) "$folder/$fileName" else fileName
-        return "$baseUrl/$key"
+        return "$publicUrl/$key"
     }
     
     override suspend fun generatePresignedUrl(

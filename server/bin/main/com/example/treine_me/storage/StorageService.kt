@@ -33,7 +33,13 @@ data class UploadResult(
 enum class StorageFolder(val path: String) {
     PROFILE_IMAGES("profile-images"),
     COURSE_COVERS("course-covers"),
+    COURSE_GALLERY("course-gallery"),
     COURSE_VIDEOS("course-videos"),
     COURSE_FILES("course-files"),
+    MODULE_COVERS("module-covers"),
+    MODULE_GALLERY("module-gallery"),
+    LESSON_COVERS("lesson-covers"),
+    LESSON_GALLERY("lesson-gallery"),
+    GENERAL_PHOTOS("general-photos"),
     EBOOKS("ebooks")
 }

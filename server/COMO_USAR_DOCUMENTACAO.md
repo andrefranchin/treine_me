@@ -60,6 +60,30 @@ curl -X POST "http://localhost:8080/auth/login" \
   }'
 ```
 
+## 📁 **Sistema de Upload de Arquivos**
+
+A documentação inclui endpoints completos para upload de arquivos:
+
+### **Endpoints de Upload Disponíveis:**
+- **`/upload/profile-image`** - Fotos de perfil (JPEG, PNG, WebP)
+- **`/upload/course-cover`** - Capas de cursos (JPEG, PNG, WebP)
+- **`/upload/video`** - Vídeos de aulas (MP4, WebM, QuickTime)
+- **`/upload/document`** - Documentos e e-books (PDF, DOC, DOCX)
+
+### **Características:**
+- ✅ Integração com Cloudflare R2
+- ✅ Validação de tipos de arquivo
+- ✅ Limite de 100MB por arquivo
+- ✅ Renomeação automática
+- ✅ Organização em pastas específicas
+
+## 📚 **Estrutura de Conteúdo**
+
+A documentação inclui schemas para:
+- **Módulos** - Organização hierárquica de conteúdo
+- **Aulas** - Unidades de aprendizado
+- **Conteúdo** - Vídeos, textos e arquivos das aulas
+
 ## 📝 Próximos Endpoints
 
 A documentação será atualizada automaticamente conforme você implementar:

@@ -17,6 +17,16 @@ class FileUploadService(private val storageService: StorageService) {
         inputStream: InputStream,
         fileSizeBytes: Long
     ): UploadResult {
+        return uploadImage(fileName, contentType, inputStream, fileSizeBytes, StorageFolder.PROFILE_IMAGES.path)
+    }
+    
+    suspend fun uploadImage(
+        fileName: String,
+        contentType: String,
+        inputStream: InputStream,
+        fileSizeBytes: Long,
+        folder: String
+    ): UploadResult {
         validateImageUpload(contentType, fileSizeBytes)
         
         val sanitizedFileName = sanitizeFileName(fileName)
@@ -26,7 +36,7 @@ class FileUploadService(private val storageService: StorageService) {
             fileName = uniqueFileName,
             contentType = contentType,
             inputStream = inputStream,
-            folder = StorageFolder.PROFILE_IMAGES.path
+            folder = folder
         )
     }
     
@@ -124,11 +134,17 @@ class FileUploadService(private val storageService: StorageService) {
     
     private fun validateImageUpload(contentType: String, fileSizeBytes: Long) {
         if (contentType !in Constants.ALLOWED_IMAGE_TYPES) {
-            throw ValidationException("Tipo de arquivo não permitido. Tipos aceitos: ${Constants.ALLOWED_IMAGE_TYPES.joinToString(", ")}")
+            throw ValidationException(
+                message = "Tipo de arquivo não permitido. Tipos aceitos: ${Constants.ALLOWED_IMAGE_TYPES.joinToString(", ")}",
+                field = "file"
+            )
         }
         
         if (fileSizeBytes > Constants.MAX_FILE_SIZE) {
-            throw ValidationException("Arquivo muito grande. Tamanho máximo: ${Constants.MAX_FILE_SIZE / 1024 / 1024}MB")
+            throw ValidationException(
+                message = "Arquivo muito grande. Tamanho máximo: ${Constants.MAX_FILE_SIZE / 1024 / 1024}MB",
+                field = "file"
+            )
         }
     }
     

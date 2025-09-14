@@ -26,6 +26,9 @@ http://localhost:8080/openapi
 
 ### Endpoints Documentados
 - **Authentication**: Login e registro de professores e alunos
+- **Admin**: Gestão de professores pelo administrador
+- **Professores**: CRUD de planos, produtos e atribuição de alunos
+- **Upload**: Sistema completo de upload de arquivos (fotos, vídeos, documentos)
 - **Health Check**: Verificação de status da API
 
 ### Informações Incluídas
@@ -96,14 +99,31 @@ Para endpoints protegidos:
 3. No Swagger UI, clique em "Authorize" e cole o token
 4. Ou adicione o header: `Authorization: Bearer SEU_TOKEN`
 
+## 📁 Sistema de Upload de Arquivos
+
+A documentação inclui endpoints completos para upload de arquivos:
+
+### **Endpoints de Upload:**
+- **`/upload/profile-image`** - Fotos de perfil (JPEG, PNG, WebP)
+- **`/upload/course-cover`** - Capas de cursos (JPEG, PNG, WebP)  
+- **`/upload/video`** - Vídeos de aulas (MP4, WebM, QuickTime)
+- **`/upload/document`** - Documentos e e-books (PDF, DOC, DOCX)
+
+### **Características:**
+- ✅ Integração com Cloudflare R2
+- ✅ Validação de tipos de arquivo
+- ✅ Limite de 100MB por arquivo
+- ✅ Renomeação automática para evitar conflitos
+- ✅ Organização em pastas específicas
+- ✅ URLs públicas para acesso direto
+
 ## 📚 Próximos Passos
 
 A documentação será expandida conforme novos endpoints forem implementados:
-- Gestão de planos
-- Produtos (cursos, e-books)
-- Módulos e aulas
+- Gestão de módulos e aulas
 - Inscrições de alunos
-- Upload de arquivos
+- Progresso do aluno
+- Relatórios e analytics
 
 ## 🐛 Problemas Comuns
 

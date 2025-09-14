@@ -1,6 +1,7 @@
 package com.example.treine_me.routes
 
 import com.example.treine_me.dto.ApiResponse
+import com.example.treine_me.exceptions.ValidationException
 import com.example.treine_me.services.FileUploadResponse
 import com.example.treine_me.services.FileUploadService
 import com.example.treine_me.storage.CloudflareR2Service
@@ -59,47 +60,7 @@ fun Route.fileUploadRoutes() {
                 }
             }
             
-            post("/course-cover") {
-                val multipart = call.receiveMultipart()
-                var fileName = ""
-                var contentType = ""
-                var fileBytes: ByteArray? = null
-                
-                multipart.forEachPart { part ->
-                    when (part) {
-                        is PartData.FileItem -> {
-                            fileName = part.originalFileName ?: "cover"
-                            contentType = part.contentType?.toString() ?: "application/octet-stream"
-                            fileBytes = part.streamProvider().readBytes()
-                        }
-                        else -> {}
-                    }
-                    part.dispose()
-                }
-                
-                if (fileBytes == null) {
-                    return@post call.respond(ApiResponse.error("Nenhum arquivo foi enviado"))
-                }
-                
-                val result = fileUploadService.uploadCourseCover(
-                    fileName = fileName,
-                    contentType = contentType,
-                    inputStream = fileBytes!!.inputStream(),
-                    fileSizeBytes = fileBytes!!.size.toLong()
-                )
-                
-                if (result.success) {
-                    val response = FileUploadResponse(
-                        fileName = result.fileName,
-                        url = result.url,
-                        contentType = contentType,
-                        size = fileBytes!!.size.toLong()
-                    )
-                    call.respond(ApiResponse.success(response))
-                } else {
-                    call.respond(ApiResponse.error(result.message ?: "Erro no upload"))
-                }
-            }
+            // Rota "/upload/course-cover" removida aqui para evitar duplicidade.
             
             post("/video") {
                 val multipart = call.receiveMultipart()
