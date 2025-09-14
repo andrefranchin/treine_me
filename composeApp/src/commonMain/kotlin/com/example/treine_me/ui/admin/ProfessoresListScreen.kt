@@ -25,13 +25,7 @@ fun ProfessoresListScreen(
 ) {
     var list by remember { mutableStateOf<List<ProfessorResponse>>(emptyList()) }
     var page by remember { mutableStateOf(1) }
-    var showCreate by remember { mutableStateOf(false) }
-    var nome by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
-    var foto by remember { mutableStateOf("") }
-    val scope = rememberCoroutineScope()
+    
 
     LaunchedEffect(page) {
         val res = repo.list(page = page, size = 20)
@@ -41,7 +35,7 @@ fun ProfessoresListScreen(
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text("Professores")
-            Button(onClick = { showCreate = true }) { Text("Novo") }
+            Button(onClick = { onCreate() }) { Text("Novo") }
         }
         Spacer(Modifier.height(8.dp))
         
