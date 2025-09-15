@@ -60,6 +60,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("io.ktor:ktor-client-okhttp:${ktor_version}")
+            implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -85,6 +87,10 @@ kotlin {
             implementation("io.github.vinceglb:filekit-core:0.11.0")
             implementation("io.github.vinceglb:filekit-dialogs:0.11.0")
             implementation("io.github.vinceglb:filekit-dialogs-compose:0.11.0")
+
+            // Images (Compose Multiplatform) - Coil
+            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

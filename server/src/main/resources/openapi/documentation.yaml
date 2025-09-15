@@ -772,6 +772,51 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
 
+  /auth/professor/login:
+    post:
+      summary: Login de professor
+      description: |
+        Autentica especificamente um professor e retorna um token JWT.
+        Use este endpoint quando desejar garantir que o login seja somente de professores.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              professor:
+                summary: Exemplo de login de professor
+                value:
+                  email: "dedefranchin@gmail.com"
+                  senha: "bebaleite"
+      responses:
+        '200':
+          description: Login de professor realizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Dados de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
   /auth/register/professor:
     post:
       summary: Registro de professor

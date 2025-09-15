@@ -17,11 +17,17 @@ fun ProfessorRoot() {
                     when (route) {
                         is ProfessorRoute.Cursos -> CursosListScreen(
                             onCreate = { navigate(ProfessorRoute.CursoEdit(null)) },
-                            onEdit = { id -> navigate(ProfessorRoute.CursoEdit(id)) }
+                            onEdit = { id -> navigate(ProfessorRoute.CursoEdit(id)) },
+                            onOpen = { id -> navigate(ProfessorRoute.CursoDetail(id)) }
                         )
-                        is ProfessorRoute.CursoEdit -> CursoFormScreen(
+                        is ProfessorRoute.CursoEdit -> CursoTabsScreen(
                             id = route.id,
                             onDone = { navigate(ProfessorRoute.Cursos) }
+                        )
+                        is ProfessorRoute.CursoDetail -> CursoDetailScreen(
+                            id = route.id,
+                            onBack = { navigate(ProfessorRoute.Cursos) },
+                            onEdit = { navigate(ProfessorRoute.CursoEdit(route.id)) }
                         )
                         is ProfessorRoute.Alunos -> AlunosListScreen()
                         is ProfessorRoute.Planos -> PlanosListScreen(

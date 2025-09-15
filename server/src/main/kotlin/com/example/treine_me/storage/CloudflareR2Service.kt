@@ -27,7 +27,7 @@ class CloudflareR2Service : StorageService {
     private val accountId = "24be5a76d99e172619714a8eb94b63d9"
     private val baseUrl = "https://$accountId.r2.cloudflarestorage.com"
     private val bucketName = "treine-me"
-    private val publicUrl = "https://pub-c6a5b3601e18469b8fd1c2631bb528f7.r2.dev"
+    private val publicUrl = "https://pub-ec760f7502e240c3b188fbc68a31c8b9.r2.dev"
     private val accessKeyId = "d29b08824781d62ae302c1cce0dc973c"
     private val secretAccessKey = "334c44d6c02c4fe47cc572b8131c2e37df42a760aec011d8990db32bab6fd243"
     private val region = "auto" // R2 usa "auto" como região padrão
