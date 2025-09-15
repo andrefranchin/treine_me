@@ -76,9 +76,18 @@ fun CursoDetailScreen(
                             contentDescription = "Capa do curso"
                         )
                     }
-                    // Título e descrição
-                    Text(c.titulo.trim(), style = MaterialTheme.typography.headlineSmall)
-                    Text(c.descricao, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                   
+                    Text(
+                        text = "Título: ${c.titulo.trim()}",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    
+                    Text(
+                        text = "Descrição: ${c.descricao}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    
                     // Metadados
                     HorizontalDivider()
                     // Placeholder para módulos
