@@ -26,6 +26,26 @@ fun CursoFormScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isSaving by remember { mutableStateOf(false) }
 
+    // Quando em modo edição, buscar dados atuais do curso pelo id e preencher o formulário
+    LaunchedEffect(id) {
+        if (id != null) {
+            errorMessage = null
+            try {
+                val resp = produtoService.getProduto(id)
+                if (resp.success) {
+                    resp.data?.let { produto ->
+                        titulo = produto.titulo
+                        descricao = produto.descricao
+                    }
+                } else {
+                    errorMessage = resp.error?.message ?: "Erro ao carregar curso"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.message ?: "Erro inesperado"
+            }
+        }
+    }
+
     Column(Modifier.fillMaxSize().padding(12.dp)) {
         if (errorMessage != null) {
             Text(errorMessage!!, color = androidx.compose.ui.graphics.Color.Red)

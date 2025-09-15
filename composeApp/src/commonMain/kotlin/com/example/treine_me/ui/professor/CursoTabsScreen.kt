@@ -11,6 +11,8 @@ import com.example.treine_me.services.ClientFileUploadService
 import com.example.treine_me.ui.util.ShowToast
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.launch
+import com.example.treine_me.services.ProdutoService
+import com.example.treine_me.ui.controls.AppNetworkImage
 
 @Composable
 fun CursoTabsScreen(
@@ -82,8 +84,23 @@ fun CursoPersonalizacaoScreen(
 ) {
     val scope = rememberCoroutineScope()
     val uploadService = remember { ClientFileUploadService() }
+    val produtoService = remember { ProdutoService() }
     var isUploading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    // Em modo edição, buscar capa atual do curso (se ainda não carregada)
+    LaunchedEffect(cursoId) {
+        if (cursoId != null && cursoCover == null) {
+            try {
+                val resp = produtoService.getProduto(cursoId)
+                if (resp.success) {
+                    onCoverChanged(resp.data?.capaUrl)
+                }
+            } catch (_: Exception) {
+                // Silenciar aqui; feedback não crítico
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -146,13 +163,20 @@ fun CursoPersonalizacaoScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
                         text = "Capa Selecionada",
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(Modifier.height(8.dp))
+                    AppNetworkImage(
+                        url = cursoCover,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp),
+                        contentDescription = "Capa do curso"
+                    )
                     Text(
                         text = "URL: $cursoCover",
                         style = MaterialTheme.typography.bodySmall,
