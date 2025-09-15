@@ -81,10 +81,6 @@ fun CursoDetailScreen(
                     Text(c.descricao, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     // Metadados
                     HorizontalDivider()
-                    Text("Professor: ${c.professorNome}", style = MaterialTheme.typography.bodySmall)
-                    Text("ID: ${c.id}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Tipo: ${c.tipo}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    HorizontalDivider()
                     // Placeholder para módulos
                     Text("Módulos", style = MaterialTheme.typography.titleMedium)
                     Text("(Em breve) Listar e gerenciar módulos deste curso.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
