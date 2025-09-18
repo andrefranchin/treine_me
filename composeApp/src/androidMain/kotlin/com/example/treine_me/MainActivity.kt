@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         FileKit.init(this)
 
         // Ensure Android emulator reaches local dev server
-        ApiConfig.baseUrl = "http://192.168.1.172:8080"
+        ApiConfig.baseUrl = "http://192.168.1.108:8080"
 
         setContent {
             App()

@@ -14,6 +14,7 @@ object Aulas : BaseTable("aulas") {
     val descricao = text("descricao")
     val ordem = integer("ordem")
     val tipoConteudo = enumerationByName<TipoConteudo>("tipo_conteudo", 20)
+    val planoId = reference("plano_id", Planos, onDelete = ReferenceOption.RESTRICT)
     val moduloId = reference("modulo_id", Modulos, onDelete = ReferenceOption.CASCADE)
 }
 
@@ -24,6 +25,7 @@ class AulaEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     var descricao by Aulas.descricao
     var ordem by Aulas.ordem
     var tipoConteudo by Aulas.tipoConteudo
+    var plano by PlanoEntity referencedOn Aulas.planoId
     var modulo by ModuloEntity referencedOn Aulas.moduloId
     var dtIns by Aulas.dtIns
     var dtUpd by Aulas.dtUpd
@@ -39,6 +41,7 @@ data class Aula(
     val descricao: String,
     val ordem: Int,
     val tipoConteudo: TipoConteudo,
+    val planoId: String,
     val moduloId: String,
     override val dtIns: Instant,
     override val dtUpd: Instant,
@@ -52,7 +55,8 @@ data class AulaCreateRequest(
     val titulo: String,
     val descricao: String,
     val ordem: Int,
-    val tipoConteudo: TipoConteudo
+    val tipoConteudo: TipoConteudo,
+    val planoId: String
 )
 
 @Serializable
@@ -60,7 +64,8 @@ data class AulaUpdateRequest(
     val titulo: String? = null,
     val descricao: String? = null,
     val ordem: Int? = null,
-    val tipoConteudo: TipoConteudo? = null
+    val tipoConteudo: TipoConteudo? = null,
+    val planoId: String? = null
 )
 
 @Serializable
@@ -70,6 +75,7 @@ data class AulaResponse(
     val descricao: String,
     val ordem: Int,
     val tipoConteudo: TipoConteudo,
+    val planoId: String,
     val moduloId: String,
     val conteudo: ConteudoResponse? = null
 )

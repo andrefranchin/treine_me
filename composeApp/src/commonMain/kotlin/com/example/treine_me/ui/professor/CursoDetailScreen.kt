@@ -19,17 +19,22 @@ import com.example.treine_me.services.ProdutoService
 import com.example.treine_me.api.ProdutoResponse
 import androidx.compose.material3.HorizontalDivider
 import com.example.treine_me.ui.controls.AppNetworkImage
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 
 @Composable
 fun CursoDetailScreen(
     id: String,
     onBack: () -> Unit,
-    onEdit: () -> Unit
+    onEdit: () -> Unit,
+    onOpenModulo: (String) -> Unit
 ) {
     val produtoService = remember { ProdutoService() }
     var curso by remember { mutableStateOf<ProdutoResponse?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
+    var showCreateModulo by remember { mutableStateOf(false) }
+    var moduloRefreshSignal by remember { mutableStateOf(0) }
 
     LaunchedEffect(id) {
         isLoading = true
@@ -90,9 +95,47 @@ fun CursoDetailScreen(
                     
                     // Metadados
                     HorizontalDivider()
-                    // Placeholder para módulos
-                    Text("Módulos", style = MaterialTheme.typography.titleMedium)
-                    Text("(Em breve) Listar e gerenciar módulos deste curso.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    // Módulos header com botão de novo módulo
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Módulos", style = MaterialTheme.typography.titleMedium)
+                        Button(onClick = { showCreateModulo = true }) {
+                            Icon(Icons.Default.Add, contentDescription = null)
+                            Spacer(Modifier.width(6.dp))
+                            Text("Novo módulo")
+                        }
+                    }
+
+                    // Lista de módulos do curso
+                    ModuloList(
+                        produtoId = c.id,
+                        refreshSignal = moduloRefreshSignal,
+                        onOpenModulo = { modulo -> onOpenModulo(modulo.id) }
+                    )
+
+                    if (showCreateModulo) {
+                        AlertDialog(
+                            onDismissRequest = { showCreateModulo = false },
+                            confirmButton = {},
+                            title = { Text("Novo Módulo") },
+                            text = {
+                                Box(Modifier.fillMaxWidth().height(420.dp)) {
+                                    // Conteúdo tabulado similar ao curso
+                                    ModuloTabsScreen(
+                                        produtoId = c.id,
+                                        onDone = { showCreateModulo = false },
+                                        onCreated = { moduloRefreshSignal++ }
+                                    )
+                                }
+                            },
+                            dismissButton = {
+                                Button(onClick = { showCreateModulo = false }) { Text("Fechar") }
+                            }
+                        )
+                    }
                 }
             }
         }

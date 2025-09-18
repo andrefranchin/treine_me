@@ -47,9 +47,20 @@ class ClientFileUploadService {
     suspend fun uploadModuleCover(
         imageBytes: ByteArray,
         fileName: String,
-        contentType: String
+        contentType: String,
+        moduloId: String? = null
     ): ClientUploadResponse {
-        return submitMultipart("/upload/module-cover", imageBytes, fileName, contentType)
+        val extra = if (moduloId != null) mapOf("moduloId" to moduloId) else emptyMap()
+        return submitMultipart("/upload/module-cover", imageBytes, fileName, contentType, extra)
+    }
+
+    suspend fun uploadModuleIntroVideo(
+        videoBytes: ByteArray,
+        fileName: String,
+        contentType: String,
+        moduloId: String
+    ): ClientUploadResponse {
+        return submitMultipart("/upload/module-intro-video", videoBytes, fileName, contentType, mapOf("moduloId" to moduloId))
     }
     
     suspend fun uploadLessonCover(

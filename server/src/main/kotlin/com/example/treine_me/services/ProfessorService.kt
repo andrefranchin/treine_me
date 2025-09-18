@@ -458,6 +458,345 @@ class ProfessorService {
         }
     }
     
+    // ========== MÓDULOS ==========
+    
+    fun createModulo(produtoId: String, request: ModuloCreateRequest, professorId: String): ModuloResponse {
+        return transaction {
+            val produto = ProdutoEntity.find { 
+                (Produtos.id eq UUID.fromString(produtoId)) and (Produtos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Produto não encontrado")
+            
+            if (produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para adicionar módulo neste produto")
+            }
+            
+            val now = Clock.System.now()
+            val lastOrder = ModuloEntity.find { 
+                (Modulos.produtoId eq produto.id) and (Modulos.isActive eq true) 
+            }.maxOfOrNull { it.ordem } ?: 0
+            
+            val modulo = ModuloEntity.new {
+                titulo = request.titulo
+                descricao = request.descricao
+                ordem = lastOrder + 1
+                capaUrl = request.capaUrl
+                videoIntroUrl = request.videoIntroUrl
+                this.produto = produto
+                dtIns = now
+                dtUpd = now
+                idUserIns = UUID.fromString(professorId)
+                idUserUpd = UUID.fromString(professorId)
+                isActive = true
+            }
+            
+            ModuloResponse(
+                id = modulo.id.value.toString(),
+                titulo = modulo.titulo,
+                descricao = modulo.descricao,
+                ordem = modulo.ordem,
+                capaUrl = modulo.capaUrl,
+                videoIntroUrl = modulo.videoIntroUrl,
+                produtoId = produto.id.value.toString(),
+                aulas = emptyList()
+            )
+        }
+    }
+    
+    fun listModulosByProduto(produtoId: String, professorId: String): List<ModuloResponse> {
+        return transaction {
+            val produto = ProdutoEntity.find { 
+                (Produtos.id eq UUID.fromString(produtoId)) and (Produtos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Produto não encontrado")
+            if (produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para acessar este produto")
+            }
+            
+            ModuloEntity.find { 
+                (Modulos.produtoId eq produto.id) and (Modulos.isActive eq true) 
+            }.sortedBy { it.ordem }.map { modulo ->
+                ModuloResponse(
+                    id = modulo.id.value.toString(),
+                    titulo = modulo.titulo,
+                    descricao = modulo.descricao,
+                    ordem = modulo.ordem,
+                    capaUrl = modulo.capaUrl,
+                    videoIntroUrl = modulo.videoIntroUrl,
+                    produtoId = produto.id.value.toString(),
+                    aulas = emptyList()
+                )
+            }
+        }
+    }
+    
+    fun updateModulo(moduloId: String, request: ModuloUpdateRequest, professorId: String): ModuloResponse {
+        return transaction {
+            val modulo = ModuloEntity.find { 
+                (Modulos.id eq UUID.fromString(moduloId)) and (Modulos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Módulo não encontrado")
+            if (modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para editar este módulo")
+            }
+            
+            val now = Clock.System.now()
+            request.titulo?.let { modulo.titulo = it }
+            request.descricao?.let { modulo.descricao = it }
+            request.ordem?.let { modulo.ordem = it }
+            request.capaUrl?.let { modulo.capaUrl = it }
+            request.videoIntroUrl?.let { modulo.videoIntroUrl = it }
+            modulo.dtUpd = now
+            modulo.idUserUpd = UUID.fromString(professorId)
+            
+            ModuloResponse(
+                id = modulo.id.value.toString(),
+                titulo = modulo.titulo,
+                descricao = modulo.descricao,
+                ordem = modulo.ordem,
+                capaUrl = modulo.capaUrl,
+                videoIntroUrl = modulo.videoIntroUrl,
+                produtoId = modulo.produto.id.value.toString(),
+                aulas = emptyList()
+            )
+        }
+    }
+    
+    fun deactivateModulo(moduloId: String, professorId: String): Boolean {
+        return transaction {
+            val modulo = ModuloEntity.find { 
+                (Modulos.id eq UUID.fromString(moduloId)) and (Modulos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Módulo não encontrado")
+            if (modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para excluir este módulo")
+            }
+            val now = Clock.System.now()
+            modulo.isActive = false
+            modulo.dtUpd = now
+            modulo.idUserUpd = UUID.fromString(professorId)
+            true
+        }
+    }
+    
+    fun reorderModulos(produtoId: String, moduloIds: List<String>, professorId: String): Boolean {
+        return transaction {
+            val produto = ProdutoEntity.find { 
+                (Produtos.id eq UUID.fromString(produtoId)) and (Produtos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Produto não encontrado")
+            if (produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para editar este produto")
+            }
+            val idSet = moduloIds.map { UUID.fromString(it) }.toSet()
+            val modulos = ModuloEntity.find { (Modulos.produtoId eq produto.id) and (Modulos.isActive eq true) }
+            if (modulos.count().toInt() != idSet.size) {
+                // Permitir reordenar subconjunto? Por simplicidade, exigir lista completa
+                throw ValidationException("A lista de módulos deve conter todos os módulos do produto", "moduloIds")
+            }
+            val now = Clock.System.now()
+            moduloIds.forEachIndexed { index, idStr ->
+                val uuid = UUID.fromString(idStr)
+                val modulo = ModuloEntity.findById(uuid) ?: return@forEachIndexed
+                if (modulo.produto.id != produto.id) {
+                    throw ValidationException("Módulo não pertence ao produto", "moduloIds")
+                }
+                modulo.ordem = index + 1
+                modulo.dtUpd = now
+                modulo.idUserUpd = UUID.fromString(professorId)
+            }
+            true
+        }
+    }
+    
+    // ========== AULAS ==========
+    
+    fun createAula(moduloId: String, request: AulaCreateRequest, professorId: String): AulaResponse {
+        if (request.planoId.isBlank()) {
+            throw ValidationException("planoId é obrigatório", "planoId")
+        }
+        return transaction {
+            val modulo = ModuloEntity.find { 
+                (Modulos.id eq UUID.fromString(moduloId)) and (Modulos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Módulo não encontrado")
+            if (modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para adicionar aula neste módulo")
+            }
+            val plano = PlanoEntity.find { 
+                (Planos.id eq UUID.fromString(request.planoId)) and (Planos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Plano não encontrado")
+            if (plano.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para usar este plano")
+            }
+            val now = Clock.System.now()
+            val lastOrder = AulaEntity.find { 
+                (Aulas.moduloId eq modulo.id) and (Aulas.isActive eq true) 
+            }.maxOfOrNull { it.ordem } ?: 0
+            val aula = AulaEntity.new {
+                titulo = request.titulo
+                descricao = request.descricao
+                ordem = lastOrder + 1
+                tipoConteudo = request.tipoConteudo
+                this.plano = plano
+                this.modulo = modulo
+                dtIns = now
+                dtUpd = now
+                idUserIns = UUID.fromString(professorId)
+                idUserUpd = UUID.fromString(professorId)
+                isActive = true
+            }
+            AulaResponse(
+                id = aula.id.value.toString(),
+                titulo = aula.titulo,
+                descricao = aula.descricao,
+                ordem = aula.ordem,
+                tipoConteudo = aula.tipoConteudo,
+                planoId = plano.id.value.toString(),
+                moduloId = modulo.id.value.toString(),
+                conteudo = null
+            )
+        }
+    }
+    
+    fun listAulasByModulo(moduloId: String, professorId: String): List<AulaResponse> {
+        return transaction {
+            val modulo = ModuloEntity.find { 
+                (Modulos.id eq UUID.fromString(moduloId)) and (Modulos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Módulo não encontrado")
+            if (modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para acessar este módulo")
+            }
+            AulaEntity.find { (Aulas.moduloId eq modulo.id) and (Aulas.isActive eq true) }
+                .sortedBy { it.ordem }
+                .map { aula ->
+                    AulaResponse(
+                        id = aula.id.value.toString(),
+                        titulo = aula.titulo,
+                        descricao = aula.descricao,
+                        ordem = aula.ordem,
+                        tipoConteudo = aula.tipoConteudo,
+                        planoId = aula.plano.id.value.toString(),
+                        moduloId = modulo.id.value.toString(),
+                        conteudo = null
+                    )
+                }
+        }
+    }
+    
+    fun updateAula(aulaId: String, request: AulaUpdateRequest, professorId: String): AulaResponse {
+        return transaction {
+            val aula = AulaEntity.find { (Aulas.id eq UUID.fromString(aulaId)) and (Aulas.isActive eq true) }
+                .firstOrNull() ?: throw NotFoundException("Aula não encontrada")
+            if (aula.modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para editar esta aula")
+            }
+            val now = Clock.System.now()
+            request.titulo?.let { aula.titulo = it }
+            request.descricao?.let { aula.descricao = it }
+            request.ordem?.let { aula.ordem = it }
+            request.tipoConteudo?.let { aula.tipoConteudo = it }
+            request.planoId?.let { pid ->
+                val plano = PlanoEntity.find { 
+                    (Planos.id eq UUID.fromString(pid)) and (Planos.isActive eq true) 
+                }.firstOrNull() ?: throw NotFoundException("Plano não encontrado")
+                if (plano.professor.id.value.toString() != professorId) {
+                    throw ForbiddenException("Você não tem permissão para usar este plano")
+                }
+                aula.plano = plano
+            }
+            aula.dtUpd = now
+            aula.idUserUpd = UUID.fromString(professorId)
+            AulaResponse(
+                id = aula.id.value.toString(),
+                titulo = aula.titulo,
+                descricao = aula.descricao,
+                ordem = aula.ordem,
+                tipoConteudo = aula.tipoConteudo,
+                planoId = aula.plano.id.value.toString(),
+                moduloId = aula.modulo.id.value.toString(),
+                conteudo = null
+            )
+        }
+    }
+    
+    fun deactivateAula(aulaId: String, professorId: String): Boolean {
+        return transaction {
+            val aula = AulaEntity.find { (Aulas.id eq UUID.fromString(aulaId)) and (Aulas.isActive eq true) }
+                .firstOrNull() ?: throw NotFoundException("Aula não encontrada")
+            if (aula.modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para excluir esta aula")
+            }
+            val now = Clock.System.now()
+            aula.isActive = false
+            aula.dtUpd = now
+            aula.idUserUpd = UUID.fromString(professorId)
+            true
+        }
+    }
+    
+    fun reorderAulas(moduloId: String, aulaIds: List<String>, professorId: String): Boolean {
+        return transaction {
+            val modulo = ModuloEntity.find { 
+                (Modulos.id eq UUID.fromString(moduloId)) and (Modulos.isActive eq true) 
+            }.firstOrNull() ?: throw NotFoundException("Módulo não encontrado")
+            if (modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para editar este módulo")
+            }
+            val idSet = aulaIds.map { UUID.fromString(it) }.toSet()
+            val aulas = AulaEntity.find { (Aulas.moduloId eq modulo.id) and (Aulas.isActive eq true) }
+            if (aulas.count().toInt() != idSet.size) {
+                throw ValidationException("A lista de aulas deve conter todas as aulas do módulo", "aulaIds")
+            }
+            val now = Clock.System.now()
+            aulaIds.forEachIndexed { index, idStr ->
+                val uuid = UUID.fromString(idStr)
+                val aula = AulaEntity.findById(uuid) ?: return@forEachIndexed
+                if (aula.modulo.id != modulo.id) {
+                    throw ValidationException("Aula não pertence ao módulo", "aulaIds")
+                }
+                aula.ordem = index + 1
+                aula.dtUpd = now
+                aula.idUserUpd = UUID.fromString(professorId)
+            }
+            true
+        }
+    }
+    
+    fun upsertConteudo(aulaId: String, request: ConteudoUpdateRequest, professorId: String): ConteudoResponse {
+        return transaction {
+            val aula = AulaEntity.find { (Aulas.id eq UUID.fromString(aulaId)) and (Aulas.isActive eq true) }
+                .firstOrNull() ?: throw NotFoundException("Aula não encontrada")
+            if (aula.modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para editar o conteúdo desta aula")
+            }
+            val now = Clock.System.now()
+            val existing = ConteudoEntity.find { (Conteudos.aulaId eq aula.id) and (Conteudos.isActive eq true) }
+                .firstOrNull()
+            val conteudo = if (existing == null) {
+                ConteudoEntity.new {
+                    urlVideo = request.urlVideo
+                    textoMarkdown = request.textoMarkdown
+                    arquivoUrl = request.arquivoUrl
+                    this.aula = aula
+                    dtIns = now
+                    dtUpd = now
+                    idUserIns = UUID.fromString(professorId)
+                    idUserUpd = UUID.fromString(professorId)
+                    isActive = true
+                }
+            } else {
+                request.urlVideo?.let { existing.urlVideo = it }
+                request.textoMarkdown?.let { existing.textoMarkdown = it }
+                request.arquivoUrl?.let { existing.arquivoUrl = it }
+                existing.dtUpd = now
+                existing.idUserUpd = UUID.fromString(professorId)
+                existing
+            }
+            ConteudoResponse(
+                id = conteudo.id.value.toString(),
+                urlVideo = conteudo.urlVideo,
+                textoMarkdown = conteudo.textoMarkdown,
+                arquivoUrl = conteudo.arquivoUrl,
+                aulaId = aula.id.value.toString()
+            )
+        }
+    }
+    
     // ========== UTILITÁRIOS ==========
     
     private fun getProfessorEntity(professorId: String): ProfessorEntity {

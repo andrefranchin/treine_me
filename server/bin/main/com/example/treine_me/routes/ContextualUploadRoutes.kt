@@ -4,6 +4,7 @@ import com.example.treine_me.dto.ApiResponse
 import com.example.treine_me.exceptions.BusinessException
 import com.example.treine_me.exceptions.ValidationException
 import com.example.treine_me.models.ProdutoUpdateRequest
+import com.example.treine_me.models.ModuloUpdateRequest
 import com.example.treine_me.services.FileUploadResponse
 import com.example.treine_me.services.FileUploadService
 import com.example.treine_me.services.ProfessorService
@@ -104,14 +105,66 @@ fun Route.contextualUploadRoutes() {
             
             // ========== MÓDULOS ==========
             
-            // Upload de capa de módulo
+            // Upload de capa de módulo e atualizar modulo.capaUrl
             post("/module-cover") {
-                handleImageUpload(
-                    call = call,
-                    fileUploadService = fileUploadService,
-                    folder = StorageFolder.MODULE_COVERS.path,
-                    description = "Capa do módulo"
+                val multipart = call.receiveMultipart()
+                var fileName = ""
+                var contentType = ""
+                var fileBytes: ByteArray? = null
+                var moduloId: String? = null
+                
+                multipart.forEachPart { part ->
+                    when (part) {
+                        is PartData.FileItem -> {
+                            fileName = part.originalFileName ?: "image"
+                            contentType = part.contentType?.toString() ?: "application/octet-stream"
+                            fileBytes = part.streamProvider().readBytes()
+                        }
+                        is PartData.FormItem -> {
+                            val name = part.name?.lowercase()
+                            if (name == "moduloid" || name == "moduleid") {
+                                moduloId = part.value
+                            }
+                        }
+                        else -> {}
+                    }
+                    part.dispose()
+                }
+                if (fileBytes == null) {
+                    throw ValidationException(message = "Nenhum arquivo foi enviado", field = "file")
+                }
+                if (moduloId.isNullOrBlank()) {
+                    moduloId = call.request.queryParameters["moduloId"] ?: call.request.queryParameters["moduleId"]
+                }
+                if (moduloId.isNullOrBlank()) {
+                    throw ValidationException(message = "ID do módulo é obrigatório", field = "moduloId")
+                }
+                val result = fileUploadService.uploadImage(
+                    fileName = fileName,
+                    contentType = contentType,
+                    inputStream = fileBytes!!.inputStream(),
+                    fileSizeBytes = fileBytes!!.size.toLong(),
+                    folder = StorageFolder.MODULE_COVERS.path
                 )
+                if (result.success) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val professorId = principal!!.payload.getClaim("userId").asString()
+                    val professorService = ProfessorService()
+                    professorService.updateModulo(
+                        moduloId = moduloId!!,
+                        request = ModuloUpdateRequest(capaUrl = result.url),
+                        professorId = professorId
+                    )
+                    val response = FileUploadResponse(
+                        fileName = result.fileName,
+                        url = result.url,
+                        contentType = contentType,
+                        size = fileBytes!!.size.toLong()
+                    )
+                    call.respond(ApiResponse.success(response))
+                } else {
+                    throw BusinessException(result.message ?: "Erro no upload de Capa do módulo")
+                }
             }
             
             // Upload de galeria de módulo
@@ -134,6 +187,67 @@ fun Route.contextualUploadRoutes() {
                     folder = StorageFolder.LESSON_COVERS.path,
                     description = "Capa da aula"
                 )
+            }
+            
+            // Vídeo de introdução do módulo
+            post("/module-intro-video") {
+                val multipart = call.receiveMultipart()
+                var fileName = ""
+                var contentType = ""
+                var fileBytes: ByteArray? = null
+                var moduloId: String? = null
+                
+                multipart.forEachPart { part ->
+                    when (part) {
+                        is PartData.FileItem -> {
+                            fileName = part.originalFileName ?: "video"
+                            contentType = part.contentType?.toString() ?: "application/octet-stream"
+                            fileBytes = part.streamProvider().readBytes()
+                        }
+                        is PartData.FormItem -> {
+                            val name = part.name?.lowercase()
+                            if (name == "moduloid" || name == "moduleid") {
+                                moduloId = part.value
+                            }
+                        }
+                        else -> {}
+                    }
+                    part.dispose()
+                }
+                if (fileBytes == null) {
+                    throw ValidationException(message = "Nenhum arquivo foi enviado", field = "file")
+                }
+                if (moduloId.isNullOrBlank()) {
+                    moduloId = call.request.queryParameters["moduloId"] ?: call.request.queryParameters["moduleId"]
+                }
+                if (moduloId.isNullOrBlank()) {
+                    throw ValidationException(message = "ID do módulo é obrigatório", field = "moduloId")
+                }
+                val result = fileUploadService.uploadVideo(
+                    fileName = fileName,
+                    contentType = contentType,
+                    inputStream = fileBytes!!.inputStream(),
+                    fileSizeBytes = fileBytes!!.size.toLong()
+                )
+                if (result.success) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val professorId = principal!!.payload.getClaim("userId").asString()
+                    val professorService = ProfessorService()
+                    professorService.updateModulo(
+                        moduloId = moduloId!!,
+                        request = ModuloUpdateRequest(videoIntroUrl = result.url),
+                        professorId = professorId
+                    )
+                    val response = FileUploadResponse(
+                        fileName = result.fileName,
+                        url = result.url,
+                        contentType = contentType,
+                        size = fileBytes!!.size.toLong()
+                    )
+                    call.respond(ApiResponse.success(response))
+                } else {
+                    throw BusinessException(result.message ?: "Erro no upload do Vídeo de introdução do módulo")
+                }
             }
             
             // Upload de galeria de aula

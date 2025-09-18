@@ -12,7 +12,7 @@ object DatabaseConfig {
         val database = Database.connect(jdbcURL, driverClassName)
         
         transaction(database) {
-            SchemaUtils.create(
+            SchemaUtils.createMissingTablesAndColumns(
                 Admins,
                 Professores,
                 Alunos,
@@ -43,7 +43,7 @@ object DatabaseConfig {
         )
         
         transaction(db) {
-            SchemaUtils.create(
+            SchemaUtils.createMissingTablesAndColumns(
                 Admins,
                 Professores,
                 Alunos,

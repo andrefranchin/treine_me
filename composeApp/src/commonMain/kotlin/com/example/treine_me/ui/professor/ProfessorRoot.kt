@@ -1,6 +1,7 @@
 package com.example.treine_me.ui.professor
 
 import androidx.compose.runtime.*
+import com.example.treine_me.ui.professor.ModuloDetailScreen
 import com.example.treine_me.ui.feedback.LoadingHost
 import com.example.treine_me.ui.professor.ProfessorLoginScreen
 
@@ -27,7 +28,13 @@ fun ProfessorRoot() {
                         is ProfessorRoute.CursoDetail -> CursoDetailScreen(
                             id = route.id,
                             onBack = { navigate(ProfessorRoute.Cursos) },
-                            onEdit = { navigate(ProfessorRoute.CursoEdit(route.id)) }
+                            onEdit = { navigate(ProfessorRoute.CursoEdit(route.id)) },
+                            onOpenModulo = { moduloId -> navigate(ProfessorRoute.ModuloDetail(produtoId = route.id, moduloId = moduloId)) }
+                        )
+                        is ProfessorRoute.ModuloDetail -> ModuloDetailScreen(
+                            produtoId = route.produtoId,
+                            moduloId = route.moduloId,
+                            onBack = { navigate(ProfessorRoute.Cursos) }
                         )
                         is ProfessorRoute.Alunos -> AlunosListScreen()
                         is ProfessorRoute.Planos -> PlanosListScreen(

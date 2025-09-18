@@ -198,6 +198,137 @@ fun Route.professorRoutes() {
                     call.respond(ApiResponse.success(mapOf("success" to success)))
                 }
             }
+            
+            // ========== MÓDULOS ==========
+            route("/produtos/{produtoId}/modulos") {
+                post {
+                    call.requireRole(UserRole.PROFESSOR)
+                    val produtoId = call.parameters["produtoId"] ?: return@post call.respond(
+                        ApiResponse.error("ID do produto é obrigatório")
+                    )
+                    val request = call.receive<ModuloCreateRequest>()
+                    val principal = call.principal<JWTPrincipal>()
+                    val professorId = principal!!.payload.getClaim("userId").asString()
+                    val response = professorService.createModulo(produtoId, request, professorId)
+                    call.respond(ApiResponse.success(response))
+                }
+                get {
+                    call.requireRole(UserRole.PROFESSOR)
+                    val produtoId = call.parameters["produtoId"] ?: return@get call.respond(
+                        ApiResponse.error("ID do produto é obrigatório")
+                    )
+                    val principal = call.principal<JWTPrincipal>()
+                    val professorId = principal!!.payload.getClaim("userId").asString()
+                    val response = professorService.listModulosByProduto(produtoId, professorId)
+                    call.respond(ApiResponse.success(response))
+                }
+                put("/reorder") {
+                    call.requireRole(UserRole.PROFESSOR)
+                    val produtoId = call.parameters["produtoId"] ?: return@put call.respond(
+                        ApiResponse.error("ID do produto é obrigatório")
+                    )
+                    val request = call.receive<ReorderModulosRequest>()
+                    val principal = call.principal<JWTPrincipal>()
+                    val professorId = principal!!.payload.getClaim("userId").asString()
+                    val ok = professorService.reorderModulos(produtoId, request.moduloIds, professorId)
+                    call.respond(ApiResponse.success(mapOf("success" to ok)))
+                }
+                route("/{moduloId}") {
+                    put {
+                        call.requireRole(UserRole.PROFESSOR)
+                        val moduloId = call.parameters["moduloId"] ?: return@put call.respond(
+                            ApiResponse.error("ID do módulo é obrigatório")
+                        )
+                        val request = call.receive<ModuloUpdateRequest>()
+                        val principal = call.principal<JWTPrincipal>()
+                        val professorId = principal!!.payload.getClaim("userId").asString()
+                        val response = professorService.updateModulo(moduloId, request, professorId)
+                        call.respond(ApiResponse.success(response))
+                    }
+                    delete {
+                        call.requireRole(UserRole.PROFESSOR)
+                        val moduloId = call.parameters["moduloId"] ?: return@delete call.respond(
+                            ApiResponse.error("ID do módulo é obrigatório")
+                        )
+                        val principal = call.principal<JWTPrincipal>()
+                        val professorId = principal!!.payload.getClaim("userId").asString()
+                        val ok = professorService.deactivateModulo(moduloId, professorId)
+                        call.respond(ApiResponse.success(mapOf("success" to ok)))
+                    }
+                    
+                    // ========== AULAS ==========
+                    route("/aulas") {
+                        post {
+                            call.requireRole(UserRole.PROFESSOR)
+                            val moduloId = call.parameters["moduloId"] ?: return@post call.respond(
+                                ApiResponse.error("ID do módulo é obrigatório")
+                            )
+                            val request = call.receive<AulaCreateRequest>()
+                            val principal = call.principal<JWTPrincipal>()
+                            val professorId = principal!!.payload.getClaim("userId").asString()
+                            val response = professorService.createAula(moduloId, request, professorId)
+                            call.respond(ApiResponse.success(response))
+                        }
+                        get {
+                            call.requireRole(UserRole.PROFESSOR)
+                            val moduloId = call.parameters["moduloId"] ?: return@get call.respond(
+                                ApiResponse.error("ID do módulo é obrigatório")
+                            )
+                            val principal = call.principal<JWTPrincipal>()
+                            val professorId = principal!!.payload.getClaim("userId").asString()
+                            val response = professorService.listAulasByModulo(moduloId, professorId)
+                            call.respond(ApiResponse.success(response))
+                        }
+                        put("/reorder") {
+                            call.requireRole(UserRole.PROFESSOR)
+                            val moduloId = call.parameters["moduloId"] ?: return@put call.respond(
+                                ApiResponse.error("ID do módulo é obrigatório")
+                            )
+                            val request = call.receive<ReorderAulasRequest>()
+                            val principal = call.principal<JWTPrincipal>()
+                            val professorId = principal!!.payload.getClaim("userId").asString()
+                            val ok = professorService.reorderAulas(moduloId, request.aulaIds, professorId)
+                            call.respond(ApiResponse.success(mapOf("success" to ok)))
+                        }
+                        route("/{aulaId}") {
+                            put {
+                                call.requireRole(UserRole.PROFESSOR)
+                                val aulaId = call.parameters["aulaId"] ?: return@put call.respond(
+                                    ApiResponse.error("ID da aula é obrigatório")
+                                )
+                                val request = call.receive<AulaUpdateRequest>()
+                                val principal = call.principal<JWTPrincipal>()
+                                val professorId = principal!!.payload.getClaim("userId").asString()
+                                val response = professorService.updateAula(aulaId, request, professorId)
+                                call.respond(ApiResponse.success(response))
+                            }
+                            delete {
+                                call.requireRole(UserRole.PROFESSOR)
+                                val aulaId = call.parameters["aulaId"] ?: return@delete call.respond(
+                                    ApiResponse.error("ID da aula é obrigatório")
+                                )
+                                val principal = call.principal<JWTPrincipal>()
+                                val professorId = principal!!.payload.getClaim("userId").asString()
+                                val ok = professorService.deactivateAula(aulaId, professorId)
+                                call.respond(ApiResponse.success(mapOf("success" to ok)))
+                            }
+                            
+                            // Conteúdo da aula
+                            put("/conteudo") {
+                                call.requireRole(UserRole.PROFESSOR)
+                                val aulaId = call.parameters["aulaId"] ?: return@put call.respond(
+                                    ApiResponse.error("ID da aula é obrigatório")
+                                )
+                                val request = call.receive<ConteudoUpdateRequest>()
+                                val principal = call.principal<JWTPrincipal>()
+                                val professorId = principal!!.payload.getClaim("userId").asString()
+                                val response = professorService.upsertConteudo(aulaId, request, professorId)
+                                call.respond(ApiResponse.success(response))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

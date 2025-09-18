@@ -215,6 +215,14 @@ components:
           type: integer
           example: 1
           minimum: 1
+        capaUrl:
+          type: string
+          format: uri
+          nullable: true
+        videoIntroUrl:
+          type: string
+          format: uri
+          nullable: true
       required:
         - titulo
         - descricao
@@ -232,6 +240,14 @@ components:
           type: string
         ordem:
           type: integer
+        capaUrl:
+          type: string
+          format: uri
+          nullable: true
+        videoIntroUrl:
+          type: string
+          format: uri
+          nullable: true
         produtoId:
           type: string
           format: uuid
@@ -263,11 +279,15 @@ components:
           minimum: 1
         tipoConteudo:
           $ref: '#/components/schemas/TipoConteudo'
+        planoId:
+          type: string
+          format: uuid
       required:
         - titulo
         - descricao
         - ordem
         - tipoConteudo
+        - planoId
 
     AulaResponse:
       type: object
@@ -283,6 +303,9 @@ components:
           type: integer
         tipoConteudo:
           $ref: '#/components/schemas/TipoConteudo'
+        planoId:
+          type: string
+          format: uuid
         moduloId:
           type: string
           format: uuid
@@ -294,6 +317,7 @@ components:
         - descricao
         - ordem
         - tipoConteudo
+        - planoId
         - moduloId
 
     ConteudoResponse:
@@ -322,6 +346,76 @@ components:
       required:
         - id
         - aulaId
+
+    ModuloUpdateRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+        descricao:
+          type: string
+        ordem:
+          type: integer
+        capaUrl:
+          type: string
+          format: uri
+          nullable: true
+        videoIntroUrl:
+          type: string
+          format: uri
+          nullable: true
+
+    ReorderModulosRequest:
+      type: object
+      properties:
+        moduloIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - moduloIds
+
+    AulaUpdateRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+        descricao:
+          type: string
+        ordem:
+          type: integer
+        tipoConteudo:
+          $ref: '#/components/schemas/TipoConteudo'
+        planoId:
+          type: string
+          format: uuid
+
+    ReorderAulasRequest:
+      type: object
+      properties:
+        aulaIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - aulaIds
+
+    ConteudoUpdateRequest:
+      type: object
+      properties:
+        urlVideo:
+          type: string
+          format: uri
+          nullable: true
+        textoMarkdown:
+          type: string
+          nullable: true
+        arquivoUrl:
+          type: string
+          format: uri
+          nullable: true
 
     LoginRequest:
       type: object
@@ -1259,37 +1353,6 @@ paths:
                           success:
                             type: boolean
 
-  /professores/me/planos/{id}/produtos:
-    get:
-      summary: Produtos do plano
-      description: Professor lista produtos associados a um plano
-      tags:
-        - Professores
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID do plano
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Lista de produtos do plano
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/ProdutoResponse'
-
   /professores/me/planos/{planoId}/produtos/{produtoId}:
     post:
       summary: Adicionar produto ao plano
@@ -1889,7 +1952,7 @@ paths:
     post:
       summary: Upload de capa de módulo
       description: |
-        Upload específico para capa de módulo.
+        Faz upload de uma imagem e atualiza automaticamente o campo `capaUrl` do módulo.
         
         **Características:**
         - Armazenado em pasta: `module-covers/`
@@ -1910,18 +1973,60 @@ paths:
                   type: string
                   format: binary
                   description: Arquivo de imagem da capa do módulo
+                moduloId:
+                  type: string
+                  format: uuid
+            required:
+              - file
+              - moduloId
       responses:
         '200':
           description: Upload realizado com sucesso
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/FileUploadResponse'
+                $ref: '#/components/schemas/FileUploadResponse'
+        '400':
+          description: Requisição inválida
+        '401':
+          description: Não autorizado
+
+  /upload/module-intro-video:
+    post:
+      summary: Upload de vídeo de introdução do módulo
+      description: |
+        Faz upload de um vídeo de introdução e atualiza automaticamente o campo `videoIntroUrl` do módulo.
+      tags:
+        - Upload Contextual
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                moduloId:
+                  type: string
+                  format: uuid
+            required:
+              - file
+              - moduloId
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+        '400':
+          description: Requisição inválida
+        '401':
+          description: Não autorizado
 
   /upload/module-gallery:
     post:
@@ -2074,3 +2179,368 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/FileUploadResponse'
+
+  /professores/me/produtos/{produtoId}/modulos:
+    get:
+      summary: Listar módulos do produto
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de módulos
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ModuloResponse'
+    post:
+      summary: Criar módulo no produto (inserido na última posição)
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModuloCreateRequest'
+      responses:
+        '200':
+          description: Módulo criado
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ModuloResponse'
+
+  /professores/me/produtos/{produtoId}/modulos/reorder:
+    put:
+      summary: Reordenar módulos do produto
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderModulosRequest'
+      responses:
+        '200':
+          description: Reordenação aplicada
+
+  /professores/me/produtos/{produtoId}/modulos/{moduloId}:
+    put:
+      summary: Atualizar módulo
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModuloUpdateRequest'
+      responses:
+        '200':
+          description: Módulo atualizado
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ModuloResponse'
+    delete:
+      summary: Desativar módulo
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Módulo desativado
+
+  /professores/me/produtos/{produtoId}/modulos/{moduloId}/aulas:
+    get:
+      summary: Listar aulas do módulo
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de aulas
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AulaResponse'
+    post:
+      summary: Criar aula (inserida na última posição)
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AulaCreateRequest'
+      responses:
+        '200':
+          description: Aula criada
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AulaResponse'
+
+  /professores/me/produtos/{produtoId}/modulos/{moduloId}/aulas/reorder:
+    put:
+      summary: Reordenar aulas do módulo
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderAulasRequest'
+      responses:
+        '200':
+          description: Reordenação aplicada
+
+  /professores/me/produtos/{produtoId}/modulos/{moduloId}/aulas/{aulaId}:
+    put:
+      summary: Atualizar aula
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: aulaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AulaUpdateRequest'
+      responses:
+        '200':
+          description: Aula atualizada
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AulaResponse'
+    delete:
+      summary: Desativar aula
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: aulaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Aula desativada
+
+  /professores/me/produtos/{produtoId}/modulos/{moduloId}/aulas/{aulaId}/conteudo:
+    put:
+      summary: Atualizar conteúdo da aula (upsert)
+      tags:
+        - Módulos e Aulas
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: aulaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConteudoUpdateRequest'
+      responses:
+        '200':
+          description: Conteúdo atualizado
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ConteudoResponse'
