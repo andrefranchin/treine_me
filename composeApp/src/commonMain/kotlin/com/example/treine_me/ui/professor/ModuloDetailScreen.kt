@@ -13,14 +13,19 @@ import com.example.treine_me.api.ModuloResponse
 import com.example.treine_me.api.AulaResponse
 import com.example.treine_me.api.AulaCreateRequest
 import com.example.treine_me.api.AulaUpdateRequest
-import com.example.treine_me.api.TipoConteudo
 import com.example.treine_me.services.ModuloService
 import com.example.treine_me.services.AulaService
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.ui.text.input.TextFieldValue
+ 
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
+import androidx.compose.material.icons.filled.DragHandle
 
 @Composable
 fun ModuloDetailScreen(
@@ -97,18 +102,45 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
         Spacer(Modifier.height(8.dp))
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        aulas.forEach { aula ->
-            Card(Modifier.fillMaxWidth()) {
-                Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Text(aula.titulo, style = MaterialTheme.typography.titleSmall)
-                        Spacer(Modifier.height(2.dp))
-                        Text(aula.descricao, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Row {
-                        IconButton(onClick = { editing = aula }) { Icon(Icons.Default.Edit, contentDescription = null) }
-                        IconButton(onClick = { deleting = aula }) { Icon(Icons.Default.Delete, contentDescription = null) }
+    val listState = rememberLazyListState()
+    val reorderState = rememberReorderableLazyListState(listState, onMove = { from, to ->
+        val mutable = aulas.toMutableList()
+        val moved = mutable.removeAt(from.index)
+        mutable.add(to.index, moved)
+        aulas = mutable
+    })
+    
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+    ) {
+        items(aulas, key = { it.id }) { aula ->
+            ReorderableItem(reorderState, key = aula.id) { isDragging ->
+                Card(Modifier.fillMaxWidth()) {
+                    Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(aula.titulo, style = MaterialTheme.typography.titleSmall)
+                            Spacer(Modifier.height(2.dp))
+                            Text(aula.descricao, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Row {
+                            IconButton(modifier = Modifier.draggableHandle(onDragStopped = {
+                                // Persist order after drag completes
+                                scope.launch {
+                                    try {
+                                        val resp = aulaService.reorderAulas(produtoId, modulo.id, aulas.map { it.id })
+                                        if (!resp.success) {
+                                            error = resp.error?.message ?: "Falha ao reordenar aulas"
+                                        }
+                                    } catch (e: Exception) {
+                                        error = e.message
+                                    }
+                                }
+                            }), onClick = {}) { Icon(Icons.Default.DragHandle, contentDescription = "Reordenar") }
+                            IconButton(onClick = { editing = aula }) { Icon(Icons.Default.Edit, contentDescription = null) }
+                            IconButton(onClick = { deleting = aula }) { Icon(Icons.Default.Delete, contentDescription = null) }
+                        }
                     }
                 }
             }
@@ -116,20 +148,23 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
     }
 
     if (showCreate) {
-        AulaEditDialog(
-            title = "Nova aula",
-            initial = null,
+        AulaCreateDialog(
             onDismiss = { showCreate = false },
-            onSave = { titulo, descricao, ordem, tipo, planoId ->
+            onSave = { titulo, descricao, tipo, planoId ->
                 scope.launch {
                     try {
+                        val ordem = (aulas.maxOfOrNull { it.ordem } ?: 0) + 1
                         val resp = aulaService.createAula(
                             produtoId = produtoId,
                             moduloId = modulo.id,
                             request = AulaCreateRequest(titulo, descricao, ordem, tipo, planoId)
                         )
-                        if (resp.success && resp.data != null) {
-                            aulas = (aulas + resp.data!!).sortedBy { it.ordem }
+                        if (resp.success) {
+                            val created = resp.data ?: run {
+                                error = "Falha ao criar aula"
+                                return@launch
+                            }
+                            aulas = (aulas + created).sortedBy { it.ordem }
                             showCreate = false
                         } else {
                             error = resp.error?.message ?: "Falha ao criar aula"
@@ -145,20 +180,23 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
     if (editing != null) {
         val current = editing!!
         AulaEditDialog(
-            title = "Editar aula",
             initial = current,
             onDismiss = { editing = null },
-            onSave = { titulo, descricao, ordem, tipo, planoId ->
+            onSave = { titulo, descricao, tipo, planoId ->
                 scope.launch {
                     try {
                         val resp = aulaService.updateAula(
                             produtoId = produtoId,
                             moduloId = modulo.id,
                             aulaId = current.id,
-                            request = AulaUpdateRequest(titulo, descricao, ordem, tipo, planoId)
+                            request = AulaUpdateRequest(titulo, descricao, null, tipo, planoId)
                         )
-                        if (resp.success && resp.data != null) {
-                            aulas = aulas.map { if (it.id == current.id) resp.data!! else it }.sortedBy { it.ordem }
+                        if (resp.success) {
+                            val updated = resp.data ?: run {
+                                error = "Falha ao atualizar aula"
+                                return@launch
+                            }
+                            aulas = aulas.map { if (it.id == current.id) updated else it }.sortedBy { it.ordem }
                             editing = null
                         } else {
                             error = resp.error?.message ?: "Falha ao atualizar aula"
@@ -199,70 +237,6 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
     }
 }
 
-@Composable
-private fun AulaEditDialog(
-    title: String,
-    initial: AulaResponse?,
-    onDismiss: () -> Unit,
-    onSave: (String, String, Int, TipoConteudo, String) -> Unit
-) {
-    var titulo by remember { mutableStateOf(initial?.titulo ?: "") }
-    var descricao by remember { mutableStateOf(initial?.descricao ?: "") }
-    var ordemText by remember { mutableStateOf((initial?.ordem ?: 1).toString()) }
-    var planoId by remember { mutableStateOf(initial?.planoId ?: "") }
-    var tipo by remember { mutableStateOf(initial?.tipoConteudo ?: TipoConteudo.VIDEO) }
-    var error by remember { mutableStateOf<String?>(null) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            Column(Modifier.fillMaxWidth()) {
-                if (error != null) { Text(error!!, color = MaterialTheme.colorScheme.error); Spacer(Modifier.height(8.dp)) }
-                OutlinedTextField(value = titulo, onValueChange = { titulo = it }, label = { Text("Título") }, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(8.dp))
-                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(8.dp))
-                OutlinedTextField(value = ordemText, onValueChange = { ordemText = it.filter { ch -> ch.isDigit() } }, label = { Text("Ordem") }, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(8.dp))
-                OutlinedTextField(value = planoId, onValueChange = { planoId = it }, label = { Text("Plano ID") }, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(8.dp))
-                // Simple enum switcher
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Tipo:")
-                    Spacer(Modifier.width(8.dp))
-                    DropdownMenuWrapper(current = tipo, onChange = { tipo = it })
-                }
-            }
-        },
-        confirmButton = {
-            Button(onClick = {
-                val ordem = ordemText.toIntOrNull()
-                if (ordem == null || planoId.isBlank()) {
-                    error = "Preencha ordem e plano"
-                    return@Button
-                }
-                onSave(titulo, descricao, ordem, tipo, planoId)
-            }) { Text("Salvar") }
-        },
-        dismissButton = { Button(onClick = onDismiss) { Text("Cancelar") } }
-    )
-}
-
-@Composable
-private fun DropdownMenuWrapper(current: TipoConteudo, onChange: (TipoConteudo) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    Box {
-        Button(onClick = { expanded = true }) { Text(current.name) }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            TipoConteudo.values().forEach { tc ->
-                DropdownMenuItem(text = { Text(tc.name) }, onClick = {
-                    onChange(tc)
-                    expanded = false
-                })
-            }
-        }
-    }
-}
+ 
 
 

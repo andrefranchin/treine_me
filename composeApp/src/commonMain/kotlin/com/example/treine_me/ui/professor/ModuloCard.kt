@@ -28,7 +28,8 @@ fun ModuloCard(
     modifier: Modifier = Modifier,
     onClick: (ModuloResponse) -> Unit = {},
     onEdit: (ModuloResponse) -> Unit = {},
-    onDelete: (ModuloResponse) -> Unit = {}
+    onDelete: (ModuloResponse) -> Unit = {},
+    dragHandle: (@Composable () -> Unit)? = null
 ) {
     Card(modifier = modifier.fillMaxWidth().clickable { onClick(modulo) }) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -47,6 +48,7 @@ fun ModuloCard(
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = modulo.titulo, style = MaterialTheme.typography.titleMedium)
                 Row {
+                    if (dragHandle != null) dragHandle()
                     IconButton(onClick = { onEdit(modulo) }) { Icon(Icons.Default.Edit, contentDescription = "Editar módulo") }
                     IconButton(onClick = { onDelete(modulo) }) { Icon(Icons.Default.Delete, contentDescription = "Excluir módulo") }
                 }

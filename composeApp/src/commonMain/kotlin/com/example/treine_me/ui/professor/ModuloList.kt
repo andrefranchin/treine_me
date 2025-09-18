@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -25,6 +27,12 @@ import com.example.treine_me.api.ModuloUpdateRequest
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.DialogProperties
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 
 @Composable
 fun ModuloList(
@@ -64,18 +72,49 @@ fun ModuloList(
         errorMessage != null -> Text(text = errorMessage!!, color = MaterialTheme.colorScheme.error)
         modulos.isEmpty() -> Text(text = "Nenhum módulo cadastrado", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         else -> {
+            val listState = rememberLazyListState()
+            val reorderState = rememberReorderableLazyListState(listState, onMove = { from, to ->
+                val mutable = modulos.toMutableList()
+                val moved = mutable.removeAt(from.index)
+                mutable.add(to.index, moved)
+                modulos = mutable
+            })
+            
             LazyColumn(
-                modifier = modifier.fillMaxWidth(),
+                state = listState,
+O                modifier = modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(modulos) { modulo ->
-                    ModuloCard(
-                        modulo = modulo,
-                        onClick = onOpenModulo,
-                        onEdit = { moduloToEdit = it },
-                        onDelete = { moduloToDelete = it }
-                    )
-                    Spacer(Modifier.height(4.dp))
+                items(modulos, key = { it.id }) { modulo ->
+                    ReorderableItem(reorderState, key = modulo.id) { _ ->
+                        ModuloCard(
+                            modulo = modulo,
+                            onClick = onOpenModulo,
+                            onEdit = { moduloToEdit = it },
+                            onDelete = { moduloToDelete = it },
+                            dragHandle = {
+                                IconButton(
+                                    modifier = Modifier.draggableHandle(onDragStopped = {
+                                        // Persist new order after drag completes
+                                        scope.launch {
+                                            try {
+                                                val resp = service.reorderModulos(produtoId, modulos.map { it.id })
+                                                if (!resp.success) {
+                                                    errorMessage = resp.error?.message ?: "Falha ao reordenar módulos"
+                                                }
+                                            } catch (e: Exception) {
+                                                errorMessage = e.message ?: "Erro ao reordenar módulos"
+                                            }
+                                        }
+                                    }),
+                                    onClick = {}
+                                ) {
+                                    Icon(Icons.Default.DragHandle, contentDescription = "Reordenar")
+                                }
+                            }
+                        )
+                        Spacer(Modifier.height(4.dp))
+                    }
                 }
             }
         }

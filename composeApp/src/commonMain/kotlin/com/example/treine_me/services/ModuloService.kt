@@ -59,6 +59,18 @@ class ModuloService {
             ApiResponse(false, null, ApiError("Erro ao deletar módulo: ${e.message}"))
         }
     }
+
+    suspend fun reorderModulos(produtoId: String, moduloIds: List<String>): ApiResponse<Map<String, Boolean>> {
+        return try {
+            val response = client.put("/professores/me/produtos/$produtoId/modulos/reorder") {
+                contentType(ContentType.Application.Json)
+                setBody(mapOf("moduloIds" to moduloIds))
+            }
+            response.body()
+        } catch (e: Exception) {
+            ApiResponse(false, null, ApiError("Erro ao reordenar módulos: ${e.message}"))
+        }
+    }
 }
 
 

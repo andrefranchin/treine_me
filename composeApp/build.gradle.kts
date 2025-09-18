@@ -62,6 +62,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation("io.ktor:ktor-client-okhttp:${ktor_version}")
             implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+            implementation("sh.calvin.reorderable:reorderable:3.0.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -91,6 +92,9 @@ kotlin {
             // Images (Compose Multiplatform) - Coil
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
             implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
+            
+            // Reorderable lists (Calvin-LL Reorderable) 
+            implementation("sh.calvin.reorderable:reorderable:3.0.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
