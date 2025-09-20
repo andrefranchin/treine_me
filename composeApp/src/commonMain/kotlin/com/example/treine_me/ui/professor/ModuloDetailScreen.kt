@@ -153,11 +153,10 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
             onSave = { titulo, descricao, tipo, planoId ->
                 scope.launch {
                     try {
-                        val ordem = (aulas.maxOfOrNull { it.ordem } ?: 0) + 1
                         val resp = aulaService.createAula(
                             produtoId = produtoId,
                             moduloId = modulo.id,
-                            request = AulaCreateRequest(titulo, descricao, ordem, tipo, planoId)
+                            request = AulaCreateRequest(titulo, descricao, null, tipo, planoId) // ordem será calculada automaticamente
                         )
                         if (resp.success) {
                             val created = resp.data ?: run {

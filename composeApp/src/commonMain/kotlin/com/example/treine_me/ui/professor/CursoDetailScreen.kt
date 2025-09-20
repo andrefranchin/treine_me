@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import com.example.treine_me.ui.controls.AppNetworkImage
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
+import com.example.treine_me.ui.components.CourseAvatar
 
 @Composable
 fun CursoDetailScreen(
@@ -57,7 +58,11 @@ fun CursoDetailScreen(
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar") }
-                Text("Curso", style = MaterialTheme.typography.titleLarge)
+                curso?.let { c ->
+                    Text(c.titulo, style = MaterialTheme.typography.titleLarge)
+                } ?: run {
+                    Text("Curso", style = MaterialTheme.typography.titleLarge)
+                }
             }
             IconButton(onClick = onEdit) {
                 Icon(Icons.Default.Edit, contentDescription = "Editar")
@@ -73,25 +78,32 @@ fun CursoDetailScreen(
         } else {
             curso?.let { c ->
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    // Capa
-                    c.capaUrl?.let { coverUrl ->
-                        AppNetworkImage(
-                            url = coverUrl,
-                            modifier = Modifier.height(160.dp).fillMaxWidth(),
-                            contentDescription = "Capa do curso"
+                    // Course header with avatar and info
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CourseAvatar(
+                            title = c.titulo,
+                            imageUrl = c.capaUrl,
+                            size = 80.dp,
+                            isCircular = false
                         )
+                        
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = c.titulo,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                text = c.descricao,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
-                   
-                    Text(
-                        text = "Título: ${c.titulo.trim()}",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    
-                    Text(
-                        text = "Descrição: ${c.descricao}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                     
                     // Metadados
                     HorizontalDivider()

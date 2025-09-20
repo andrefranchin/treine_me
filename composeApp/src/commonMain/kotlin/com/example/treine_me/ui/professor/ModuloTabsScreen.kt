@@ -88,7 +88,6 @@ private fun ModuloFormTab(
     val moduloService = remember { ModuloService() }
     var titulo by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
-    var ordemText by remember { mutableStateOf("1") }
     var isSaving by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
@@ -101,15 +100,12 @@ private fun ModuloFormTab(
         OutlinedTextField(value = titulo, onValueChange = { titulo = it }, label = { Text("Título") }, modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(value = ordemText, onValueChange = { ordemText = it.filter { ch -> ch.isDigit() } }, label = { Text("Ordem") }, modifier = Modifier.fillMaxWidth())
 
         Spacer(Modifier.height(16.dp))
         Row {
             Button(
                 enabled = !isSaving,
                 onClick = {
-                    val ordem = ordemText.toIntOrNull() ?: 1
                     scope.launch {
                         isSaving = true
                         errorMessage = null
@@ -118,8 +114,8 @@ private fun ModuloFormTab(
                                 produtoId = produtoId,
                                 request = ModuloCreateRequest(
                                     titulo = titulo,
-                                    descricao = descricao,
-                                    ordem = ordem
+                                    descricao = descricao
+                                    // ordem será calculada automaticamente pelo backend
                                 )
                             )
                             val created = resp.data

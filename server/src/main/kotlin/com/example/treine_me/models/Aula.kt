@@ -54,7 +54,7 @@ data class Aula(
 data class AulaCreateRequest(
     val titulo: String,
     val descricao: String,
-    val ordem: Int,
+    val ordem: Int? = null, // Opcional - será calculado automaticamente se não fornecido
     val tipoConteudo: TipoConteudo,
     val planoId: String
 )

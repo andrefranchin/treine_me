@@ -82,7 +82,7 @@ fun ModuloList(
             
             LazyColumn(
                 state = listState,
-O                modifier = modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(modulos, key = { it.id }) { modulo ->

@@ -53,7 +53,7 @@ data class Modulo(
 data class ModuloCreateRequest(
     val titulo: String,
     val descricao: String,
-    val ordem: Int,
+    val ordem: Int? = null, // Opcional - será calculado automaticamente se não fornecido
     val capaUrl: String? = null,
     val videoIntroUrl: String? = null
 )

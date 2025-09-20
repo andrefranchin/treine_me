@@ -26,7 +26,6 @@ fun ModuloEditDialog(
 ) {
     var titulo by remember { mutableStateOf(initial.titulo) }
     var descricao by remember { mutableStateOf(initial.descricao) }
-    var ordemText by remember { mutableStateOf(initial.ordem.toString()) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     AlertDialog(
@@ -41,18 +40,11 @@ fun ModuloEditDialog(
                 OutlinedTextField(value = titulo, onValueChange = { titulo = it }, label = { Text("Título") }, modifier = Modifier.fillMaxWidth())
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(8.dp))
-                OutlinedTextField(value = ordemText, onValueChange = { ordemText = it.filter { ch -> ch.isDigit() } }, label = { Text("Ordem") }, modifier = Modifier.fillMaxWidth())
             }
         },
         confirmButton = {
             Button(onClick = {
-                val ordem = ordemText.toIntOrNull()
-                if (ordem == null) {
-                    errorMessage = "Ordem inválida"
-                    return@Button
-                }
-                onSaved(initial.copy(titulo = titulo, descricao = descricao, ordem = ordem))
+                onSaved(initial.copy(titulo = titulo, descricao = descricao))
             }) { Text("Salvar") }
         },
         dismissButton = { Button(onClick = onDismiss) { Text("Cancelar") } }

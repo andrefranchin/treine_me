@@ -471,14 +471,17 @@ class ProfessorService {
             }
             
             val now = Clock.System.now()
-            val lastOrder = ModuloEntity.find { 
-                (Modulos.produtoId eq produto.id) and (Modulos.isActive eq true) 
-            }.maxOfOrNull { it.ordem } ?: 0
+            val ordem = request.ordem ?: run {
+                val lastOrder = ModuloEntity.find { 
+                    (Modulos.produtoId eq produto.id) and (Modulos.isActive eq true) 
+                }.maxOfOrNull { it.ordem } ?: 0
+                lastOrder + 1
+            }
             
             val modulo = ModuloEntity.new {
                 titulo = request.titulo
                 descricao = request.descricao
-                ordem = lastOrder + 1
+                this.ordem = ordem
                 capaUrl = request.capaUrl
                 videoIntroUrl = request.videoIntroUrl
                 this.produto = produto
@@ -624,13 +627,16 @@ class ProfessorService {
                 throw ForbiddenException("Você não tem permissão para usar este plano")
             }
             val now = Clock.System.now()
-            val lastOrder = AulaEntity.find { 
-                (Aulas.moduloId eq modulo.id) and (Aulas.isActive eq true) 
-            }.maxOfOrNull { it.ordem } ?: 0
+            val ordem = request.ordem ?: run {
+                val lastOrder = AulaEntity.find { 
+                    (Aulas.moduloId eq modulo.id) and (Aulas.isActive eq true) 
+                }.maxOfOrNull { it.ordem } ?: 0
+                lastOrder + 1
+            }
             val aula = AulaEntity.new {
                 titulo = request.titulo
                 descricao = request.descricao
-                ordem = lastOrder + 1
+                this.ordem = ordem
                 tipoConteudo = request.tipoConteudo
                 this.plano = plano
                 this.modulo = modulo
