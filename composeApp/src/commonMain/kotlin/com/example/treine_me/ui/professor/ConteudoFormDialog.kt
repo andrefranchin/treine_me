@@ -38,34 +38,38 @@ fun ConteudoFormDialog(
     var error by remember { mutableStateOf<String?>(null) }
     var isProcessing by remember { mutableStateOf(false) }
     var isLoadingContent by remember { mutableStateOf(false) }
+    var hasLoadedContent by remember { mutableStateOf(initialConteudo != null) }
     
-    // Sempre carregar conteúdo atualizado da aula quando abrir o dialog
+    // Carregar conteúdo atualizado da aula apenas se não foi passado conteúdo inicial
     LaunchedEffect(aulaId) {
-        isLoadingContent = true
-        try {
-            val response = aulaService.getAula(produtoId, moduloId, aulaId)
-            println("DEBUG: Resposta do GET - success: ${response.success}")
-            if (response.success) {
-                val aula = response.data
-                println("DEBUG: Aula carregada - titulo: ${aula?.titulo}")
-                if (aula != null) {
-                    val conteudo = aula.conteudo
-                    println("DEBUG: Conteúdo encontrado: ${conteudo != null}, urlVideo: ${conteudo?.urlVideo}")
-                    if (conteudo != null) {
-                        videoUrl = conteudo.urlVideo
-                        richTextContent = conteudo.textoMarkdown ?: ""
-                        arquivoUrl = conteudo.arquivoUrl
+        if (!hasLoadedContent) {
+            isLoadingContent = true
+            try {
+                val response = aulaService.getAula(produtoId, moduloId, aulaId)
+                println("DEBUG: Resposta do GET - success: ${response.success}")
+                if (response.success) {
+                    val aula = response.data
+                    println("DEBUG: Aula carregada - titulo: ${aula?.titulo}")
+                    if (aula != null) {
+                        val conteudo = aula.conteudo
+                        println("DEBUG: Conteúdo encontrado: ${conteudo != null}, urlVideo: ${conteudo?.urlVideo}")
+                        if (conteudo != null) {
+                            videoUrl = conteudo.urlVideo
+                            richTextContent = conteudo.textoMarkdown ?: ""
+                            arquivoUrl = conteudo.arquivoUrl
+                        }
                     }
+                    hasLoadedContent = true
+                } else {
+                    println("DEBUG: Erro na resposta: ${response.error?.message}")
+                    error = response.error?.message ?: "Erro ao carregar conteúdo"
                 }
-            } else {
-                println("DEBUG: Erro na resposta: ${response.error?.message}")
-                error = response.error?.message ?: "Erro ao carregar conteúdo"
+            } catch (e: Exception) {
+                println("DEBUG: Exception: ${e.message}")
+                error = e.message ?: "Erro inesperado"
+            } finally {
+                isLoadingContent = false
             }
-        } catch (e: Exception) {
-            println("DEBUG: Exception: ${e.message}")
-            error = e.message ?: "Erro inesperado"
-        } finally {
-            isLoadingContent = false
         }
     }
 
@@ -122,10 +126,8 @@ fun ConteudoFormDialog(
                     selectedTemplate = selectedTemplate,
                     onTemplateSelected = { template ->
                         selectedTemplate = template
-                        // Aplicar template ao rich text se ainda estiver vazio
-                        if (richTextContent.isBlank()) {
-                            richTextContent = template.htmlContent
-                        }
+                        // Aplicar template ao rich text sempre que um template for selecionado
+                        richTextContent = template.htmlContent
                     },
                     modifier = Modifier.fillMaxWidth()
                 )

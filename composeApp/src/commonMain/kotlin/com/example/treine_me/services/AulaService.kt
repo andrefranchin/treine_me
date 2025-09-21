@@ -5,6 +5,7 @@ import com.example.treine_me.api.ApiResponse
 import com.example.treine_me.api.AulaCreateRequest
 import com.example.treine_me.api.AulaResponse
 import com.example.treine_me.api.AulaUpdateRequest
+import com.example.treine_me.api.ConteudoResponse
 import com.example.treine_me.api.ConteudoUpdateRequest
 import com.example.treine_me.network.ApiClient
 import io.ktor.client.call.body
@@ -73,7 +74,7 @@ class AulaService {
         }
     }
 
-    suspend fun upsertConteudo(produtoId: String, moduloId: String, aulaId: String, request: ConteudoUpdateRequest): ApiResponse<Map<String, Boolean>> {
+    suspend fun upsertConteudo(produtoId: String, moduloId: String, aulaId: String, request: ConteudoUpdateRequest): ApiResponse<ConteudoResponse> {
         return try {
             val response = client.put("/professores/me/produtos/$produtoId/modulos/$moduloId/aulas/$aulaId/conteudo") {
                 contentType(ContentType.Application.Json)
