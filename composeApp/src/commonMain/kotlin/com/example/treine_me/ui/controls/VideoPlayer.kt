@@ -34,7 +34,7 @@ fun VideoPlayer(
     showControls: Boolean = true,
     isLooping: Boolean = false,
     startTimeInSeconds: Float = 0f
-) {s
+) {
     val playerHost = remember(videoUrl) {
         MediaPlayerHost(
             mediaUrl = videoUrl,
