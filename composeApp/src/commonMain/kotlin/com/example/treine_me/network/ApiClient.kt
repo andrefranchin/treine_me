@@ -42,6 +42,34 @@ object ApiClient {
             }
         }
     }
+    
+    // Cliente separado para uploads com timeout maior
+    val uploadClient = HttpClient {
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+
+        install(Logging) {
+            level = LogLevel.INFO // Menos verbose para uploads
+        }
+
+        install(HttpTimeout) {
+            requestTimeoutMillis = 300_000 // 5 minutos para uploads
+            connectTimeoutMillis = 30_000  // 30 segundos para conectar
+            socketTimeoutMillis = 300_000  // 5 minutos para socket
+        }
+
+        defaultRequest {
+            url(ApiConfig.baseUrl)
+            TokenStore.token?.let { token ->
+                headers.append(HttpHeaders.Authorization, "Bearer $token")
+            }
+        }
+    }
 
     suspend inline fun <reified T> get(path: String): T {
         val response = client.get(path).body<ApiResponse<T>>()

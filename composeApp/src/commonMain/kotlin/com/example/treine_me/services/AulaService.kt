@@ -73,7 +73,7 @@ class AulaService {
         }
     }
 
-    suspend fun upsertConteudo(produtoId: String, moduloId: String, aulaId: String, request: ConteudoUpdateRequest): ApiResponse<Any> {
+    suspend fun upsertConteudo(produtoId: String, moduloId: String, aulaId: String, request: ConteudoUpdateRequest): ApiResponse<Map<String, Boolean>> {
         return try {
             val response = client.put("/professores/me/produtos/$produtoId/modulos/$moduloId/aulas/$aulaId/conteudo") {
                 contentType(ContentType.Application.Json)
@@ -82,6 +82,15 @@ class AulaService {
             response.body()
         } catch (e: Exception) {
             ApiResponse(false, null, ApiError("Erro ao salvar conteúdo: ${e.message}"))
+        }
+    }
+
+    suspend fun getAula(produtoId: String, moduloId: String, aulaId: String): ApiResponse<AulaResponse> {
+        return try {
+            val response = client.get("/professores/me/produtos/$produtoId/modulos/$moduloId/aulas/$aulaId")
+            response.body()
+        } catch (e: Exception) {
+            ApiResponse(false, null, ApiError("Erro ao carregar aula: ${e.message}"))
         }
     }
 }

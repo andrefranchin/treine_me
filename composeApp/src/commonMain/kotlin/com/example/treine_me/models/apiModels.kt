@@ -13,3 +13,5 @@ typealias ProfessorResponse = com.example.treine_me.api.ProfessorResponse
 
 typealias AlunoCreateRequest = com.example.treine_me.api.AlunoCreateRequest
 typealias AlunoResponse = com.example.treine_me.api.AlunoResponse
+
+typealias FileUploadResponse = com.example.treine_me.api.FileUploadResponse

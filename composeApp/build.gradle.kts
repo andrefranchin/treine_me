@@ -64,6 +64,11 @@ kotlin {
             implementation("io.ktor:ktor-client-okhttp:${ktor_version}")
             implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
             implementation("sh.calvin.reorderable:reorderable:3.0.0")
+            
+            // Android Video Player
+            implementation("androidx.media3:media3-exoplayer:1.2.1")
+            implementation("androidx.media3:media3-ui:1.2.1")
+            implementation("androidx.media3:media3-common:1.2.1")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -96,6 +101,12 @@ kotlin {
             
             // Reorderable lists (Calvin-LL Reorderable) 
             implementation("sh.calvin.reorderable:reorderable:3.0.0")
+            
+            // Rich Text Editor
+            implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc13")
+            
+            // Compose Multiplatform Media Player
+            implementation("network.chaintech:compose-multiplatform-media-player:1.0.46")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

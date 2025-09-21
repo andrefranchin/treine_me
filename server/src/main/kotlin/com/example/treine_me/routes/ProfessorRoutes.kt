@@ -291,6 +291,16 @@ fun Route.professorRoutes() {
                             call.respond(ApiResponse.success(mapOf("success" to ok)))
                         }
                         route("/{aulaId}") {
+                            get {
+                                call.requireRole(UserRole.PROFESSOR)
+                                val aulaId = call.parameters["aulaId"] ?: return@get call.respond(
+                                    ApiResponse.error("ID da aula é obrigatório")
+                                )
+                                val principal = call.principal<JWTPrincipal>()
+                                val professorId = principal!!.payload.getClaim("userId").asString()
+                                val response = professorService.getAula(aulaId, professorId)
+                                call.respond(ApiResponse.success(response))
+                            }
                             put {
                                 call.requireRole(UserRole.PROFESSOR)
                                 val aulaId = call.parameters["aulaId"] ?: return@put call.respond(

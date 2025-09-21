@@ -19,7 +19,9 @@ fun Route.fileUploadRoutes() {
         route("/upload") {
             
             post("/profile-image") {
-                val multipart = call.receiveMultipart()
+                val multipart = call.receiveMultipart(
+                    formFieldLimit = 10L * 1024 * 1024 // 10MB para imagens
+                )
                 var fileName = ""
                 var contentType = ""
                 var fileBytes: ByteArray? = null
@@ -63,7 +65,9 @@ fun Route.fileUploadRoutes() {
             // Rota "/upload/course-cover" removida aqui para evitar duplicidade.
             
             post("/video") {
-                val multipart = call.receiveMultipart()
+                val multipart = call.receiveMultipart(
+                    formFieldLimit = 350L * 1024 * 1024 // 350MB para vídeos
+                )
                 var fileName = ""
                 var contentType = ""
                 var fileBytes: ByteArray? = null
@@ -105,7 +109,9 @@ fun Route.fileUploadRoutes() {
             }
             
             post("/document") {
-                val multipart = call.receiveMultipart()
+                val multipart = call.receiveMultipart(
+                    formFieldLimit = 50L * 1024 * 1024 // 50MB para documentos
+                )
                 var fileName = ""
                 var contentType = ""
                 var fileBytes: ByteArray? = null

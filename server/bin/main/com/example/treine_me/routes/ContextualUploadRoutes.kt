@@ -191,7 +191,9 @@ fun Route.contextualUploadRoutes() {
             
             // Vídeo de introdução do módulo
             post("/module-intro-video") {
-                val multipart = call.receiveMultipart()
+                val multipart = call.receiveMultipart(
+                    formFieldLimit = 350L * 1024 * 1024 // 350MB para vídeos
+                )
                 var fileName = ""
                 var contentType = ""
                 var fileBytes: ByteArray? = null

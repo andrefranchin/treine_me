@@ -9,9 +9,9 @@ import org.jetbrains.exposed.sql.ReferenceOption
 import java.util.*
 
 object Conteudos : BaseTable("conteudos") {
-    val urlVideo = varchar("url_video", 500).nullable()
-    val textoMarkdown = text("texto_markdown").nullable()
-    val arquivoUrl = varchar("arquivo_url", 500).nullable()
+    val urlVideo = varchar("url_video", 500).nullable() // URL do vídeo hospedado
+    val textoMarkdown = text("texto_markdown").nullable() // Conteúdo HTML do rich text editor
+    val arquivoUrl = varchar("arquivo_url", 500).nullable() // URL do arquivo complementar
     val aulaId = reference("aula_id", Aulas, onDelete = ReferenceOption.CASCADE).uniqueIndex()
 }
 
@@ -45,16 +45,16 @@ data class Conteudo(
 
 @Serializable
 data class ConteudoCreateRequest(
-    val urlVideo: String? = null,
-    val textoMarkdown: String? = null,
-    val arquivoUrl: String? = null
+    val urlVideo: String? = null, // URL do vídeo após upload
+    val textoMarkdown: String? = null, // Conteúdo HTML do rich text editor
+    val arquivoUrl: String? = null // URL do arquivo complementar após upload
 )
 
 @Serializable
 data class ConteudoUpdateRequest(
-    val urlVideo: String? = null,
-    val textoMarkdown: String? = null,
-    val arquivoUrl: String? = null
+    val urlVideo: String? = null, // URL do vídeo após upload
+    val textoMarkdown: String? = null, // Conteúdo HTML do rich text editor
+    val arquivoUrl: String? = null // URL do arquivo complementar após upload
 )
 
 @Serializable

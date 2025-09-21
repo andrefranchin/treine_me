@@ -13,11 +13,13 @@ import com.example.treine_me.api.ModuloResponse
 import com.example.treine_me.api.AulaResponse
 import com.example.treine_me.api.AulaCreateRequest
 import com.example.treine_me.api.AulaUpdateRequest
+import com.example.treine_me.api.ConteudoUpdateRequest
 import com.example.treine_me.services.ModuloService
 import com.example.treine_me.services.AulaService
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
  
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.LazyColumn
@@ -86,11 +88,31 @@ fun ModuloDetailScreen(
 private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
     val aulaService = remember { AulaService() }
     val scope = rememberCoroutineScope()
-    var aulas by remember { mutableStateOf<List<AulaResponse>>(modulo.aulas.sortedBy { it.ordem }) }
+    var aulas by remember { mutableStateOf<List<AulaResponse>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
     var showCreate by remember { mutableStateOf(false) }
     var editing by remember { mutableStateOf<AulaResponse?>(null) }
     var deleting by remember { mutableStateOf<AulaResponse?>(null) }
+    var editingContent by remember { mutableStateOf<AulaResponse?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    
+    // Carregar aulas sempre que entrar no módulo
+    LaunchedEffect(produtoId, modulo.id) {
+        isLoading = true
+        error = null
+        try {
+            val response = aulaService.listAulas(produtoId, modulo.id)
+            if (response.success) {
+                aulas = response.data?.sortedBy { it.ordem } ?: emptyList()
+            } else {
+                error = response.error?.message ?: "Erro ao carregar aulas"
+            }
+        } catch (e: Exception) {
+            error = e.message ?: "Erro inesperado"
+        } finally {
+            isLoading = false
+        }
+    }
 
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         Text("Aulas", style = MaterialTheme.typography.titleMedium)
@@ -100,6 +122,18 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
     if (error != null) {
         Text(error!!, color = MaterialTheme.colorScheme.error)
         Spacer(Modifier.height(8.dp))
+    }
+    
+    if (isLoading) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator()
+            Spacer(Modifier.width(8.dp))
+            Text("Carregando aulas...")
+        }
+        return
     }
 
     val listState = rememberLazyListState()
@@ -116,7 +150,7 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
         modifier = Modifier
     ) {
         items(aulas, key = { it.id }) { aula ->
-            ReorderableItem(reorderState, key = aula.id) { isDragging ->
+            ReorderableItem(reorderState, key = aula.id) { _ ->
                 Card(Modifier.fillMaxWidth()) {
                     Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f)) {
@@ -138,6 +172,7 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
                                     }
                                 }
                             }), onClick = {}) { Icon(Icons.Default.DragHandle, contentDescription = "Reordenar") }
+                            IconButton(onClick = { editingContent = aula }) { Icon(Icons.Default.Info, contentDescription = "Gerenciar conteúdo") }
                             IconButton(onClick = { editing = aula }) { Icon(Icons.Default.Edit, contentDescription = null) }
                             IconButton(onClick = { deleting = aula }) { Icon(Icons.Default.Delete, contentDescription = null) }
                         }
@@ -232,6 +267,37 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
                 }) { Text("Excluir") }
             },
             dismissButton = { Button(onClick = { deleting = null }) { Text("Cancelar") } }
+        )
+    }
+
+    if (editingContent != null) {
+        val current = editingContent!!
+        ConteudoFormDialog(
+            aulaTitle = current.titulo,
+            produtoId = produtoId,
+            moduloId = modulo.id,
+            aulaId = current.id,
+            initialConteudo = current.conteudo,
+            onDismiss = { editingContent = null },
+            onSave = { request ->
+                scope.launch {
+                    try {
+                        val resp = aulaService.upsertConteudo(produtoId, modulo.id, current.id, request)
+                        if (resp.success) {
+                            // Refresh the aulas list to get updated content
+                            val listResp = aulaService.listAulas(produtoId, modulo.id)
+                            if (listResp.success) {
+                                aulas = listResp.data?.sortedBy { it.ordem } ?: aulas
+                            }
+                            editingContent = null
+                        } else {
+                            error = resp.error?.message ?: "Falha ao salvar conteúdo"
+                        }
+                    } catch (e: Exception) {
+                        error = e.message
+                    }
+                }
+            }
         )
     }
 }

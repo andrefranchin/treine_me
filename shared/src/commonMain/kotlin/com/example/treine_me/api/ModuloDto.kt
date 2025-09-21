@@ -73,9 +73,9 @@ data class AulaUpdateRequest(
 
 @Serializable
 data class ConteudoUpdateRequest(
-    val urlVideo: String? = null,
-    val textoMarkdown: String? = null,
-    val arquivoUrl: String? = null
+    val urlVideo: String? = null, // URL do vídeo após upload
+    val textoMarkdown: String? = null, // Conteúdo HTML do rich text editor
+    val arquivoUrl: String? = null // URL do arquivo complementar após upload
 )
 
 

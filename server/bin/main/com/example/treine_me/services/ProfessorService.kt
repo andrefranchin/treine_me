@@ -670,6 +670,18 @@ class ProfessorService {
             AulaEntity.find { (Aulas.moduloId eq modulo.id) and (Aulas.isActive eq true) }
                 .sortedBy { it.ordem }
                 .map { aula ->
+                    // Buscar conteúdo da aula
+                    val conteudo = ConteudoEntity.find { Conteudos.aulaId eq aula.id }.firstOrNull()
+                    val conteudoResponse = conteudo?.let {
+                        ConteudoResponse(
+                            id = it.id.value.toString(),
+                            urlVideo = it.urlVideo,
+                            textoMarkdown = it.textoMarkdown,
+                            arquivoUrl = it.arquivoUrl,
+                            aulaId = aula.id.value.toString()
+                        )
+                    }
+                    
                     AulaResponse(
                         id = aula.id.value.toString(),
                         titulo = aula.titulo,
@@ -678,9 +690,42 @@ class ProfessorService {
                         tipoConteudo = aula.tipoConteudo,
                         planoId = aula.plano.id.value.toString(),
                         moduloId = modulo.id.value.toString(),
-                        conteudo = null
+                        conteudo = conteudoResponse
                     )
                 }
+        }
+    }
+    
+    fun getAula(aulaId: String, professorId: String): AulaResponse {
+        return transaction {
+            val aula = AulaEntity.find { (Aulas.id eq UUID.fromString(aulaId)) and (Aulas.isActive eq true) }
+                .firstOrNull() ?: throw NotFoundException("Aula não encontrada")
+            if (aula.modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para acessar esta aula")
+            }
+            
+            // Buscar conteúdo da aula
+            val conteudo = ConteudoEntity.find { Conteudos.aulaId eq aula.id }.firstOrNull()
+            val conteudoResponse = conteudo?.let {
+                ConteudoResponse(
+                    id = it.id.value.toString(),
+                    urlVideo = it.urlVideo,
+                    textoMarkdown = it.textoMarkdown,
+                    arquivoUrl = it.arquivoUrl,
+                    aulaId = aula.id.value.toString()
+                )
+            }
+            
+            AulaResponse(
+                id = aula.id.value.toString(),
+                titulo = aula.titulo,
+                descricao = aula.descricao,
+                ordem = aula.ordem,
+                tipoConteudo = aula.tipoConteudo,
+                planoId = aula.plano.id.value.toString(),
+                moduloId = aula.modulo.id.value.toString(),
+                conteudo = conteudoResponse
+            )
         }
     }
     
