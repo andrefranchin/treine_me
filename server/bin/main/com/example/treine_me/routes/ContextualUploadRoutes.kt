@@ -8,6 +8,8 @@ import com.example.treine_me.models.ModuloUpdateRequest
 import com.example.treine_me.services.FileUploadResponse
 import com.example.treine_me.services.FileUploadService
 import com.example.treine_me.services.ProfessorService
+import com.example.treine_me.services.VideoMetadataService
+import com.example.treine_me.models.ConteudoUpdateRequest
 import com.example.treine_me.storage.CloudflareR2Service
 import com.example.treine_me.storage.StorageFolder
 import io.ktor.http.content.*
@@ -272,6 +274,90 @@ fun Route.contextualUploadRoutes() {
                     folder = StorageFolder.PROFILE_IMAGES.path,
                     description = "Foto de perfil"
                 )
+            }
+            
+            // ========== VÍDEOS DE AULAS ==========
+            
+            // Upload de vídeo para aula específica
+            post("/lesson-video") {
+                val multipart = call.receiveMultipart(
+                    formFieldLimit = 350L * 1024 * 1024 // 350MB para vídeos
+                )
+                var fileName = ""
+                var contentType = ""
+                var fileBytes: ByteArray? = null
+                var aulaId: String? = null
+                
+                multipart.forEachPart { part ->
+                    when (part) {
+                        is PartData.FileItem -> {
+                            fileName = part.originalFileName ?: "video"
+                            contentType = part.contentType?.toString() ?: "application/octet-stream"
+                            fileBytes = part.streamProvider().readBytes()
+                        }
+                        is PartData.FormItem -> {
+                            val name = part.name?.lowercase()
+                            if (name == "aulaid" || name == "lessonid") {
+                                aulaId = part.value
+                            }
+                        }
+                        else -> {}
+                    }
+                    part.dispose()
+                }
+                
+                if (fileBytes == null) {
+                    throw ValidationException(message = "Nenhum arquivo foi enviado", field = "file")
+                }
+                if (aulaId.isNullOrBlank()) {
+                    aulaId = call.request.queryParameters["aulaId"] ?: call.request.queryParameters["lessonId"]
+                }
+                if (aulaId.isNullOrBlank()) {
+                    throw ValidationException(message = "ID da aula é obrigatório", field = "aulaId")
+                }
+                
+                // Upload do vídeo
+                val result = fileUploadService.uploadVideo(
+                    fileName = fileName,
+                    contentType = contentType,
+                    inputStream = fileBytes!!.inputStream(),
+                    fileSizeBytes = fileBytes!!.size.toLong()
+                )
+                
+                if (result.success) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val professorId = principal!!.payload.getClaim("userId").asString()
+                    val professorService = ProfessorService()
+                    val videoMetadataService = VideoMetadataService()
+                    
+                    // Extrair metadados do vídeo
+                    val videoMetadata = videoMetadataService.extractVideoMetadata(
+                        fileName = fileName,
+                        contentType = contentType,
+                        inputStream = fileBytes!!.inputStream(),
+                        fileSizeBytes = fileBytes!!.size.toLong()
+                    )
+                    
+                    // Atualizar metadados da aula
+                    professorService.updateAulaVideoMetadata(aulaId!!, videoMetadata, professorId)
+                    
+                    // Atualizar conteúdo da aula com a URL do vídeo
+                    professorService.upsertConteudo(
+                        aulaId = aulaId!!,
+                        request = ConteudoUpdateRequest(urlVideo = result.url),
+                        professorId = professorId
+                    )
+                    
+                    val response = FileUploadResponse(
+                        fileName = result.fileName,
+                        url = result.url,
+                        contentType = contentType,
+                        size = fileBytes!!.size.toLong()
+                    )
+                    call.respond(ApiResponse.success(response))
+                } else {
+                    throw BusinessException(result.message ?: "Erro no upload do vídeo da aula")
+                }
             }
             
             // ========== GERAL ==========

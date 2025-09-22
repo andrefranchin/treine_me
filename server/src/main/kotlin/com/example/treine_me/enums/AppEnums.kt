@@ -6,3 +6,5 @@ typealias Recorrencia = com.example.treine_me.api.Recorrencia
 typealias StatusInscricao = com.example.treine_me.api.StatusInscricao
 typealias TipoProduto = com.example.treine_me.api.TipoProduto
 typealias TipoConteudo = com.example.treine_me.api.TipoConteudo
+typealias DificuldadeTreino = com.example.treine_me.api.DificuldadeTreino
+typealias TipoTreino = com.example.treine_me.api.TipoTreino

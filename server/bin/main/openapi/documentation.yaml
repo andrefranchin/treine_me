@@ -216,6 +216,28 @@ components:
         - ATIVIDADE
       description: Tipo de conteúdo da aula
 
+    DificuldadeTreino:
+      type: string
+      enum:
+        - INICIANTE
+        - INTERMEDIARIO
+        - AVANCADO
+      description: Nível de dificuldade do treino
+
+    TipoTreino:
+      type: string
+      enum:
+        - CARDIO
+        - FORCA
+        - FLEXIBILIDADE
+        - HIIT
+        - YOGA
+        - PILATES
+        - FUNCIONAL
+        - DANCA
+        - OUTRO
+      description: Categoria do tipo de treino
+
     ModuloCreateRequest:
       type: object
       properties:
@@ -298,6 +320,42 @@ components:
         planoId:
           type: string
           format: uuid
+        # Configurações do treino (campos do formulário)
+        caloriasPerdidas:
+          type: integer
+          example: 300
+          minimum: 0
+          nullable: true
+          description: "Estimativa de calorias queimadas durante o treino"
+        dificuldade:
+          $ref: '#/components/schemas/DificuldadeTreino'
+          nullable: true
+        tipoTreino:
+          $ref: '#/components/schemas/TipoTreino'
+          nullable: true
+        equipamentosNecessarios:
+          type: string
+          example: "Halteres de 2kg, tapete de yoga"
+          nullable: true
+          description: "Lista de equipamentos necessários para o treino"
+        duracaoTreinoMinutos:
+          type: integer
+          example: 45
+          minimum: 1
+          nullable: true
+          description: "Duração efetiva do treino em minutos"
+        intensidade:
+          type: integer
+          example: 7
+          minimum: 1
+          maximum: 10
+          nullable: true
+          description: "Intensidade do treino numa escala de 1 a 10"
+        observacoesTreino:
+          type: string
+          example: "Treino focado em queima de gordura. Faça pausas se necessário."
+          nullable: true
+          description: "Observações especiais sobre o treino"
       required:
         - titulo
         - descricao
@@ -327,6 +385,72 @@ components:
           format: uuid
         conteudo:
           $ref: '#/components/schemas/ConteudoResponse'
+        # Metadados do vídeo (preenchidos automaticamente)
+        videoDuracaoSegundos:
+          type: integer
+          example: 1800
+          nullable: true
+          description: "Duração do vídeo em segundos"
+        videoResolucao:
+          type: string
+          example: "1080p"
+          nullable: true
+          description: "Resolução do vídeo (ex: 1080p, 720p, 480p)"
+        videoTamanhoBytes:
+          type: integer
+          format: int64
+          example: 52428800
+          nullable: true
+          description: "Tamanho do arquivo de vídeo em bytes"
+        videoCodec:
+          type: string
+          example: "H.264"
+          nullable: true
+          description: "Codec do vídeo (ex: H.264, H.265, VP9)"
+        videoFps:
+          type: integer
+          example: 30
+          nullable: true
+          description: "Frames por segundo do vídeo"
+        videoAspectRatio:
+          type: string
+          example: "16:9"
+          nullable: true
+          description: "Proporção do vídeo (ex: 16:9, 4:3)"
+        # Configurações do treino
+        caloriasPerdidas:
+          type: integer
+          example: 300
+          nullable: true
+          description: "Estimativa de calorias queimadas durante o treino"
+        dificuldade:
+          $ref: '#/components/schemas/DificuldadeTreino'
+          nullable: true
+        tipoTreino:
+          $ref: '#/components/schemas/TipoTreino'
+          nullable: true
+        equipamentosNecessarios:
+          type: string
+          example: "Halteres de 2kg, tapete de yoga"
+          nullable: true
+          description: "Lista de equipamentos necessários para o treino"
+        duracaoTreinoMinutos:
+          type: integer
+          example: 45
+          nullable: true
+          description: "Duração efetiva do treino em minutos"
+        intensidade:
+          type: integer
+          example: 7
+          minimum: 1
+          maximum: 10
+          nullable: true
+          description: "Intensidade do treino numa escala de 1 a 10"
+        observacoesTreino:
+          type: string
+          example: "Treino focado em queima de gordura. Faça pausas se necessário."
+          nullable: true
+          description: "Observações especiais sobre o treino"
       required:
         - id
         - titulo
@@ -406,6 +530,42 @@ components:
         planoId:
           type: string
           format: uuid
+        # Configurações do treino (campos do formulário)
+        caloriasPerdidas:
+          type: integer
+          example: 300
+          minimum: 0
+          nullable: true
+          description: "Estimativa de calorias queimadas durante o treino"
+        dificuldade:
+          $ref: '#/components/schemas/DificuldadeTreino'
+          nullable: true
+        tipoTreino:
+          $ref: '#/components/schemas/TipoTreino'
+          nullable: true
+        equipamentosNecessarios:
+          type: string
+          example: "Halteres de 2kg, tapete de yoga"
+          nullable: true
+          description: "Lista de equipamentos necessários para o treino"
+        duracaoTreinoMinutos:
+          type: integer
+          example: 45
+          minimum: 1
+          nullable: true
+          description: "Duração efetiva do treino em minutos"
+        intensidade:
+          type: integer
+          example: 7
+          minimum: 1
+          maximum: 10
+          nullable: true
+          description: "Intensidade do treino numa escala de 1 a 10"
+        observacoesTreino:
+          type: string
+          example: "Treino focado em queima de gordura. Faça pausas se necessário."
+          nullable: true
+          description: "Observações especiais sobre o treino"
 
     ReorderAulasRequest:
       type: object

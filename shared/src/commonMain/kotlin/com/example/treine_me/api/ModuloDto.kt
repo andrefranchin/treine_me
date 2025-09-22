@@ -38,7 +38,24 @@ data class AulaResponse(
     val tipoConteudo: TipoConteudo,
     val planoId: String,
     val moduloId: String,
-    val conteudo: ConteudoResponse? = null
+    val conteudo: ConteudoResponse? = null,
+    
+    // Metadados do vídeo (preenchidos automaticamente)
+    val videoDuracaoSegundos: Int? = null,
+    val videoResolucao: String? = null,
+    val videoTamanhoBytes: Long? = null,
+    val videoCodec: String? = null,
+    val videoFps: Int? = null,
+    val videoAspectRatio: String? = null,
+    
+    // Configurações do treino
+    val caloriasPerdidas: Int? = null,
+    val dificuldade: DificuldadeTreino? = null,
+    val tipoTreino: TipoTreino? = null,
+    val equipamentosNecessarios: String? = null,
+    val duracaoTreinoMinutos: Int? = null,
+    val intensidade: Int? = null,
+    val observacoesTreino: String? = null
 )
 
 @Serializable
@@ -54,12 +71,33 @@ data class ModuloResponse(
 )
 
 @Serializable
+data class PublicAulaResponse(
+    val id: String,
+    val titulo: String,
+    val descricao: String,
+    val ordem: Int,
+    val tipoConteudo: TipoConteudo,
+    val planoId: String,
+    val moduloId: String,
+    val temConteudo: Boolean
+)
+
+@Serializable
 data class AulaCreateRequest(
     val titulo: String,
     val descricao: String,
     val ordem: Int? = null, // Opcional - será calculado automaticamente se não fornecido
     val tipoConteudo: TipoConteudo,
-    val planoId: String
+    val planoId: String,
+    
+    // Configurações do treino (campos do formulário)
+    val caloriasPerdidas: Int? = null,
+    val dificuldade: DificuldadeTreino? = null,
+    val tipoTreino: TipoTreino? = null,
+    val equipamentosNecessarios: String? = null,
+    val duracaoTreinoMinutos: Int? = null,
+    val intensidade: Int? = null, // Escala de 1-10
+    val observacoesTreino: String? = null
 )
 
 @Serializable
@@ -68,7 +106,16 @@ data class AulaUpdateRequest(
     val descricao: String? = null,
     val ordem: Int? = null,
     val tipoConteudo: TipoConteudo? = null,
-    val planoId: String? = null
+    val planoId: String? = null,
+    
+    // Configurações do treino (campos do formulário)
+    val caloriasPerdidas: Int? = null,
+    val dificuldade: DificuldadeTreino? = null,
+    val tipoTreino: TipoTreino? = null,
+    val equipamentosNecessarios: String? = null,
+    val duracaoTreinoMinutos: Int? = null,
+    val intensidade: Int? = null, // Escala de 1-10
+    val observacoesTreino: String? = null
 )
 
 @Serializable

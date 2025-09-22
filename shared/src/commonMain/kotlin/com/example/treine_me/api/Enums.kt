@@ -27,4 +27,14 @@ enum class TipoConteudo {
 	VIDEO, TEXTO, ATIVIDADE
 }
 
+@Serializable
+enum class DificuldadeTreino {
+	INICIANTE, INTERMEDIARIO, AVANCADO
+}
+
+@Serializable
+enum class TipoTreino {
+	CARDIO, FORCA, FLEXIBILIDADE, HIIT, YOGA, PILATES, FUNCIONAL, DANCA, OUTRO
+}
+
 

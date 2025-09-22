@@ -185,13 +185,26 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
     if (showCreate) {
         AulaCreateDialog(
             onDismiss = { showCreate = false },
-            onSave = { titulo, descricao, tipo, planoId ->
+            onSave = { formData ->
                 scope.launch {
                     try {
                         val resp = aulaService.createAula(
                             produtoId = produtoId,
                             moduloId = modulo.id,
-                            request = AulaCreateRequest(titulo, descricao, null, tipo, planoId) // ordem será calculada automaticamente
+                            request = AulaCreateRequest(
+                                titulo = formData.titulo,
+                                descricao = formData.descricao,
+                                ordem = null, // ordem será calculada automaticamente
+                                tipoConteudo = formData.tipoConteudo,
+                                planoId = formData.planoId,
+                                caloriasPerdidas = formData.caloriasPerdidas,
+                                dificuldade = formData.dificuldade,
+                                tipoTreino = formData.tipoTreino,
+                                equipamentosNecessarios = formData.equipamentosNecessarios,
+                                duracaoTreinoMinutos = formData.duracaoTreinoMinutos,
+                                intensidade = formData.intensidade,
+                                observacoesTreino = formData.observacoesTreino
+                            )
                         )
                         if (resp.success) {
                             val created = resp.data ?: run {
@@ -216,14 +229,27 @@ private fun AulasSection(produtoId: String, modulo: ModuloResponse) {
         AulaEditDialog(
             initial = current,
             onDismiss = { editing = null },
-            onSave = { titulo, descricao, tipo, planoId ->
+            onSave = { formData ->
                 scope.launch {
                     try {
                         val resp = aulaService.updateAula(
                             produtoId = produtoId,
                             moduloId = modulo.id,
                             aulaId = current.id,
-                            request = AulaUpdateRequest(titulo, descricao, null, tipo, planoId)
+                            request = AulaUpdateRequest(
+                                titulo = formData.titulo,
+                                descricao = formData.descricao,
+                                ordem = null,
+                                tipoConteudo = formData.tipoConteudo,
+                                planoId = formData.planoId,
+                                caloriasPerdidas = formData.caloriasPerdidas,
+                                dificuldade = formData.dificuldade,
+                                tipoTreino = formData.tipoTreino,
+                                equipamentosNecessarios = formData.equipamentosNecessarios,
+                                duracaoTreinoMinutos = formData.duracaoTreinoMinutos,
+                                intensidade = formData.intensidade,
+                                observacoesTreino = formData.observacoesTreino
+                            )
                         )
                         if (resp.success) {
                             val updated = resp.data ?: run {

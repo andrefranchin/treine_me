@@ -8,6 +8,7 @@ import com.example.treine_me.models.*
 import kotlinx.datetime.Clock
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.util.*
 
@@ -640,6 +641,16 @@ class ProfessorService {
                 tipoConteudo = request.tipoConteudo
                 this.plano = plano
                 this.modulo = modulo
+                
+                // Configurações do treino
+                caloriasPerdidas = request.caloriasPerdidas
+                dificuldade = request.dificuldade
+                tipoTreino = request.tipoTreino
+                equipamentosNecessarios = request.equipamentosNecessarios
+                duracaoTreinoMinutos = request.duracaoTreinoMinutos
+                intensidade = request.intensidade
+                observacoesTreino = request.observacoesTreino
+                
                 dtIns = now
                 dtUpd = now
                 idUserIns = UUID.fromString(professorId)
@@ -654,7 +665,24 @@ class ProfessorService {
                 tipoConteudo = aula.tipoConteudo,
                 planoId = plano.id.value.toString(),
                 moduloId = modulo.id.value.toString(),
-                conteudo = null
+                conteudo = null,
+                
+                // Metadados do vídeo (inicialmente nulos)
+                videoDuracaoSegundos = aula.videoDuracaoSegundos,
+                videoResolucao = aula.videoResolucao,
+                videoTamanhoBytes = aula.videoTamanhoBytes,
+                videoCodec = aula.videoCodec,
+                videoFps = aula.videoFps,
+                videoAspectRatio = aula.videoAspectRatio,
+                
+                // Configurações do treino
+                caloriasPerdidas = aula.caloriasPerdidas,
+                dificuldade = aula.dificuldade,
+                tipoTreino = aula.tipoTreino,
+                equipamentosNecessarios = aula.equipamentosNecessarios,
+                duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
+                intensidade = aula.intensidade,
+                observacoesTreino = aula.observacoesTreino
             )
         }
     }
@@ -690,7 +718,24 @@ class ProfessorService {
                         tipoConteudo = aula.tipoConteudo,
                         planoId = aula.plano.id.value.toString(),
                         moduloId = modulo.id.value.toString(),
-                        conteudo = conteudoResponse
+                        conteudo = conteudoResponse,
+                        
+                        // Metadados do vídeo
+                        videoDuracaoSegundos = aula.videoDuracaoSegundos,
+                        videoResolucao = aula.videoResolucao,
+                        videoTamanhoBytes = aula.videoTamanhoBytes,
+                        videoCodec = aula.videoCodec,
+                        videoFps = aula.videoFps,
+                        videoAspectRatio = aula.videoAspectRatio,
+                        
+                        // Configurações do treino
+                        caloriasPerdidas = aula.caloriasPerdidas,
+                        dificuldade = aula.dificuldade,
+                        tipoTreino = aula.tipoTreino,
+                        equipamentosNecessarios = aula.equipamentosNecessarios,
+                        duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
+                        intensidade = aula.intensidade,
+                        observacoesTreino = aula.observacoesTreino
                     )
                 }
         }
@@ -724,7 +769,24 @@ class ProfessorService {
                 tipoConteudo = aula.tipoConteudo,
                 planoId = aula.plano.id.value.toString(),
                 moduloId = aula.modulo.id.value.toString(),
-                conteudo = conteudoResponse
+                conteudo = conteudoResponse,
+                
+                // Metadados do vídeo
+                videoDuracaoSegundos = aula.videoDuracaoSegundos,
+                videoResolucao = aula.videoResolucao,
+                videoTamanhoBytes = aula.videoTamanhoBytes,
+                videoCodec = aula.videoCodec,
+                videoFps = aula.videoFps,
+                videoAspectRatio = aula.videoAspectRatio,
+                
+                // Configurações do treino
+                caloriasPerdidas = aula.caloriasPerdidas,
+                dificuldade = aula.dificuldade,
+                tipoTreino = aula.tipoTreino,
+                equipamentosNecessarios = aula.equipamentosNecessarios,
+                duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
+                intensidade = aula.intensidade,
+                observacoesTreino = aula.observacoesTreino
             )
         }
     }
@@ -750,6 +812,16 @@ class ProfessorService {
                 }
                 aula.plano = plano
             }
+            
+            // Atualizar configurações do treino
+            request.caloriasPerdidas?.let { aula.caloriasPerdidas = it }
+            request.dificuldade?.let { aula.dificuldade = it }
+            request.tipoTreino?.let { aula.tipoTreino = it }
+            request.equipamentosNecessarios?.let { aula.equipamentosNecessarios = it }
+            request.duracaoTreinoMinutos?.let { aula.duracaoTreinoMinutos = it }
+            request.intensidade?.let { aula.intensidade = it }
+            request.observacoesTreino?.let { aula.observacoesTreino = it }
+            
             aula.dtUpd = now
             aula.idUserUpd = UUID.fromString(professorId)
             AulaResponse(
@@ -760,7 +832,24 @@ class ProfessorService {
                 tipoConteudo = aula.tipoConteudo,
                 planoId = aula.plano.id.value.toString(),
                 moduloId = aula.modulo.id.value.toString(),
-                conteudo = null
+                conteudo = null,
+                
+                // Metadados do vídeo
+                videoDuracaoSegundos = aula.videoDuracaoSegundos,
+                videoResolucao = aula.videoResolucao,
+                videoTamanhoBytes = aula.videoTamanhoBytes,
+                videoCodec = aula.videoCodec,
+                videoFps = aula.videoFps,
+                videoAspectRatio = aula.videoAspectRatio,
+                
+                // Configurações do treino
+                caloriasPerdidas = aula.caloriasPerdidas,
+                dificuldade = aula.dificuldade,
+                tipoTreino = aula.tipoTreino,
+                equipamentosNecessarios = aula.equipamentosNecessarios,
+                duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
+                intensidade = aula.intensidade,
+                observacoesTreino = aula.observacoesTreino
             )
         }
     }
@@ -838,6 +927,33 @@ class ProfessorService {
                 existing.idUserUpd = UUID.fromString(professorId)
                 existing
             }
+            
+            // Se uma URL de vídeo foi fornecida, extrair e salvar metadados automaticamente
+            println("DEBUG: request.urlVideo = ${request.urlVideo}")
+            request.urlVideo?.let { videoUrl ->
+                println("DEBUG: videoUrl não é null: $videoUrl")
+                if (videoUrl.isNotBlank()) {
+                    println("DEBUG: videoUrl não está em branco, iniciando extração de metadados")
+                    try {
+                        val videoMetadataService = VideoMetadataService()
+                        val videoMetadata = runBlocking {
+                            videoMetadataService.extractVideoMetadataFromUrl(videoUrl)
+                        }
+                        println("videoMetadata: $videoMetadata")
+                        // Atualizar metadados da aula
+                        updateAulaVideoMetadata(aulaId, videoMetadata, professorId)
+                        println("DEBUG: Metadados atualizados com sucesso")
+                    } catch (e: Exception) {
+                        // Se falhar a extração de metadados, continua normalmente
+                        // Log do erro seria ideal aqui
+                        println("Erro ao extrair metadados do vídeo: ${e.message}")
+                        e.printStackTrace()
+                    }
+                } else {
+                    println("DEBUG: videoUrl está em branco")
+                }
+            } ?: println("DEBUG: request.urlVideo é null")
+            
             ConteudoResponse(
                 id = conteudo.id.value.toString(),
                 urlVideo = conteudo.urlVideo,
@@ -845,6 +961,34 @@ class ProfessorService {
                 arquivoUrl = conteudo.arquivoUrl,
                 aulaId = aula.id.value.toString()
             )
+        }
+    }
+    
+    // ========== METADADOS DE VÍDEO ==========
+    
+    fun updateAulaVideoMetadata(aulaId: String, videoMetadata: VideoMetadata, professorId: String): Boolean {
+        return transaction {
+            val aula = AulaEntity.find { (Aulas.id eq UUID.fromString(aulaId)) and (Aulas.isActive eq true) }
+                .firstOrNull() ?: throw NotFoundException("Aula não encontrada")
+            
+            if (aula.modulo.produto.professor.id.value.toString() != professorId) {
+                throw ForbiddenException("Você não tem permissão para editar esta aula")
+            }
+            
+            val now = Clock.System.now()
+            
+            // Atualizar metadados do vídeo
+            aula.videoDuracaoSegundos = videoMetadata.duracaoSegundos
+            aula.videoResolucao = videoMetadata.resolucao
+            aula.videoTamanhoBytes = videoMetadata.tamanhoBytes
+            aula.videoCodec = videoMetadata.codec
+            aula.videoFps = videoMetadata.fps
+            aula.videoAspectRatio = videoMetadata.aspectRatio
+            
+            aula.dtUpd = now
+            aula.idUserUpd = UUID.fromString(professorId)
+            
+            true
         }
     }
     

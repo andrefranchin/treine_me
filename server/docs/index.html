@@ -839,6 +839,46 @@
     "planoId" : {
       "type" : "string",
       "format" : "uuid"
+    },
+    "caloriasPerdidas" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "description" : "Estimativa de calorias queimadas durante o treino",
+      "nullable" : true,
+      "example" : 300
+    },
+    "dificuldade" : {
+      "$ref" : "#/components/schemas/DificuldadeTreino"
+    },
+    "tipoTreino" : {
+      "$ref" : "#/components/schemas/TipoTreino"
+    },
+    "equipamentosNecessarios" : {
+      "type" : "string",
+      "description" : "Lista de equipamentos necessários para o treino",
+      "nullable" : true,
+      "example" : "Halteres de 2kg, tapete de yoga"
+    },
+    "duracaoTreinoMinutos" : {
+      "minimum" : 1,
+      "type" : "integer",
+      "description" : "Duração efetiva do treino em minutos",
+      "nullable" : true,
+      "example" : 45
+    },
+    "intensidade" : {
+      "maximum" : 10,
+      "minimum" : 1,
+      "type" : "integer",
+      "description" : "Intensidade do treino numa escala de 1 a 10",
+      "nullable" : true,
+      "example" : 7
+    },
+    "observacoesTreino" : {
+      "type" : "string",
+      "description" : "Observações especiais sobre o treino",
+      "nullable" : true,
+      "example" : "Treino focado em queima de gordura. Faça pausas se necessário."
     }
   }
 };
@@ -872,6 +912,81 @@
     },
     "conteudo" : {
       "$ref" : "#/components/schemas/ConteudoResponse"
+    },
+    "videoDuracaoSegundos" : {
+      "type" : "integer",
+      "description" : "Duração do vídeo em segundos",
+      "nullable" : true,
+      "example" : 1800
+    },
+    "videoResolucao" : {
+      "type" : "string",
+      "description" : "Resolução do vídeo (ex: 1080p, 720p, 480p)",
+      "nullable" : true,
+      "example" : "1080p"
+    },
+    "videoTamanhoBytes" : {
+      "type" : "integer",
+      "description" : "Tamanho do arquivo de vídeo em bytes",
+      "format" : "int64",
+      "nullable" : true,
+      "example" : 52428800
+    },
+    "videoCodec" : {
+      "type" : "string",
+      "description" : "Codec do vídeo (ex: H.264, H.265, VP9)",
+      "nullable" : true,
+      "example" : "H.264"
+    },
+    "videoFps" : {
+      "type" : "integer",
+      "description" : "Frames por segundo do vídeo",
+      "nullable" : true,
+      "example" : 30
+    },
+    "videoAspectRatio" : {
+      "type" : "string",
+      "description" : "Proporção do vídeo (ex: 16:9, 4:3)",
+      "nullable" : true,
+      "example" : "16:9"
+    },
+    "caloriasPerdidas" : {
+      "type" : "integer",
+      "description" : "Estimativa de calorias queimadas durante o treino",
+      "nullable" : true,
+      "example" : 300
+    },
+    "dificuldade" : {
+      "$ref" : "#/components/schemas/DificuldadeTreino"
+    },
+    "tipoTreino" : {
+      "$ref" : "#/components/schemas/TipoTreino"
+    },
+    "equipamentosNecessarios" : {
+      "type" : "string",
+      "description" : "Lista de equipamentos necessários para o treino",
+      "nullable" : true,
+      "example" : "Halteres de 2kg, tapete de yoga"
+    },
+    "duracaoTreinoMinutos" : {
+      "type" : "integer",
+      "description" : "Duração efetiva do treino em minutos",
+      "nullable" : true,
+      "example" : 45
+    },
+    "intensidade" : {
+      "maximum" : 10,
+      "minimum" : 1,
+      "type" : "integer",
+      "description" : "Intensidade do treino numa escala de 1 a 10",
+      "nullable" : true,
+      "example" : 7
+    },
+    "observacoesTreino" : {
+      "type" : "string",
+      "description" : "Observações especiais sobre o treino",
+      "nullable" : true,
+      "example" : "Treino focado em queima de gordura. Faça pausas se necessário."
     }
   }
 };
@@ -893,6 +1008,46 @@
     "planoId" : {
       "type" : "string",
       "format" : "uuid"
+    },
+    "caloriasPerdidas" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "description" : "Estimativa de calorias queimadas durante o treino",
+      "nullable" : true,
+      "example" : 300
+    },
+    "dificuldade" : {
+      "$ref" : "#/components/schemas/DificuldadeTreino"
+    },
+    "tipoTreino" : {
+      "$ref" : "#/components/schemas/TipoTreino"
+    },
+    "equipamentosNecessarios" : {
+      "type" : "string",
+      "description" : "Lista de equipamentos necessários para o treino",
+      "nullable" : true,
+      "example" : "Halteres de 2kg, tapete de yoga"
+    },
+    "duracaoTreinoMinutos" : {
+      "minimum" : 1,
+      "type" : "integer",
+      "description" : "Duração efetiva do treino em minutos",
+      "nullable" : true,
+      "example" : 45
+    },
+    "intensidade" : {
+      "maximum" : 10,
+      "minimum" : 1,
+      "type" : "integer",
+      "description" : "Intensidade do treino numa escala de 1 a 10",
+      "nullable" : true,
+      "example" : 7
+    },
+    "observacoesTreino" : {
+      "type" : "string",
+      "description" : "Observações especiais sobre o treino",
+      "nullable" : true,
+      "example" : "Treino focado em queima de gordura. Faça pausas se necessário."
     }
   }
 };
@@ -945,6 +1100,11 @@
       "nullable" : true
     }
   }
+};
+            defs["DificuldadeTreino"] = {
+  "type" : "string",
+  "description" : "Nível de dificuldade do treino",
+  "enum" : [ "INICIANTE", "INTERMEDIARIO", "AVANCADO" ]
 };
             defs["FileUploadResponse"] = {
   "required" : [ "contentType", "fileName", "size", "url" ],
@@ -1422,6 +1582,11 @@
   "type" : "string",
   "description" : "Tipo de produto/conteúdo",
   "enum" : [ "CURSO", "MENTORIA", "EBOOK" ]
+};
+            defs["TipoTreino"] = {
+  "type" : "string",
+  "description" : "Categoria do tipo de treino",
+  "enum" : [ "CARDIO", "FORCA", "FLEXIBILIDADE", "HIIT", "YOGA", "PILATES", "FUNCIONAL", "DANCA", "OUTRO" ]
 };
             defs["UserInfo"] = {
   "required" : [ "email", "id", "nome", "role" ],

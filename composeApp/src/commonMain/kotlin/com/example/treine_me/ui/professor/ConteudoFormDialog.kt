@@ -217,6 +217,7 @@ fun ConteudoFormDialog(
                                 textoMarkdown = richTextContent.takeIf { it.isNotBlank() },
                                 arquivoUrl = arquivoUrl
                             )
+                            println("DEBUG ConteudoFormDialog: Salvando conteúdo com videoUrl = $videoUrl")
                             onSave(request)
                         } catch (e: Exception) {
                             error = "Erro ao processar dados: ${e.message}"

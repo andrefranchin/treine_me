@@ -256,7 +256,24 @@ class PublicService {
                         planoId = aula.plano.id.value.toString(),
                         moduloId = modulo.id.value.toString(),
                         // Não incluímos o conteúdo nas listagens públicas
-                        temConteudo = hasConteudo(aula.id.value)
+                        temConteudo = hasConteudo(aula.id.value),
+                        
+                        // Metadados do vídeo
+                        videoDuracaoSegundos = aula.videoDuracaoSegundos,
+                        videoResolucao = aula.videoResolucao,
+                        videoTamanhoBytes = aula.videoTamanhoBytes,
+                        videoCodec = aula.videoCodec,
+                        videoFps = aula.videoFps,
+                        videoAspectRatio = aula.videoAspectRatio,
+                        
+                        // Configurações do treino
+                        caloriasPerdidas = aula.caloriasPerdidas,
+                        dificuldade = aula.dificuldade,
+                        tipoTreino = aula.tipoTreino,
+                        equipamentosNecessarios = aula.equipamentosNecessarios,
+                        duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
+                        intensidade = aula.intensidade,
+                        observacoesTreino = aula.observacoesTreino
                     )
                 }
         }
@@ -280,7 +297,24 @@ class PublicService {
                 tipoConteudo = aula.tipoConteudo,
                 planoId = aula.plano.id.value.toString(),
                 moduloId = aula.modulo.id.value.toString(),
-                temConteudo = hasConteudo(aula.id.value)
+                temConteudo = hasConteudo(aula.id.value),
+                
+                // Metadados do vídeo
+                videoDuracaoSegundos = aula.videoDuracaoSegundos,
+                videoResolucao = aula.videoResolucao,
+                videoTamanhoBytes = aula.videoTamanhoBytes,
+                videoCodec = aula.videoCodec,
+                videoFps = aula.videoFps,
+                videoAspectRatio = aula.videoAspectRatio,
+                
+                // Configurações do treino
+                caloriasPerdidas = aula.caloriasPerdidas,
+                dificuldade = aula.dificuldade,
+                tipoTreino = aula.tipoTreino,
+                equipamentosNecessarios = aula.equipamentosNecessarios,
+                duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
+                intensidade = aula.intensidade,
+                observacoesTreino = aula.observacoesTreino
             )
         }
     }
@@ -315,5 +349,22 @@ data class PublicAulaResponse(
     val tipoConteudo: com.example.treine_me.enums.TipoConteudo,
     val planoId: String,
     val moduloId: String,
-    val temConteudo: Boolean // Indica se a aula tem conteúdo disponível
+    val temConteudo: Boolean, // Indica se a aula tem conteúdo disponível
+    
+    // Metadados do vídeo
+    val videoDuracaoSegundos: Int? = null,
+    val videoResolucao: String? = null,
+    val videoTamanhoBytes: Long? = null,
+    val videoCodec: String? = null,
+    val videoFps: Int? = null,
+    val videoAspectRatio: String? = null,
+    
+    // Configurações do treino
+    val caloriasPerdidas: Int? = null,
+    val dificuldade: com.example.treine_me.enums.DificuldadeTreino? = null,
+    val tipoTreino: com.example.treine_me.enums.TipoTreino? = null,
+    val equipamentosNecessarios: String? = null,
+    val duracaoTreinoMinutos: Int? = null,
+    val intensidade: Int? = null,
+    val observacoesTreino: String? = null
 )

@@ -4,6 +4,7 @@ import com.example.treine_me.dto.ApiResponse
 import com.example.treine_me.exceptions.ValidationException
 import com.example.treine_me.services.FileUploadResponse
 import com.example.treine_me.services.FileUploadService
+import com.example.treine_me.services.VideoMetadataService
 import com.example.treine_me.storage.CloudflareR2Service
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -96,6 +97,15 @@ fun Route.fileUploadRoutes() {
                 )
                 
                 if (result.success) {
+                    // Extrair metadados do vídeo
+                    val videoMetadataService = VideoMetadataService()
+                    val videoMetadata = videoMetadataService.extractVideoMetadata(
+                        fileName = fileName,
+                        contentType = contentType,
+                        inputStream = fileBytes!!.inputStream(),
+                        fileSizeBytes = fileBytes!!.size.toLong()
+                    )
+                    
                     val response = FileUploadResponse(
                         fileName = result.fileName,
                         url = result.url,

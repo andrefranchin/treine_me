@@ -63,6 +63,13 @@ dependencies {
     // File Upload
     implementation("io.ktor:ktor-server-partial-content:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-auto-head-response:${libs.versions.ktor.get()}")
+    
+    // Para análise de metadados de vídeo
+    implementation("org.apache.tika:tika-core:2.9.1")
+    implementation("org.apache.tika:tika-parsers-standard-package:2.9.1")
+    
+    // FFmpeg para extração robusta de metadados de vídeo
+    implementation("net.bramp.ffmpeg:ffmpeg:0.8.0")
 
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)

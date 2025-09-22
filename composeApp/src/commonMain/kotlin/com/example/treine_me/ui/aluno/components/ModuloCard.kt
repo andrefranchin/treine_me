@@ -16,14 +16,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.treine_me.api.ModuloResponse
+import com.example.treine_me.api.PublicAulaResponse
 
 @Composable
 fun ModuloCard(
     modulo: ModuloResponse,
-    aulas: List<com.example.treine_me.repository.PublicAulaResponse>,
+    aulas: List<PublicAulaResponse>,
     isExpanded: Boolean,
     onExpandToggle: () -> Unit,
-    onAulaClick: (com.example.treine_me.repository.PublicAulaResponse) -> Unit
+    onAulaClick: (PublicAulaResponse) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
