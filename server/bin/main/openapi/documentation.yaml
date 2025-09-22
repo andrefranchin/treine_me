@@ -13,6 +13,18 @@ info:
     - **Upload de Arquivos**: Integração com Cloudflare R2 para fotos, vídeos e documentos
     - **Estrutura de Conteúdo**: Módulos e aulas organizados hierarquicamente
     - **Atribuição Manual**: Professor atribui planos aos alunos
+    - **API Pública**: Endpoints sem autenticação para navegação de conteúdo
+    - **App do Aluno**: Funcionalidades específicas para alunos com verificação de acesso
+
+    ## 🎯 **Conceito Multi-Professor**
+    **IMPORTANTE:** Cada professor possui seu próprio app. Todos os endpoints públicos 
+    e de aluno sempre requerem o `professorId` para filtrar o conteúdo específico 
+    do professor.
+
+    ### **Fluxo de Acesso:**
+    - **Usuários não logados**: Navegam pelo conteúdo público, mas sem acesso ao conteúdo das aulas
+    - **Alunos sem inscrição**: Mesmo acesso que usuários não logados  
+    - **Alunos com inscrição ativa**: Acesso completo ao conteúdo do plano contratado
 
     ## Credenciais Padrão
     **Admin:** `dedefranchin@gmail.com` / `bebaleite`
@@ -80,7 +92,7 @@ info:
     curl -X POST "http://localhost:8080/upload/course-cover" \
       -H "Authorization: Bearer SEU_TOKEN" \
       -F "file=@capa_curso.jpg" \
-      -F "produtoId=123e4567-e89b-12d3-a456-426614174000"
+      -F "produtoId=ba273d71-9f1b-4c1e-b732-dff3913750e1"
     
     # Resposta: {"success": true, "data": {"url": "https://..."}}
     
@@ -111,8 +123,12 @@ tags:
     description: Operações exclusivas do administrador
   - name: Professores
     description: Operações específicas para professores
+  - name: API Pública
+    description: Endpoints públicos sem autenticação para navegação de conteúdo
+  - name: App do Aluno
+    description: Operações específicas para alunos autenticados com verificação de acesso
   - name: Alunos
-    description: Operações específicas para alunos
+    description: Operações específicas para alunos (legado - usar "App do Aluno")
   - name: Upload
     description: Endpoints de upload de arquivos (fotos, vídeos, documentos)
   - name: Upload Contextual
@@ -451,7 +467,7 @@ components:
         id:
           type: string
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
+          example: "ba273d71-9f1b-4c1e-b732-dff3913750e1"
         nome:
           type: string
           example: "João Silva"
@@ -773,6 +789,74 @@ components:
           example: "novasenha123"
       required:
         - newPassword
+
+    PublicAulaResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descricao:
+          type: string
+        ordem:
+          type: integer
+        tipoConteudo:
+          $ref: '#/components/schemas/TipoConteudo'
+        planoId:
+          type: string
+          format: uuid
+        moduloId:
+          type: string
+          format: uuid
+        temConteudo:
+          type: boolean
+          description: Indica se a aula possui conteúdo disponível (sem mostrar o conteúdo real)
+      required:
+        - id
+        - titulo
+        - descricao
+        - ordem
+        - tipoConteudo
+        - planoId
+        - moduloId
+        - temConteudo
+
+    AulaCompletaResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descricao:
+          type: string
+        ordem:
+          type: integer
+        tipoConteudo:
+          $ref: '#/components/schemas/TipoConteudo'
+        planoId:
+          type: string
+          format: uuid
+        moduloId:
+          type: string
+          format: uuid
+        conteudo:
+          $ref: '#/components/schemas/ConteudoResponse'
+        temAcesso:
+          type: boolean
+          description: Indica se o aluno tem acesso ao conteúdo desta aula
+      required:
+        - id
+        - titulo
+        - descricao
+        - ordem
+        - tipoConteudo
+        - planoId
+        - moduloId
+        - temAcesso
 
 paths:
   /:
@@ -1753,7 +1837,7 @@ paths:
                 summary: Exemplo de upload de capa de curso
                 value:
                   file: "capa_curso.jpg"
-                  produtoId: "123e4567-e89b-12d3-a456-426614174000"
+                  produtoId: "ba273d71-9f1b-4c1e-b732-dff3913750e1"
       responses:
         '200':
           description: Upload realizado com sucesso
@@ -2544,3 +2628,709 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/ConteudoResponse'
+
+  # ========== API PÚBLICA ==========
+
+  /public/professor/{professorId}:
+    get:
+      summary: Obter dados do professor
+      description: |
+        Endpoint público para obter informações básicas de um professor específico.
+        
+        **Importante:** Cada professor possui seu próprio app, este endpoint é usado 
+        para mostrar informações do professor no app público.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+          example: "ba273d71-9f1b-4c1e-b732-dff3913750e1"
+      responses:
+        '200':
+          description: Dados do professor obtidos com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProfessorResponse'
+              examples:
+                success:
+                  summary: Professor encontrado
+                  value:
+                    success: true
+                    data:
+                      id: "ba273d71-9f1b-4c1e-b732-dff3913750e1"
+                      nome: "João Silva"
+                      email: "joao@exemplo.com"
+                      bio: "Professor de programação com 10 anos de experiência"
+                      fotoPerfilUrl: "https://exemplo.com/foto.jpg"
+        '404':
+          description: Professor não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              examples:
+                not_found:
+                  summary: Professor não encontrado
+                  value:
+                    success: false
+                    error:
+                      message: "Professor não encontrado"
+
+  /public/professor/{professorId}/planos:
+    get:
+      summary: Listar planos do professor
+      description: |
+        Lista todos os planos de assinatura disponíveis de um professor específico.
+        Endpoint público - não requer autenticação.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: Tamanho da página
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de planos do professor
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PaginatedResponse'
+
+  /public/professor/{professorId}/planos/{planoId}:
+    get:
+      summary: Obter detalhes de um plano
+      description: |
+        Obtém informações detalhadas de um plano específico do professor.
+        Endpoint público - mostra preços e benefícios para usuários não logados.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: planoId
+          in: path
+          required: true
+          description: ID único do plano
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do plano
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PlanoResponse'
+
+  /public/professor/{professorId}/planos/{planoId}/produtos:
+    get:
+      summary: Listar produtos de um plano
+      description: |
+        Lista todos os produtos (cursos, e-books, mentorias) incluídos em um plano específico.
+        Permite que usuários vejam o que está incluído antes de se inscrever.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: planoId
+          in: path
+          required: true
+          description: ID único do plano
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de produtos do plano
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProdutoResponse'
+
+  /public/professor/{professorId}/produtos:
+    get:
+      summary: Listar produtos do professor
+      description: |
+        Lista todos os produtos (cursos, e-books, mentorias) disponíveis de um professor.
+        Endpoint público para navegação do catálogo.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: Tamanho da página
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de produtos do professor
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PaginatedResponse'
+
+  /public/professor/{professorId}/produtos/{produtoId}:
+    get:
+      summary: Obter detalhes de um produto
+      description: |
+        Obtém informações detalhadas de um produto específico (curso, e-book, mentoria).
+        Mostra título, descrição, capa e vídeo de introdução publicamente.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: produtoId
+          in: path
+          required: true
+          description: ID único do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do produto
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProdutoResponse'
+
+  /public/professor/{professorId}/produtos/{produtoId}/modulos:
+    get:
+      summary: Listar módulos de um produto
+      description: |
+        Lista todos os módulos de um produto (curso) específico.
+        Permite navegação da estrutura do curso sem acesso ao conteúdo.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: produtoId
+          in: path
+          required: true
+          description: ID único do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de módulos do produto
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ModuloResponse'
+
+  /public/professor/{professorId}/modulos/{moduloId}:
+    get:
+      summary: Obter detalhes de um módulo
+      description: |
+        Obtém informações detalhadas de um módulo específico.
+        Mostra título, descrição e vídeo de introdução publicamente.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          description: ID único do módulo
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do módulo
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ModuloResponse'
+
+  /public/professor/{professorId}/modulos/{moduloId}/aulas:
+    get:
+      summary: Listar aulas de um módulo
+      description: |
+        Lista todas as aulas de um módulo específico.
+        
+        **Importante:** Este endpoint público mostra apenas metadados das aulas
+        (título, descrição, ordem, tipo), mas não o conteúdo real.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: moduloId
+          in: path
+          required: true
+          description: ID único do módulo
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de aulas do módulo
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PublicAulaResponse'
+              examples:
+                success:
+                  summary: Lista de aulas públicas
+                  value:
+                    success: true
+                    data:
+                      - id: "aula-123"
+                        titulo: "Introdução ao JavaScript"
+                        descricao: "Conceitos básicos da linguagem"
+                        ordem: 1
+                        tipoConteudo: "VIDEO"
+                        planoId: "plano-123"
+                        moduloId: "modulo-123"
+                        temConteudo: true
+
+  /public/professor/{professorId}/aulas/{aulaId}:
+    get:
+      summary: Obter metadados de uma aula
+      description: |
+        Obtém informações básicas de uma aula específica.
+        
+        **Importante:** Este endpoint público mostra apenas metadados (título, descrição, 
+        tipo de conteúdo), mas não o conteúdo real da aula. Para acessar o conteúdo,
+        o aluno deve estar autenticado e ter inscrição ativa no plano.
+      tags:
+        - API Pública
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: aulaId
+          in: path
+          required: true
+          description: ID único da aula
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Metadados da aula
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PublicAulaResponse'
+
+  # ========== APP DO ALUNO ==========
+
+  /aluno/me:
+    get:
+      summary: Obter meu perfil
+      description: |
+        Obtém informações do perfil do aluno logado.
+      tags:
+        - App do Aluno
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Perfil do aluno
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AlunoResponse'
+        '401':
+          description: Token inválido ou expirado
+        '403':
+          description: Acesso negado - apenas alunos
+    put:
+      summary: Atualizar meu perfil
+      description: |
+        Atualiza informações do perfil do aluno logado.
+      tags:
+        - App do Aluno
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: "João Silva"
+                fotoPerfilUrl:
+                  type: string
+                  format: uri
+                  example: "https://exemplo.com/foto.jpg"
+      responses:
+        '200':
+          description: Perfil atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AlunoResponse'
+
+  /aluno/inscricoes:
+    get:
+      summary: Listar minhas inscrições
+      description: |
+        Lista todas as inscrições (ativas e inativas) do aluno logado.
+      tags:
+        - App do Aluno
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: Tamanho da página
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de inscrições do aluno
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PaginatedResponse'
+
+  /aluno/inscricoes/{inscricaoId}:
+    get:
+      summary: Obter detalhes de uma inscrição
+      description: |
+        Obtém informações detalhadas de uma inscrição específica do aluno.
+      tags:
+        - App do Aluno
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: inscricaoId
+          in: path
+          required: true
+          description: ID único da inscrição
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes da inscrição
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/InscricaoResponse'
+
+  /aluno/professor/{professorId}/produtos:
+    get:
+      summary: Listar meus produtos disponíveis
+      description: |
+        Lista todos os produtos (cursos, e-books, mentorias) aos quais o aluno 
+        tem acesso através de suas inscrições ativas com um professor específico.
+      tags:
+        - App do Aluno
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de produtos disponíveis para o aluno
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProdutoResponse'
+
+  /aluno/professor/{professorId}/aulas/{aulaId}:
+    get:
+      summary: Obter aula completa com verificação de acesso
+      description: |
+        Obtém informações completas de uma aula, incluindo o conteúdo se o aluno 
+        tiver acesso através de inscrição ativa no plano.
+        
+        **Controle de Acesso:**
+        - Se o aluno tem inscrição ativa: retorna aula completa com conteúdo
+        - Se o aluno não tem acesso: retorna apenas metadados sem conteúdo
+      tags:
+        - App do Aluno
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: aulaId
+          in: path
+          required: true
+          description: ID único da aula
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Aula com verificação de acesso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AulaCompletaResponse'
+              examples:
+                com_acesso:
+                  summary: Aluno com acesso ao conteúdo
+                  value:
+                    success: true
+                    data:
+                      id: "aula-123"
+                      titulo: "Introdução ao JavaScript"
+                      descricao: "Conceitos básicos da linguagem"
+                      ordem: 1
+                      tipoConteudo: "VIDEO"
+                      planoId: "plano-123"
+                      moduloId: "modulo-123"
+                      temAcesso: true
+                      conteudo:
+                        id: "conteudo-123"
+                        urlVideo: "https://exemplo.com/video.mp4"
+                        textoMarkdown: "# Conteúdo da aula..."
+                        arquivoUrl: "https://exemplo.com/material.pdf"
+                        aulaId: "aula-123"
+                sem_acesso:
+                  summary: Aluno sem acesso ao conteúdo
+                  value:
+                    success: true
+                    data:
+                      id: "aula-123"
+                      titulo: "Introdução ao JavaScript"
+                      descricao: "Conceitos básicos da linguagem"
+                      ordem: 1
+                      tipoConteudo: "VIDEO"
+                      planoId: "plano-123"
+                      moduloId: "modulo-123"
+                      temAcesso: false
+                      conteudo: null
+
+  /aluno/professor/{professorId}/aulas/{aulaId}/conteudo:
+    get:
+      summary: Obter conteúdo da aula (acesso restrito)
+      description: |
+        Obtém o conteúdo completo de uma aula específica.
+        
+        **Importante:** Este endpoint requer que o aluno tenha inscrição ativa 
+        no plano que inclui esta aula. Caso contrário, retornará erro 403.
+      tags:
+        - App do Aluno
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID único do professor
+          schema:
+            type: string
+            format: uuid
+        - name: aulaId
+          in: path
+          required: true
+          description: ID único da aula
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Conteúdo da aula
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ConteudoResponse'
+        '403':
+          description: Acesso negado - inscrição ativa necessária
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              examples:
+                access_denied:
+                  summary: Sem acesso ao conteúdo
+                  value:
+                    success: false
+                    error:
+                      message: "Você não tem acesso ao conteúdo desta aula. É necessário ter uma inscrição ativa no plano."

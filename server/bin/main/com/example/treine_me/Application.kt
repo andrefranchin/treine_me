@@ -8,6 +8,8 @@ import com.example.treine_me.routes.professorRoutes
 import com.example.treine_me.routes.professorAuthRoutes
 import com.example.treine_me.routes.fileUploadRoutes
 import com.example.treine_me.routes.contextualUploadRoutes
+import com.example.treine_me.routes.publicRoutes
+import com.example.treine_me.routes.alunoRoutes
 import com.example.treine_me.services.AuthService
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -16,7 +18,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun main() {
-    embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
@@ -51,5 +53,7 @@ fun Application.module() {
         professorRoutes()
         fileUploadRoutes()
         contextualUploadRoutes()
+        publicRoutes()
+        alunoRoutes()
     }
 }
