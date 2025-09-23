@@ -22,7 +22,8 @@ object DatabaseConfig {
                 ProdutoPlanos,
                 Modulos,
                 Aulas,
-                Conteudos
+                Conteudos,
+                ProgressosAula
             )
         }
     }
@@ -53,7 +54,8 @@ object DatabaseConfig {
                 ProdutoPlanos,
                 Modulos,
                 Aulas,
-                Conteudos
+                Conteudos,
+                ProgressosAula
             )
         }
     }

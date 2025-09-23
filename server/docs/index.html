@@ -1710,6 +1710,10 @@
                     <li data-group="AppDoAluno" data-name="alunoProfessorProfessorIdProdutosGet" class="">
                       <a href="#api-AppDoAluno-alunoProfessorProfessorIdProdutosGet">alunoProfessorProfessorIdProdutosGet</a>
                     </li>
+                  <li class="nav-header" data-group="AutenticaoDeAlunos"><a href="#api-AutenticaoDeAlunos">API Methods - AutenticaoDeAlunos</a></li>
+                    <li data-group="AutenticaoDeAlunos" data-name="authAlunoLoginPost" class="">
+                      <a href="#api-AutenticaoDeAlunos-authAlunoLoginPost">authAlunoLoginPost</a>
+                    </li>
                   <li class="nav-header" data-group="Authentication"><a href="#api-Authentication">API Methods - Authentication</a></li>
                     <li data-group="Authentication" data-name="authLoginPost" class="">
                       <a href="#api-Authentication-authLoginPost">authLoginPost</a>
@@ -1722,6 +1726,22 @@
                     </li>
                     <li data-group="Authentication" data-name="authRegisterProfessorPost" class="">
                       <a href="#api-Authentication-authRegisterProfessorPost">authRegisterProfessorPost</a>
+                    </li>
+                  <li class="nav-header" data-group="CRUDDeAlunos"><a href="#api-CRUDDeAlunos">API Methods - CRUDDeAlunos</a></li>
+                    <li data-group="CRUDDeAlunos" data-name="professoresMeAlunosGet" class="">
+                      <a href="#api-CRUDDeAlunos-professoresMeAlunosGet">professoresMeAlunosGet</a>
+                    </li>
+                    <li data-group="CRUDDeAlunos" data-name="professoresMeAlunosIdDelete" class="">
+                      <a href="#api-CRUDDeAlunos-professoresMeAlunosIdDelete">professoresMeAlunosIdDelete</a>
+                    </li>
+                    <li data-group="CRUDDeAlunos" data-name="professoresMeAlunosIdGet" class="">
+                      <a href="#api-CRUDDeAlunos-professoresMeAlunosIdGet">professoresMeAlunosIdGet</a>
+                    </li>
+                    <li data-group="CRUDDeAlunos" data-name="professoresMeAlunosIdPut" class="">
+                      <a href="#api-CRUDDeAlunos-professoresMeAlunosIdPut">professoresMeAlunosIdPut</a>
+                    </li>
+                    <li data-group="CRUDDeAlunos" data-name="professoresMeAlunosPost" class="">
+                      <a href="#api-CRUDDeAlunos-professoresMeAlunosPost">professoresMeAlunosPost</a>
                     </li>
                   <li class="nav-header" data-group="Health"><a href="#api-Health">API Methods - Health</a></li>
                     <li data-group="Health" data-name="healthGet" class="">
@@ -1804,6 +1824,23 @@
                     <li data-group="Professores" data-name="professoresMeProdutosPost" class="">
                       <a href="#api-Professores-professoresMeProdutosPost">professoresMeProdutosPost</a>
                     </li>
+                  <li class="nav-header" data-group="ProgressoDeAulas"><a href="#api-ProgressoDeAulas">API Methods - ProgressoDeAulas</a></li>
+                    <li data-group="ProgressoDeAulas" data-name="alunoProgressoGet" class="">
+                      <a href="#api-ProgressoDeAulas-alunoProgressoGet">alunoProgressoGet</a>
+                    </li>
+                    <li data-group="ProgressoDeAulas" data-name="alunoProgressoPost" class="">
+                      <a href="#api-ProgressoDeAulas-alunoProgressoPost">alunoProgressoPost</a>
+                    </li>
+                  <li class="nav-header" data-group="RelatriosDeProgresso"><a href="#api-RelatriosDeProgresso">API Methods - RelatriosDeProgresso</a></li>
+                    <li data-group="RelatriosDeProgresso" data-name="professoresMeAlunosAlunoIdProgressoPorModuloGet" class="">
+                      <a href="#api-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet">professoresMeAlunosAlunoIdProgressoPorModuloGet</a>
+                    </li>
+                    <li data-group="RelatriosDeProgresso" data-name="professoresMeAlunosAlunoIdProgressoResumoGet" class="">
+                      <a href="#api-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet">professoresMeAlunosAlunoIdProgressoResumoGet</a>
+                    </li>
+                    <li data-group="RelatriosDeProgresso" data-name="professoresMeEstatisticasGeraisGet" class="">
+                      <a href="#api-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet">professoresMeEstatisticasGeraisGet</a>
+                    </li>
                   <li class="nav-header" data-group="Upload"><a href="#api-Upload">API Methods - Upload</a></li>
                     <li data-group="Upload" data-name="uploadCourseCoverPost" class="">
                       <a href="#api-Upload-uploadCourseCoverPost">uploadCourseCoverPost</a>
@@ -1868,6 +1905,10 @@ e alunos podem se inscrever e acessar o material didático.</p>
 <li><strong>Upload de Arquivos</strong>: Integração com Cloudflare R2 para fotos, vídeos e documentos</li>
 <li><strong>Estrutura de Conteúdo</strong>: Módulos e aulas organizados hierarquicamente</li>
 <li><strong>Atribuição Manual</strong>: Professor atribui planos aos alunos</li>
+<li><strong>CRUD de Alunos</strong>: Professores gerenciam seus alunos</li>
+<li><strong>Progresso de Aulas</strong>: Sistema completo de tracking de progresso dos alunos</li>
+<li><strong>Autenticação de Alunos</strong>: Sistema específico para alunos com controle por professor</li>
+<li><strong>Relatórios de Progresso</strong>: Visualização detalhada do progresso dos alunos</li>
 <li><strong>API Pública</strong>: Endpoints sem autenticação para navegação de conteúdo</li>
 <li><strong>App do Aluno</strong>: Funcionalidades específicas para alunos com verificação de acesso</li>
 </ul>
@@ -9956,6 +9997,392 @@ except ApiException as e:
                       </div>
                       <hr>
                   </section>
+                <section id="api-AutenticaoDeAlunos">
+                  <h1>AutenticaoDeAlunos</h1>
+                    <div id="api-AutenticaoDeAlunos-authAlunoLoginPost">
+                      <article id="api-AutenticaoDeAlunos-authAlunoLoginPost-0" data-group="User" data-name="authAlunoLoginPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>authAlunoLoginPost</h1>
+                          <p>Login de aluno com professor específico</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Autentica um aluno especificando o professor que deseja acessar.
+O aluno deve ter inscrição ativa com o professor especificado.
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/auth/aluno/login</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-AutenticaoDeAlunos-authAlunoLoginPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"http://localhost:8080/auth/aluno/login"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.AutenticaoDeAlunosApi;
+
+import java.io.File;
+import java.util.*;
+
+public class AutenticaoDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        
+        AutenticaoDeAlunosApi apiInstance = new AutenticaoDeAlunosApi();
+        Object body = {
+  "summary" : "Login de aluno",
+  "value" : {
+    "email" : "aluno@exemplo.com",
+    "senha" : "senha123",
+    "professorId" : "550e8400-e29b-41d4-a716-446655440000"
+  }
+}; // Object | 
+        try {
+            apiInstance.authAlunoLoginPost(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling AutenticaoDeAlunosApi#authAlunoLoginPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.AutenticaoDeAlunosApi;
+
+public class AutenticaoDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        AutenticaoDeAlunosApi apiInstance = new AutenticaoDeAlunosApi();
+        Object body = {
+  "summary" : "Login de aluno",
+  "value" : {
+    "email" : "aluno@exemplo.com",
+    "senha" : "senha123",
+    "professorId" : "550e8400-e29b-41d4-a716-446655440000"
+  }
+}; // Object | 
+        try {
+            apiInstance.authAlunoLoginPost(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling AutenticaoDeAlunosApi#authAlunoLoginPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Object *body = {
+  "summary" : "Login de aluno",
+  "value" : {
+    "email" : "aluno@exemplo.com",
+    "senha" : "senha123",
+    "professorId" : "550e8400-e29b-41d4-a716-446655440000"
+  }
+}; // 
+
+AutenticaoDeAlunosApi *apiInstance = [[AutenticaoDeAlunosApi alloc] init];
+
+// Login de aluno com professor específico
+[apiInstance authAlunoLoginPostWith:body
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+
+var api = new TreineMeApi.AutenticaoDeAlunosApi()
+var body = {
+  "summary" : "Login de aluno",
+  "value" : {
+    "email" : "aluno@exemplo.com",
+    "senha" : "senha123",
+    "professorId" : "550e8400-e29b-41d4-a716-446655440000"
+  }
+}; // {{Object}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.authAlunoLoginPost(body, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class authAlunoLoginPostExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new AutenticaoDeAlunosApi();
+            var body = new Object(); // Object | 
+
+            try
+            {
+                // Login de aluno com professor específico
+                apiInstance.authAlunoLoginPost(body);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling AutenticaoDeAlunosApi.authAlunoLoginPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiAutenticaoDeAlunosApi();
+$body = {
+  "summary" : "Login de aluno",
+  "value" : {
+    "email" : "aluno@exemplo.com",
+    "senha" : "senha123",
+    "professorId" : "550e8400-e29b-41d4-a716-446655440000"
+  }
+}; // Object | 
+
+try {
+    $api_instance->authAlunoLoginPost($body);
+} catch (Exception $e) {
+    echo 'Exception when calling AutenticaoDeAlunosApi->authAlunoLoginPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::AutenticaoDeAlunosApi;
+
+my $api_instance = WWW::SwaggerClient::AutenticaoDeAlunosApi->new();
+my $body = WWW::SwaggerClient::Object::Object->new(); # Object | 
+
+eval { 
+    $api_instance->authAlunoLoginPost(body => $body);
+};
+if ($@) {
+    warn "Exception when calling AutenticaoDeAlunosApi->authAlunoLoginPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-AutenticaoDeAlunos-authAlunoLoginPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.AutenticaoDeAlunosApi()
+body = {
+  "summary" : "Login de aluno",
+  "value" : {
+    "email" : "aluno@exemplo.com",
+    "senha" : "senha123",
+    "professorId" : "550e8400-e29b-41d4-a716-446655440000"
+  }
+} # Object | 
+
+try: 
+    # Login de aluno com professor específico
+    api_instance.auth_aluno_login_post(body)
+except ApiException as e:
+    print("Exception when calling AutenticaoDeAlunosApi->authAlunoLoginPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "required" : [ "email", "professorId", "senha" ],
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "description" : "Email do aluno",
+            "format" : "email"
+          },
+          "senha" : {
+            "type" : "string",
+            "description" : "Senha do aluno"
+          },
+          "professorId" : {
+            "type" : "string",
+            "description" : "ID do professor que o aluno quer acessar",
+            "format" : "uuid"
+          }
+        }
+      },
+      "examples" : {
+        "login_aluno" : {
+          "summary" : "Login de aluno",
+          "value" : {
+            "email" : "aluno@exemplo.com",
+            "senha" : "senha123",
+            "professorId" : "550e8400-e29b-41d4-a716-446655440000"
+          }
+        }
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_authAlunoLoginPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_authAlunoLoginPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Login realizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-authAlunoLoginPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-authAlunoLoginPost-200-schema">
+                                  <div id='responses-authAlunoLoginPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Login realizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/LoginResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-authAlunoLoginPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-authAlunoLoginPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-authAlunoLoginPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
                 <section id="api-Authentication">
                   <h1>Authentication</h1>
                     <div id="api-Authentication-authLoginPost">
@@ -11692,6 +12119,1600 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-authRegisterProfessorPost-409-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-CRUDDeAlunos">
+                  <h1>CRUDDeAlunos</h1>
+                    <div id="api-CRUDDeAlunos-professoresMeAlunosGet">
+                      <article id="api-CRUDDeAlunos-professoresMeAlunosGet-0" data-group="User" data-name="professoresMeAlunosGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeAlunosGet</h1>
+                          <p>Listar alunos do professor</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Lista todos os alunos que têm inscrições com o professor</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/professores/me/alunos</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/professores/me/alunos?page=&size="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CRUDDeAlunosApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        Integer page = 56; // Integer | Número da página
+        Integer size = 56; // Integer | Itens por página
+        try {
+            apiInstance.professoresMeAlunosGet(page, size);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CRUDDeAlunosApi;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        Integer page = 56; // Integer | Número da página
+        Integer size = 56; // Integer | Itens por página
+        try {
+            apiInstance.professoresMeAlunosGet(page, size);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *page = 56; // Número da página (optional) (default to 1)
+Integer *size = 56; // Itens por página (optional) (default to 20)
+
+CRUDDeAlunosApi *apiInstance = [[CRUDDeAlunosApi alloc] init];
+
+// Listar alunos do professor
+[apiInstance professoresMeAlunosGetWith:page
+    size:size
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.CRUDDeAlunosApi()
+var opts = { 
+  'page': 56, // {{Integer}} Número da página
+  'size': 56 // {{Integer}} Itens por página
+};
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeAlunosGet(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeAlunosGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new CRUDDeAlunosApi();
+            var page = 56;  // Integer | Número da página (optional)  (default to 1)
+            var size = 56;  // Integer | Itens por página (optional)  (default to 20)
+
+            try
+            {
+                // Listar alunos do professor
+                apiInstance.professoresMeAlunosGet(page, size);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CRUDDeAlunosApi.professoresMeAlunosGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiCRUDDeAlunosApi();
+$page = 56; // Integer | Número da página
+$size = 56; // Integer | Itens por página
+
+try {
+    $api_instance->professoresMeAlunosGet($page, $size);
+} catch (Exception $e) {
+    echo 'Exception when calling CRUDDeAlunosApi->professoresMeAlunosGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CRUDDeAlunosApi;
+
+
+my $api_instance = WWW::SwaggerClient::CRUDDeAlunosApi->new();
+my $page = 56; # Integer | Número da página
+my $size = 56; # Integer | Itens por página
+
+eval { 
+    $api_instance->professoresMeAlunosGet(page => $page, size => $size);
+};
+if ($@) {
+    warn "Exception when calling CRUDDeAlunosApi->professoresMeAlunosGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.CRUDDeAlunosApi()
+page = 56 # Integer | Número da página (optional) (default to 1)
+size = 56 # Integer | Itens por página (optional) (default to 20)
+
+try: 
+    # Listar alunos do professor
+    api_instance.professores_me_alunos_get(page=page, size=size)
+except ApiException as e:
+    print("Exception when calling CRUDDeAlunosApi->professoresMeAlunosGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_professoresMeAlunosGet_page">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Integer
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Número da página
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">size</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_professoresMeAlunosGet_size">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Integer
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Itens por página
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Lista de alunos </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeAlunosGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeAlunosGet-200-schema">
+                                  <div id='responses-professoresMeAlunosGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Lista de alunos",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/PaginatedAlunoComInscricoesResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeAlunosGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeAlunosGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeAlunosGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CRUDDeAlunos-professoresMeAlunosIdDelete">
+                      <article id="api-CRUDDeAlunos-professoresMeAlunosIdDelete-0" data-group="User" data-name="professoresMeAlunosIdDelete" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeAlunosIdDelete</h1>
+                          <p>Desativar aluno</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Desativa um aluno e cancela suas inscrições</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/professores/me/alunos/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/professores/me/alunos/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CRUDDeAlunosApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        UUID id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosIdDelete(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosIdDelete");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CRUDDeAlunosApi;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        UUID id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosIdDelete(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosIdDelete");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UUID *id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // ID do aluno
+
+CRUDDeAlunosApi *apiInstance = [[CRUDDeAlunosApi alloc] init];
+
+// Desativar aluno
+[apiInstance professoresMeAlunosIdDeleteWith:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.CRUDDeAlunosApi()
+var id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {{UUID}} ID do aluno
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeAlunosIdDelete(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeAlunosIdDeleteExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new CRUDDeAlunosApi();
+            var id = new UUID(); // UUID | ID do aluno
+
+            try
+            {
+                // Desativar aluno
+                apiInstance.professoresMeAlunosIdDelete(id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CRUDDeAlunosApi.professoresMeAlunosIdDelete: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiCRUDDeAlunosApi();
+$id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+
+try {
+    $api_instance->professoresMeAlunosIdDelete($id);
+} catch (Exception $e) {
+    echo 'Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdDelete: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CRUDDeAlunosApi;
+
+
+my $api_instance = WWW::SwaggerClient::CRUDDeAlunosApi->new();
+my $id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | ID do aluno
+
+eval { 
+    $api_instance->professoresMeAlunosIdDelete(id => $id);
+};
+if ($@) {
+    warn "Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdDelete: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdDelete-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.CRUDDeAlunosApi()
+id = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | ID do aluno
+
+try: 
+    # Desativar aluno
+    api_instance.professores_me_alunos_id_delete(id)
+except ApiException as e:
+    print("Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdDelete: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_professoresMeAlunosIdDelete_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      UUID
+                                                  </span>
+                                                      <span class="format">
+                                                          (uuid)
+                                                      </span>
+                                  
+                                                      <div class="inner description">
+                                                          ID do aluno
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Aluno desativado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeAlunosIdDelete-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeAlunosIdDelete-200-schema">
+                                  <div id='responses-professoresMeAlunosIdDelete-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Aluno desativado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "type" : "object",
+              "properties" : {
+                "success" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeAlunosIdDelete-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeAlunosIdDelete-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeAlunosIdDelete-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CRUDDeAlunos-professoresMeAlunosIdGet">
+                      <article id="api-CRUDDeAlunos-professoresMeAlunosIdGet-0" data-group="User" data-name="professoresMeAlunosIdGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeAlunosIdGet</h1>
+                          <p>Obter aluno específico</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Obtém detalhes de um aluno específico</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/professores/me/alunos/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/professores/me/alunos/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CRUDDeAlunosApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        UUID id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosIdGet(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosIdGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CRUDDeAlunosApi;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        UUID id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosIdGet(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosIdGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UUID *id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // ID do aluno
+
+CRUDDeAlunosApi *apiInstance = [[CRUDDeAlunosApi alloc] init];
+
+// Obter aluno específico
+[apiInstance professoresMeAlunosIdGetWith:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.CRUDDeAlunosApi()
+var id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {{UUID}} ID do aluno
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeAlunosIdGet(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeAlunosIdGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new CRUDDeAlunosApi();
+            var id = new UUID(); // UUID | ID do aluno
+
+            try
+            {
+                // Obter aluno específico
+                apiInstance.professoresMeAlunosIdGet(id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CRUDDeAlunosApi.professoresMeAlunosIdGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiCRUDDeAlunosApi();
+$id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+
+try {
+    $api_instance->professoresMeAlunosIdGet($id);
+} catch (Exception $e) {
+    echo 'Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CRUDDeAlunosApi;
+
+
+my $api_instance = WWW::SwaggerClient::CRUDDeAlunosApi->new();
+my $id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | ID do aluno
+
+eval { 
+    $api_instance->professoresMeAlunosIdGet(id => $id);
+};
+if ($@) {
+    warn "Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.CRUDDeAlunosApi()
+id = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | ID do aluno
+
+try: 
+    # Obter aluno específico
+    api_instance.professores_me_alunos_id_get(id)
+except ApiException as e:
+    print("Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_professoresMeAlunosIdGet_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      UUID
+                                                  </span>
+                                                      <span class="format">
+                                                          (uuid)
+                                                      </span>
+                                  
+                                                      <div class="inner description">
+                                                          ID do aluno
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Dados do aluno </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeAlunosIdGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeAlunosIdGet-200-schema">
+                                  <div id='responses-professoresMeAlunosIdGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Dados do aluno",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/AlunoComInscricoesResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeAlunosIdGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeAlunosIdGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeAlunosIdGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CRUDDeAlunos-professoresMeAlunosIdPut">
+                      <article id="api-CRUDDeAlunos-professoresMeAlunosIdPut-0" data-group="User" data-name="professoresMeAlunosIdPut" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeAlunosIdPut</h1>
+                          <p>Atualizar aluno</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Atualiza dados de um aluno</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/professores/me/alunos/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"http://localhost:8080/professores/me/alunos/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CRUDDeAlunosApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        UUID id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosIdPut(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosIdPut");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CRUDDeAlunosApi;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        UUID id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosIdPut(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosIdPut");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UUID *id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // ID do aluno
+
+CRUDDeAlunosApi *apiInstance = [[CRUDDeAlunosApi alloc] init];
+
+// Atualizar aluno
+[apiInstance professoresMeAlunosIdPutWith:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.CRUDDeAlunosApi()
+var id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {{UUID}} ID do aluno
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeAlunosIdPut(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeAlunosIdPutExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new CRUDDeAlunosApi();
+            var id = new UUID(); // UUID | ID do aluno
+
+            try
+            {
+                // Atualizar aluno
+                apiInstance.professoresMeAlunosIdPut(id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CRUDDeAlunosApi.professoresMeAlunosIdPut: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiCRUDDeAlunosApi();
+$id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+
+try {
+    $api_instance->professoresMeAlunosIdPut($id);
+} catch (Exception $e) {
+    echo 'Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdPut: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CRUDDeAlunosApi;
+
+
+my $api_instance = WWW::SwaggerClient::CRUDDeAlunosApi->new();
+my $id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | ID do aluno
+
+eval { 
+    $api_instance->professoresMeAlunosIdPut(id => $id);
+};
+if ($@) {
+    warn "Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdPut: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosIdPut-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.CRUDDeAlunosApi()
+id = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | ID do aluno
+
+try: 
+    # Atualizar aluno
+    api_instance.professores_me_alunos_id_put(id)
+except ApiException as e:
+    print("Exception when calling CRUDDeAlunosApi->professoresMeAlunosIdPut: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_professoresMeAlunosIdPut_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      UUID
+                                                  </span>
+                                                      <span class="format">
+                                                          (uuid)
+                                                      </span>
+                                  
+                                                      <div class="inner description">
+                                                          ID do aluno
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Aluno atualizado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeAlunosIdPut-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeAlunosIdPut-200-schema">
+                                  <div id='responses-professoresMeAlunosIdPut-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Aluno atualizado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/AlunoResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeAlunosIdPut-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeAlunosIdPut-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeAlunosIdPut-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CRUDDeAlunos-professoresMeAlunosPost">
+                      <article id="api-CRUDDeAlunos-professoresMeAlunosPost-0" data-group="User" data-name="professoresMeAlunosPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeAlunosPost</h1>
+                          <p>Criar aluno</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Professor cria um novo aluno</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/professores/me/alunos</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CRUDDeAlunos-professoresMeAlunosPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"http://localhost:8080/professores/me/alunos"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CRUDDeAlunosApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        AlunoCreateRequest body = ; // AlunoCreateRequest | 
+        try {
+            apiInstance.professoresMeAlunosPost(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CRUDDeAlunosApi;
+
+public class CRUDDeAlunosApiExample {
+
+    public static void main(String[] args) {
+        CRUDDeAlunosApi apiInstance = new CRUDDeAlunosApi();
+        AlunoCreateRequest body = ; // AlunoCreateRequest | 
+        try {
+            apiInstance.professoresMeAlunosPost(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CRUDDeAlunosApi#professoresMeAlunosPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+AlunoCreateRequest *body = ; // 
+
+CRUDDeAlunosApi *apiInstance = [[CRUDDeAlunosApi alloc] init];
+
+// Criar aluno
+[apiInstance professoresMeAlunosPostWith:body
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.CRUDDeAlunosApi()
+var body = ; // {{AlunoCreateRequest}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeAlunosPost(body, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeAlunosPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new CRUDDeAlunosApi();
+            var body = new AlunoCreateRequest(); // AlunoCreateRequest | 
+
+            try
+            {
+                // Criar aluno
+                apiInstance.professoresMeAlunosPost(body);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CRUDDeAlunosApi.professoresMeAlunosPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiCRUDDeAlunosApi();
+$body = ; // AlunoCreateRequest | 
+
+try {
+    $api_instance->professoresMeAlunosPost($body);
+} catch (Exception $e) {
+    echo 'Exception when calling CRUDDeAlunosApi->professoresMeAlunosPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CRUDDeAlunosApi;
+
+
+my $api_instance = WWW::SwaggerClient::CRUDDeAlunosApi->new();
+my $body = WWW::SwaggerClient::Object::AlunoCreateRequest->new(); # AlunoCreateRequest | 
+
+eval { 
+    $api_instance->professoresMeAlunosPost(body => $body);
+};
+if ($@) {
+    warn "Exception when calling CRUDDeAlunosApi->professoresMeAlunosPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CRUDDeAlunos-professoresMeAlunosPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.CRUDDeAlunosApi()
+body =  # AlunoCreateRequest | 
+
+try: 
+    # Criar aluno
+    api_instance.professores_me_alunos_post(body)
+except ApiException as e:
+    print("Exception when calling CRUDDeAlunosApi->professoresMeAlunosPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/AlunoCreateRequest"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_professoresMeAlunosPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_professoresMeAlunosPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Aluno criado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeAlunosPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeAlunosPost-200-schema">
+                                  <div id='responses-professoresMeAlunosPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Aluno criado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/AlunoResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeAlunosPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeAlunosPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeAlunosPost-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -20482,6 +22503,1509 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-professoresMeProdutosPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-ProgressoDeAulas">
+                  <h1>ProgressoDeAulas</h1>
+                    <div id="api-ProgressoDeAulas-alunoProgressoGet">
+                      <article id="api-ProgressoDeAulas-alunoProgressoGet-0" data-group="User" data-name="alunoProgressoGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>alunoProgressoGet</h1>
+                          <p>Obter meu progresso</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Lista o progresso do aluno em todas as aulas</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/aluno/progresso</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ProgressoDeAulas-alunoProgressoGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/aluno/progresso?page=&size="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ProgressoDeAulasApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ProgressoDeAulasApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        ProgressoDeAulasApi apiInstance = new ProgressoDeAulasApi();
+        Integer page = 56; // Integer | Número da página
+        Integer size = 56; // Integer | Itens por página
+        try {
+            apiInstance.alunoProgressoGet(page, size);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ProgressoDeAulasApi#alunoProgressoGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ProgressoDeAulasApi;
+
+public class ProgressoDeAulasApiExample {
+
+    public static void main(String[] args) {
+        ProgressoDeAulasApi apiInstance = new ProgressoDeAulasApi();
+        Integer page = 56; // Integer | Número da página
+        Integer size = 56; // Integer | Itens por página
+        try {
+            apiInstance.alunoProgressoGet(page, size);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ProgressoDeAulasApi#alunoProgressoGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *page = 56; // Número da página (optional) (default to 1)
+Integer *size = 56; // Itens por página (optional) (default to 20)
+
+ProgressoDeAulasApi *apiInstance = [[ProgressoDeAulasApi alloc] init];
+
+// Obter meu progresso
+[apiInstance alunoProgressoGetWith:page
+    size:size
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.ProgressoDeAulasApi()
+var opts = { 
+  'page': 56, // {{Integer}} Número da página
+  'size': 56 // {{Integer}} Itens por página
+};
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.alunoProgressoGet(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class alunoProgressoGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new ProgressoDeAulasApi();
+            var page = 56;  // Integer | Número da página (optional)  (default to 1)
+            var size = 56;  // Integer | Itens por página (optional)  (default to 20)
+
+            try
+            {
+                // Obter meu progresso
+                apiInstance.alunoProgressoGet(page, size);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ProgressoDeAulasApi.alunoProgressoGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiProgressoDeAulasApi();
+$page = 56; // Integer | Número da página
+$size = 56; // Integer | Itens por página
+
+try {
+    $api_instance->alunoProgressoGet($page, $size);
+} catch (Exception $e) {
+    echo 'Exception when calling ProgressoDeAulasApi->alunoProgressoGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ProgressoDeAulasApi;
+
+
+my $api_instance = WWW::SwaggerClient::ProgressoDeAulasApi->new();
+my $page = 56; # Integer | Número da página
+my $size = 56; # Integer | Itens por página
+
+eval { 
+    $api_instance->alunoProgressoGet(page => $page, size => $size);
+};
+if ($@) {
+    warn "Exception when calling ProgressoDeAulasApi->alunoProgressoGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.ProgressoDeAulasApi()
+page = 56 # Integer | Número da página (optional) (default to 1)
+size = 56 # Integer | Itens por página (optional) (default to 20)
+
+try: 
+    # Obter meu progresso
+    api_instance.aluno_progresso_get(page=page, size=size)
+except ApiException as e:
+    print("Exception when calling ProgressoDeAulasApi->alunoProgressoGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_alunoProgressoGet_page">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Integer
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Número da página
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">size</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_alunoProgressoGet_size">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Integer
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Itens por página
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Lista de progresso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-alunoProgressoGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-alunoProgressoGet-200-schema">
+                                  <div id='responses-alunoProgressoGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Lista de progresso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/PaginatedProgressoAulaResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-alunoProgressoGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-alunoProgressoGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-alunoProgressoGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ProgressoDeAulas-alunoProgressoPost">
+                      <article id="api-ProgressoDeAulas-alunoProgressoPost-0" data-group="User" data-name="alunoProgressoPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>alunoProgressoPost</h1>
+                          <p>Registrar progresso de aula</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Aluno registra seu progresso em uma aula específica.
+O front-end deve enviar os dados de progresso.
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/aluno/progresso</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ProgressoDeAulas-alunoProgressoPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ProgressoDeAulas-alunoProgressoPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"http://localhost:8080/aluno/progresso"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ProgressoDeAulasApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ProgressoDeAulasApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        ProgressoDeAulasApi apiInstance = new ProgressoDeAulasApi();
+        try {
+            apiInstance.alunoProgressoPost();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ProgressoDeAulasApi#alunoProgressoPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ProgressoDeAulasApi;
+
+public class ProgressoDeAulasApiExample {
+
+    public static void main(String[] args) {
+        ProgressoDeAulasApi apiInstance = new ProgressoDeAulasApi();
+        try {
+            apiInstance.alunoProgressoPost();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ProgressoDeAulasApi#alunoProgressoPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+ProgressoDeAulasApi *apiInstance = [[ProgressoDeAulasApi alloc] init];
+
+// Registrar progresso de aula
+[apiInstance alunoProgressoPostWithCompletionHandler: 
+              ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.ProgressoDeAulasApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.alunoProgressoPost(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class alunoProgressoPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new ProgressoDeAulasApi();
+
+            try
+            {
+                // Registrar progresso de aula
+                apiInstance.alunoProgressoPost();
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ProgressoDeAulasApi.alunoProgressoPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiProgressoDeAulasApi();
+
+try {
+    $api_instance->alunoProgressoPost();
+} catch (Exception $e) {
+    echo 'Exception when calling ProgressoDeAulasApi->alunoProgressoPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ProgressoDeAulasApi;
+
+
+my $api_instance = WWW::SwaggerClient::ProgressoDeAulasApi->new();
+
+eval { 
+    $api_instance->alunoProgressoPost();
+};
+if ($@) {
+    warn "Exception when calling ProgressoDeAulasApi->alunoProgressoPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ProgressoDeAulas-alunoProgressoPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.ProgressoDeAulasApi()
+
+try: 
+    # Registrar progresso de aula
+    api_instance.aluno_progresso_post()
+except ApiException as e:
+    print("Exception when calling ProgressoDeAulasApi->alunoProgressoPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Progresso registrado com sucesso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-alunoProgressoPost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-alunoProgressoPost-200-schema">
+                                  <div id='responses-alunoProgressoPost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Progresso registrado com sucesso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/ProgressoAulaResponse"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-alunoProgressoPost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-alunoProgressoPost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-alunoProgressoPost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-RelatriosDeProgresso">
+                  <h1>RelatriosDeProgresso</h1>
+                    <div id="api-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet">
+                      <article id="api-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0" data-group="User" data-name="professoresMeAlunosAlunoIdProgressoPorModuloGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeAlunosAlunoIdProgressoPorModuloGet</h1>
+                          <p>Progresso por módulo</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Obtém o progresso do aluno organizado por módulo</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/professores/me/alunos/{alunoId}/progresso/por-modulo</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/professores/me/alunos/{alunoId}/progresso/por-modulo"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.RelatriosDeProgressoApi;
+
+import java.io.File;
+import java.util.*;
+
+public class RelatriosDeProgressoApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        RelatriosDeProgressoApi apiInstance = new RelatriosDeProgressoApi();
+        UUID alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosAlunoIdProgressoPorModuloGet(alunoId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RelatriosDeProgressoApi#professoresMeAlunosAlunoIdProgressoPorModuloGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.RelatriosDeProgressoApi;
+
+public class RelatriosDeProgressoApiExample {
+
+    public static void main(String[] args) {
+        RelatriosDeProgressoApi apiInstance = new RelatriosDeProgressoApi();
+        UUID alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosAlunoIdProgressoPorModuloGet(alunoId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RelatriosDeProgressoApi#professoresMeAlunosAlunoIdProgressoPorModuloGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UUID *alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // ID do aluno
+
+RelatriosDeProgressoApi *apiInstance = [[RelatriosDeProgressoApi alloc] init];
+
+// Progresso por módulo
+[apiInstance professoresMeAlunosAlunoIdProgressoPorModuloGetWith:alunoId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.RelatriosDeProgressoApi()
+var alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {{UUID}} ID do aluno
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeAlunosAlunoIdProgressoPorModuloGet(alunoId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeAlunosAlunoIdProgressoPorModuloGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new RelatriosDeProgressoApi();
+            var alunoId = new UUID(); // UUID | ID do aluno
+
+            try
+            {
+                // Progresso por módulo
+                apiInstance.professoresMeAlunosAlunoIdProgressoPorModuloGet(alunoId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling RelatriosDeProgressoApi.professoresMeAlunosAlunoIdProgressoPorModuloGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiRelatriosDeProgressoApi();
+$alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+
+try {
+    $api_instance->professoresMeAlunosAlunoIdProgressoPorModuloGet($alunoId);
+} catch (Exception $e) {
+    echo 'Exception when calling RelatriosDeProgressoApi->professoresMeAlunosAlunoIdProgressoPorModuloGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::RelatriosDeProgressoApi;
+
+
+my $api_instance = WWW::SwaggerClient::RelatriosDeProgressoApi->new();
+my $alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | ID do aluno
+
+eval { 
+    $api_instance->professoresMeAlunosAlunoIdProgressoPorModuloGet(alunoId => $alunoId);
+};
+if ($@) {
+    warn "Exception when calling RelatriosDeProgressoApi->professoresMeAlunosAlunoIdProgressoPorModuloGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoPorModuloGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.RelatriosDeProgressoApi()
+alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | ID do aluno
+
+try: 
+    # Progresso por módulo
+    api_instance.professores_me_alunos_aluno_id_progresso_por_modulo_get(alunoId)
+except ApiException as e:
+    print("Exception when calling RelatriosDeProgressoApi->professoresMeAlunosAlunoIdProgressoPorModuloGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">alunoId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_professoresMeAlunosAlunoIdProgressoPorModuloGet_alunoId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      UUID
+                                                  </span>
+                                                      <span class="format">
+                                                          (uuid)
+                                                      </span>
+                                  
+                                                      <div class="inner description">
+                                                          ID do aluno
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Progresso por módulo </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeAlunosAlunoIdProgressoPorModuloGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeAlunosAlunoIdProgressoPorModuloGet-200-schema">
+                                  <div id='responses-professoresMeAlunosAlunoIdProgressoPorModuloGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Progresso por módulo",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ProgressoPorModulo"
+              }
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeAlunosAlunoIdProgressoPorModuloGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeAlunosAlunoIdProgressoPorModuloGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeAlunosAlunoIdProgressoPorModuloGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet">
+                      <article id="api-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0" data-group="User" data-name="professoresMeAlunosAlunoIdProgressoResumoGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeAlunosAlunoIdProgressoResumoGet</h1>
+                          <p>Resumo de progresso do aluno</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Obtém um resumo geral do progresso de um aluno</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/professores/me/alunos/{alunoId}/progresso/resumo</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/professores/me/alunos/{alunoId}/progresso/resumo"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.RelatriosDeProgressoApi;
+
+import java.io.File;
+import java.util.*;
+
+public class RelatriosDeProgressoApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        RelatriosDeProgressoApi apiInstance = new RelatriosDeProgressoApi();
+        UUID alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosAlunoIdProgressoResumoGet(alunoId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RelatriosDeProgressoApi#professoresMeAlunosAlunoIdProgressoResumoGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.RelatriosDeProgressoApi;
+
+public class RelatriosDeProgressoApiExample {
+
+    public static void main(String[] args) {
+        RelatriosDeProgressoApi apiInstance = new RelatriosDeProgressoApi();
+        UUID alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+        try {
+            apiInstance.professoresMeAlunosAlunoIdProgressoResumoGet(alunoId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RelatriosDeProgressoApi#professoresMeAlunosAlunoIdProgressoResumoGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+UUID *alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // ID do aluno
+
+RelatriosDeProgressoApi *apiInstance = [[RelatriosDeProgressoApi alloc] init];
+
+// Resumo de progresso do aluno
+[apiInstance professoresMeAlunosAlunoIdProgressoResumoGetWith:alunoId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.RelatriosDeProgressoApi()
+var alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {{UUID}} ID do aluno
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeAlunosAlunoIdProgressoResumoGet(alunoId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeAlunosAlunoIdProgressoResumoGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new RelatriosDeProgressoApi();
+            var alunoId = new UUID(); // UUID | ID do aluno
+
+            try
+            {
+                // Resumo de progresso do aluno
+                apiInstance.professoresMeAlunosAlunoIdProgressoResumoGet(alunoId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling RelatriosDeProgressoApi.professoresMeAlunosAlunoIdProgressoResumoGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiRelatriosDeProgressoApi();
+$alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | ID do aluno
+
+try {
+    $api_instance->professoresMeAlunosAlunoIdProgressoResumoGet($alunoId);
+} catch (Exception $e) {
+    echo 'Exception when calling RelatriosDeProgressoApi->professoresMeAlunosAlunoIdProgressoResumoGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::RelatriosDeProgressoApi;
+
+
+my $api_instance = WWW::SwaggerClient::RelatriosDeProgressoApi->new();
+my $alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | ID do aluno
+
+eval { 
+    $api_instance->professoresMeAlunosAlunoIdProgressoResumoGet(alunoId => $alunoId);
+};
+if ($@) {
+    warn "Exception when calling RelatriosDeProgressoApi->professoresMeAlunosAlunoIdProgressoResumoGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeAlunosAlunoIdProgressoResumoGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.RelatriosDeProgressoApi()
+alunoId = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | ID do aluno
+
+try: 
+    # Resumo de progresso do aluno
+    api_instance.professores_me_alunos_aluno_id_progresso_resumo_get(alunoId)
+except ApiException as e:
+    print("Exception when calling RelatriosDeProgressoApi->professoresMeAlunosAlunoIdProgressoResumoGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">alunoId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_professoresMeAlunosAlunoIdProgressoResumoGet_alunoId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      UUID
+                                                  </span>
+                                                      <span class="format">
+                                                          (uuid)
+                                                      </span>
+                                  
+                                                      <div class="inner description">
+                                                          ID do aluno
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Resumo do progresso </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeAlunosAlunoIdProgressoResumoGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeAlunosAlunoIdProgressoResumoGet-200-schema">
+                                  <div id='responses-professoresMeAlunosAlunoIdProgressoResumoGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Resumo do progresso",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/ResumoProgressoAluno"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeAlunosAlunoIdProgressoResumoGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeAlunosAlunoIdProgressoResumoGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeAlunosAlunoIdProgressoResumoGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet">
+                      <article id="api-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0" data-group="User" data-name="professoresMeEstatisticasGeraisGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>professoresMeEstatisticasGeraisGet</h1>
+                          <p>Estatísticas gerais do professor</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Obtém estatísticas gerais de todos os alunos do professor</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/professores/me/estatisticas-gerais</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/professores/me/estatisticas-gerais"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.RelatriosDeProgressoApi;
+
+import java.io.File;
+import java.util.*;
+
+public class RelatriosDeProgressoApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        RelatriosDeProgressoApi apiInstance = new RelatriosDeProgressoApi();
+        try {
+            apiInstance.professoresMeEstatisticasGeraisGet();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RelatriosDeProgressoApi#professoresMeEstatisticasGeraisGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.RelatriosDeProgressoApi;
+
+public class RelatriosDeProgressoApiExample {
+
+    public static void main(String[] args) {
+        RelatriosDeProgressoApi apiInstance = new RelatriosDeProgressoApi();
+        try {
+            apiInstance.professoresMeEstatisticasGeraisGet();
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RelatriosDeProgressoApi#professoresMeEstatisticasGeraisGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+RelatriosDeProgressoApi *apiInstance = [[RelatriosDeProgressoApi alloc] init];
+
+// Estatísticas gerais do professor
+[apiInstance professoresMeEstatisticasGeraisGetWithCompletionHandler: 
+              ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var TreineMeApi = require('treine_me_api');
+var defaultClient = TreineMeApi.ApiClient.instance;
+
+
+var api = new TreineMeApi.RelatriosDeProgressoApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.professoresMeEstatisticasGeraisGet(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class professoresMeEstatisticasGeraisGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new RelatriosDeProgressoApi();
+
+            try
+            {
+                // Estatísticas gerais do professor
+                apiInstance.professoresMeEstatisticasGeraisGet();
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling RelatriosDeProgressoApi.professoresMeEstatisticasGeraisGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiRelatriosDeProgressoApi();
+
+try {
+    $api_instance->professoresMeEstatisticasGeraisGet();
+} catch (Exception $e) {
+    echo 'Exception when calling RelatriosDeProgressoApi->professoresMeEstatisticasGeraisGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::RelatriosDeProgressoApi;
+
+
+my $api_instance = WWW::SwaggerClient::RelatriosDeProgressoApi->new();
+
+eval { 
+    $api_instance->professoresMeEstatisticasGeraisGet();
+};
+if ($@) {
+    warn "Exception when calling RelatriosDeProgressoApi->professoresMeEstatisticasGeraisGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-RelatriosDeProgresso-professoresMeEstatisticasGeraisGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.RelatriosDeProgressoApi()
+
+try: 
+    # Estatísticas gerais do professor
+    api_instance.professores_me_estatisticas_gerais_get()
+except ApiException as e:
+    print("Exception when calling RelatriosDeProgressoApi->professoresMeEstatisticasGeraisGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Estatísticas gerais </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-professoresMeEstatisticasGeraisGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-professoresMeEstatisticasGeraisGet-200-schema">
+                                  <div id='responses-professoresMeEstatisticasGeraisGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Estatísticas gerais",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "x-content-type" : "application/json",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ApiResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/EstatisticasGerais"
+            }
+          }
+        } ]
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-professoresMeEstatisticasGeraisGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-professoresMeEstatisticasGeraisGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-professoresMeEstatisticasGeraisGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 

@@ -3,7 +3,9 @@ package com.example.treine_me.routes
 import com.example.treine_me.dto.ApiResponse
 import com.example.treine_me.enums.UserRole
 import com.example.treine_me.models.AlunoUpdateRequest
+import com.example.treine_me.models.ProgressoAulaCreateRequest
 import com.example.treine_me.services.AlunoService
+import com.example.treine_me.services.ProgressoAulaService
 import com.example.treine_me.plugins.requireRole
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -20,6 +22,7 @@ import io.ktor.server.routing.*
  */
 fun Route.alunoRoutes() {
     val alunoService = AlunoService()
+    val progressoAulaService = ProgressoAulaService()
     
     authenticate("auth-jwt") {
         route("/aluno") {
@@ -43,6 +46,45 @@ fun Route.alunoRoutes() {
                 
                 val response = alunoService.updateMeuPerfil(alunoId, request)
                 call.respond(ApiResponse.success(response))
+            }
+            
+            // ========== PROGRESSO DE AULAS ==========
+            
+            post("/progresso") {
+                call.requireRole(UserRole.ALUNO)
+                val request = call.receive<ProgressoAulaCreateRequest>()
+                val principal = call.principal<JWTPrincipal>()
+                val alunoId = principal!!.payload.getClaim("userId").asString()
+                
+                val response = progressoAulaService.registrarProgresso(request, alunoId)
+                call.respond(ApiResponse.success(response))
+            }
+            
+            get("/progresso") {
+                call.requireRole(UserRole.ALUNO)
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
+                val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 20
+                val principal = call.principal<JWTPrincipal>()
+                val alunoId = principal!!.payload.getClaim("userId").asString()
+                
+                val response = progressoAulaService.getMeuProgresso(alunoId, page, size)
+                call.respond(ApiResponse.success(response))
+            }
+            
+            get("/progresso/aula/{aulaId}") {
+                call.requireRole(UserRole.ALUNO)
+                val aulaId = call.parameters["aulaId"] ?: return@get call.respond(
+                    ApiResponse.error("ID da aula é obrigatório")
+                )
+                val principal = call.principal<JWTPrincipal>()
+                val alunoId = principal!!.payload.getClaim("userId").asString()
+                
+                val response = progressoAulaService.getProgressoAula(aulaId, alunoId)
+                if (response != null) {
+                    call.respond(ApiResponse.success(response))
+                } else {
+                    call.respond(ApiResponse.success(mapOf("progresso" to null)))
+                }
             }
             
             // ========== INSCRIÇÕES ==========

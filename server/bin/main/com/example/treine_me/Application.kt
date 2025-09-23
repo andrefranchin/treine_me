@@ -6,10 +6,12 @@ import com.example.treine_me.routes.authRoutes
 import com.example.treine_me.routes.adminRoutes
 import com.example.treine_me.routes.professorRoutes
 import com.example.treine_me.routes.professorAuthRoutes
+import com.example.treine_me.routes.professorAlunoRoutes
 import com.example.treine_me.routes.fileUploadRoutes
 import com.example.treine_me.routes.contextualUploadRoutes
 import com.example.treine_me.routes.publicRoutes
 import com.example.treine_me.routes.alunoRoutes
+import com.example.treine_me.routes.alunoAuthRoutes
 import com.example.treine_me.services.AuthService
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -49,8 +51,10 @@ fun Application.module() {
         
         authRoutes()
         professorAuthRoutes()
+        alunoAuthRoutes()
         adminRoutes()
         professorRoutes()
+        professorAlunoRoutes()
         fileUploadRoutes()
         contextualUploadRoutes()
         publicRoutes()
