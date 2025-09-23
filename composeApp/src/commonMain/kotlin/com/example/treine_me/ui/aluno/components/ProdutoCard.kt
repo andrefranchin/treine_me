@@ -12,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.treine_me.api.ProdutoResponse
 
 @Composable
@@ -37,7 +39,7 @@ fun ProdutoCard(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Ícone do tipo de produto
+            // Imagem da capa ou ícone do tipo de produto
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -52,22 +54,52 @@ fun ProdutoCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    when (produto.tipo.name) {
-                        "CURSO" -> Icons.Default.PlayCircleOutline
-                        "MENTORIA" -> Icons.Default.Person
-                        "EBOOK" -> Icons.AutoMirrored.Filled.MenuBook
-                        else -> Icons.Default.School
-                    },
-                    contentDescription = null,
-                    tint = when (produto.tipo.name) {
-                        "CURSO" -> Color(0xFF10B981)
-                        "MENTORIA" -> Color(0xFF8B5CF6)
-                        "EBOOK" -> Color(0xFFF59E0B)
-                        else -> Color(0xFF6366F1)
-                    },
-                    modifier = Modifier.size(24.dp)
-                )
+                val capaUrl = produto.capaUrl
+                if (capaUrl != null && capaUrl.isNotEmpty()) {
+                    // Exibe a imagem da capa
+                    AsyncImage(
+                        model = capaUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Color.Transparent,
+                                RoundedCornerShape(8.dp)
+                            )
+                    )
+                    
+                    // Ícone de play sobreposto
+                    Icon(
+                        Icons.Default.PlayCircleOutline,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .background(
+                                Color.Black.copy(alpha = 0.3f),
+                                RoundedCornerShape(10.dp)
+                            )
+                    )
+                } else {
+                    // Fallback para ícone quando não há imagem
+                    Icon(
+                        when (produto.tipo.name) {
+                            "CURSO" -> Icons.Default.PlayCircleOutline
+                            "MENTORIA" -> Icons.Default.Person
+                            "EBOOK" -> Icons.AutoMirrored.Filled.MenuBook
+                            else -> Icons.Default.School
+                        },
+                        contentDescription = null,
+                        tint = when (produto.tipo.name) {
+                            "CURSO" -> Color(0xFF10B981)
+                            "MENTORIA" -> Color(0xFF8B5CF6)
+                            "EBOOK" -> Color(0xFFF59E0B)
+                            else -> Color(0xFF6366F1)
+                        },
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.width(16.dp))
