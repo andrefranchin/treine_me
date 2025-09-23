@@ -29,6 +29,13 @@ class AlunoCrudService {
                 (Professores.id eq UUID.fromString(professorId)) and (Professores.isActive eq true) 
             }.firstOrNull() ?: throw NotFoundException("Professor não encontrado")
             
+            // Verificar se plano existe e pertence ao professor
+            val plano = PlanoEntity.find {
+                (Planos.id eq UUID.fromString(request.planoId)) and
+                (Planos.professorId eq professor.id) and
+                (Planos.isActive eq true)
+            }.firstOrNull() ?: throw NotFoundException("Plano não encontrado ou não pertence ao professor")
+            
             // Verificar se email já existe
             val existingAluno = AlunoEntity.find { Alunos.email eq request.email }.firstOrNull()
             val existingProfessor = ProfessorEntity.find { Professores.email eq request.email }.firstOrNull()
@@ -38,11 +45,27 @@ class AlunoCrudService {
             }
             
             val now = Clock.System.now()
+            
+            // Criar o aluno
             val aluno = AlunoEntity.new {
                 nome = request.nome
                 email = request.email
                 senhaHash = PasswordHelper.hashPassword(request.senha)
                 fotoPerfilUrl = request.fotoPerfilUrl
+                dtIns = now
+                dtUpd = now
+                idUserIns = UUID.fromString(professorId)
+                idUserUpd = UUID.fromString(professorId)
+                isActive = true
+            }
+            
+            // Criar inscrição automática no plano selecionado
+            InscricaoEntity.new {
+                this.aluno = aluno
+                this.plano = plano
+                dtInicio = now
+                dtFim = null // Inscrição sem data de fim (permanente até ser cancelada)
+                status = StatusInscricao.ATIVA
                 dtIns = now
                 dtUpd = now
                 idUserIns = UUID.fromString(professorId)
@@ -62,7 +85,7 @@ class AlunoCrudService {
     fun listAlunosByProfessor(professorId: String, page: Int = 1, size: Int = 20): PaginatedResponse<AlunoComInscricoesResponse> {
         return transaction {
             // Verificar se professor existe
-            val professor = ProfessorEntity.find { 
+            ProfessorEntity.find { 
                 (Professores.id eq UUID.fromString(professorId)) and (Professores.isActive eq true) 
             }.firstOrNull() ?: throw NotFoundException("Professor não encontrado")
             
@@ -307,6 +330,9 @@ class AlunoCrudService {
         }
         if (request.senha.length < 6) {
             throw ValidationException("Senha deve ter pelo menos 6 caracteres", "senha")
+        }
+        if (request.planoId.isBlank()) {
+            throw ValidationException("ID do plano é obrigatório", "planoId")
         }
     }
 }

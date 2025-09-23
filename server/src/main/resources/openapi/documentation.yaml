@@ -737,10 +737,16 @@ components:
           format: uri
           nullable: true
           example: "https://exemplo.com/carlos.jpg"
+        planoId:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+          description: "ID do plano que será automaticamente atribuído ao aluno"
       required:
         - nome
         - email
         - senha
+        - planoId
 
     AlunoResponse:
       type: object
@@ -3565,7 +3571,9 @@ paths:
   /professores/me/alunos:
     post:
       summary: Criar aluno
-      description: Professor cria um novo aluno
+      description: |
+        Professor cria um novo aluno e automaticamente o inscreve no plano selecionado.
+        O aluno será criado com uma inscrição ativa no plano especificado.
       tags:
         - CRUD de Alunos
       security:

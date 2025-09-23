@@ -276,9 +276,11 @@ Authorization: Bearer {token_professor}
 {
   "nome": "Maria Silva",
   "email": "maria@exemplo.com",
-  "senha": "senha123"
+  "senha": "senha123",
+  "planoId": "550e8400-e29b-41d4-a716-446655440000"
 }
 ```
+> **✨ Novidade**: O professor agora seleciona um plano no momento da criação do aluno. O aluno é automaticamente inscrito no plano selecionado com status `ATIVA`.
 
 #### **Login do Aluno**
 ```bash

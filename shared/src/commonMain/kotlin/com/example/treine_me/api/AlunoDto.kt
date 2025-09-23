@@ -7,7 +7,8 @@ data class AlunoCreateRequest(
 	val nome: String,
 	val email: String,
 	val senha: String,
-	val fotoPerfilUrl: String? = null
+	val fotoPerfilUrl: String? = null,
+	val planoId: String // Plano que será atribuído ao aluno automaticamente
 )
 
 @Serializable

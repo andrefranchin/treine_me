@@ -690,7 +690,7 @@
     // Script section to load models into a JS Var
     var defs = {}
             defs["AlunoCreateRequest"] = {
-  "required" : [ "email", "nome", "senha" ],
+  "required" : [ "email", "nome", "planoId", "senha" ],
   "type" : "object",
   "properties" : {
     "nome" : {
@@ -714,6 +714,12 @@
       "format" : "uri",
       "nullable" : true,
       "example" : "https://exemplo.com/carlos.jpg"
+    },
+    "planoId" : {
+      "type" : "string",
+      "description" : "ID do plano que será automaticamente atribuído ao aluno",
+      "format" : "uuid",
+      "example" : "550e8400-e29b-41d4-a716-446655440000"
     }
   }
 };
@@ -13406,7 +13412,9 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Professor cria um novo aluno</p>
+                        <p class="marked">Professor cria um novo aluno e automaticamente o inscreve no plano selecionado.
+O aluno será criado com uma inscrição ativa no plano especificado.
+</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/professores/me/alunos</span></code></pre>
