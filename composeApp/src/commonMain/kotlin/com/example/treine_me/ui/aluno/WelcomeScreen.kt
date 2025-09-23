@@ -20,7 +20,8 @@ import treine_me.composeapp.generated.resources.*
 
 @Composable
 fun WelcomeScreen(
-    onGetStarted: () -> Unit
+    onGetStarted: () -> Unit,
+    onLogin: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -130,7 +131,7 @@ fun WelcomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 
                 TextButton(
-                    onClick = { /* TODO: Implementar login */ }
+                    onClick = onLogin
                 ) {
                     Text(
                         text = "Já tenho uma conta",

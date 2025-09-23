@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,17 +21,45 @@ import com.example.treine_me.api.ModuloResponse
 import com.example.treine_me.api.PublicAulaResponse
 import com.example.treine_me.api.TipoProduto
 import com.example.treine_me.services.PublicService
+import com.example.treine_me.services.AlunoAuthService
+import com.example.treine_me.config.AlunoConfig
 import kotlinx.coroutines.launch
 
 @Composable
 fun AlunoRoot() {
+    val alunoAuthService = remember { AlunoAuthService() }
     var currentRoute by remember { mutableStateOf<AlunoRoute>(AlunoRoute.Welcome) }
+    
+    // Verificar se o usuário já está logado ao iniciar
+    LaunchedEffect(Unit) {
+        if (alunoAuthService.isLoggedIn()) {
+            currentRoute = AlunoRoute.ExploreClasses
+        }
+    }
     
     when (currentRoute) {
         is AlunoRoute.Welcome -> {
             WelcomeScreen(
                 onGetStarted = {
+                    if (alunoAuthService.isLoggedIn()) {
+                        currentRoute = AlunoRoute.ExploreClasses
+                    } else {
+                        currentRoute = AlunoRoute.Login
+                    }
+                },
+                onLogin = {
+                    currentRoute = AlunoRoute.Login
+                }
+            )
+        }
+        
+        is AlunoRoute.Login -> {
+            LoginScreen(
+                onLoginSuccess = {
                     currentRoute = AlunoRoute.ExploreClasses
+                },
+                onBack = {
+                    currentRoute = AlunoRoute.Welcome
                 }
             )
         }
@@ -41,6 +70,10 @@ fun AlunoRoot() {
                     currentRoute = AlunoRoute.Training(produtoId)
                 },
                 onBack = {
+                    currentRoute = AlunoRoute.Welcome
+                },
+                onLogout = {
+                    alunoAuthService.logout()
                     currentRoute = AlunoRoute.Welcome
                 }
             )
@@ -62,7 +95,8 @@ fun AlunoRoot() {
 @Composable
 private fun ExploreClassesScreen(
     onNavigateToTraining: (String) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onLogout: () -> Unit = {}
 ) {
     val publicService = remember { PublicService() }
     val scope = rememberCoroutineScope()
@@ -71,8 +105,8 @@ private fun ExploreClassesScreen(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     
-    // ID do professor fixo para este app
-    val professorId = "ba273d71-9f1b-4c1e-b732-dff3913750e1"
+    // ID do professor configurado para este app
+    val professorId = AlunoConfig.professorId
     
     LaunchedEffect(Unit) {
         scope.launch {
@@ -96,7 +130,7 @@ private fun ExploreClassesScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Header com botão voltar
+        // Header com botão voltar e menu
         TopAppBar(
             title = {
                 Text(
@@ -112,10 +146,35 @@ private fun ExploreClassesScreen(
                     )
                 }
             },
+            actions = {
+                var showMenu by remember { mutableStateOf(false) }
+                
+                IconButton(onClick = { showMenu = true }) {
+                    Icon(
+                        Icons.Default.MoreVert,
+                        contentDescription = "Mais opções",
+                        tint = Color.White
+                    )
+                }
+                
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Sair") },
+                        onClick = {
+                            showMenu = false
+                            onLogout()
+                        }
+                    )
+                }
+            },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color(0xFF6366F1),
                 titleContentColor = Color.White,
-                navigationIconContentColor = Color.White
+                navigationIconContentColor = Color.White,
+                actionIconContentColor = Color.White
             )
         )
         
@@ -215,7 +274,7 @@ private fun TrainingScreen(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     
-    val professorId = "ba273d71-9f1b-4c1e-b732-dff3913750e1"
+    val professorId = AlunoConfig.professorId
     
     LaunchedEffect(produtoId) {
         scope.launch {
