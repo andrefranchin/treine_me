@@ -36,7 +36,21 @@ fun ProfessorRoot() {
                             moduloId = route.moduloId,
                             onBack = { navigate(ProfessorRoute.Cursos) }
                         )
-                        is ProfessorRoute.Alunos -> AlunosListScreen()
+                        is ProfessorRoute.Alunos -> AlunosListScreen(
+                            onAddAluno = { navigate(ProfessorRoute.AlunoForm(null)) },
+                            onEditAluno = { id -> navigate(ProfessorRoute.AlunoForm(id)) },
+                            onAlunoDetail = { id -> navigate(ProfessorRoute.AlunoDetail(id)) }
+                        )
+                        is ProfessorRoute.AlunoForm -> AlunoFormScreen(
+                            alunoId = route.id,
+                            onBack = { navigate(ProfessorRoute.Alunos) },
+                            onSaved = { navigate(ProfessorRoute.Alunos) }
+                        )
+                        is ProfessorRoute.AlunoDetail -> AlunoDetailScreen(
+                            alunoId = route.id,
+                            onBack = { navigate(ProfessorRoute.Alunos) },
+                            onEdit = { navigate(ProfessorRoute.AlunoForm(route.id)) }
+                        )
                         is ProfessorRoute.Planos -> PlanosListScreen(
                             onCreate = { navigate(ProfessorRoute.PlanoEdit(null)) },
                             onEdit = { id -> navigate(ProfessorRoute.PlanoEdit(id)) }
