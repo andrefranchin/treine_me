@@ -9,6 +9,7 @@ import com.example.treine_me.api.PublicAulaResponse
 import com.example.treine_me.network.ApiClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.headers
 
 /**
  * Serviço para acessar APIs públicas que não requerem autenticação.
@@ -44,18 +45,30 @@ class PublicService {
         }
     }
 
-    suspend fun listModulosByProduto(produtoId: String, professorId: String): ApiResponse<List<ModuloResponse>> {
+    suspend fun listModulosByProduto(produtoId: String, professorId: String, token: String? = null): ApiResponse<List<ModuloResponse>> {
         return try {
-            val response = client.get("/public/professor/$professorId/produtos/$produtoId/modulos")
+            val response = client.get("/public/professor/$professorId/produtos/$produtoId/modulos") {
+                token?.let {
+                    headers {
+                        append("Authorization", if (it.startsWith("Bearer ")) it else "Bearer $it")
+                    }
+                }
+            }
             response.body()
         } catch (e: Exception) {
             ApiResponse(false, null, com.example.treine_me.api.ApiError("Erro ao listar módulos públicos: ${e.message}"))
         }
     }
 
-    suspend fun listAulasByModulo(moduloId: String, professorId: String): ApiResponse<List<PublicAulaResponse>> {
+    suspend fun listAulasByModulo(moduloId: String, professorId: String, token: String? = null): ApiResponse<List<PublicAulaResponse>> {
         return try {
-            val response = client.get("/public/professor/$professorId/modulos/$moduloId/aulas")
+            val response = client.get("/public/professor/$professorId/modulos/$moduloId/aulas") {
+                token?.let {
+                    headers {
+                        append("Authorization", if (it.startsWith("Bearer ")) it else "Bearer $it")
+                    }
+                }
+            }
             response.body()
         } catch (e: Exception) {
             ApiResponse(false, null, com.example.treine_me.api.ApiError("Erro ao listar aulas públicas: ${e.message}"))

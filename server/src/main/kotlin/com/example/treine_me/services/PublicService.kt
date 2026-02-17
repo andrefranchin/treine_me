@@ -2,6 +2,8 @@ package com.example.treine_me.services
 
 import com.example.treine_me.exceptions.NotFoundException
 import com.example.treine_me.models.*
+import com.example.treine_me.auth.JwtConfig
+import com.example.treine_me.enums.StatusInscricao
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
@@ -156,7 +158,7 @@ class PublicService {
     
     fun listProdutosByPlano(planoId: String, professorId: String): List<ProdutoResponse> {
         return transaction {
-            val plano = PlanoEntity.find { 
+            PlanoEntity.find { 
                 (Planos.id eq UUID.fromString(planoId)) and 
                 (Planos.professorId eq UUID.fromString(professorId)) and 
                 (Planos.isActive eq true) 
@@ -182,7 +184,7 @@ class PublicService {
     
     // ========== MÓDULOS ==========
     
-    fun listModulosByProduto(produtoId: String, professorId: String): List<ModuloResponse> {
+    fun listModulosByProduto(produtoId: String, professorId: String, token: String? = null): List<PublicModuloResponse> {
         return transaction {
             val produto = ProdutoEntity.find { 
                 (Produtos.id eq UUID.fromString(produtoId)) and 
@@ -190,24 +192,35 @@ class PublicService {
                 (Produtos.isActive eq true) 
             }.firstOrNull() ?: throw NotFoundException("Produto não encontrado")
             
+            // Verificar se há um aluno logado
+            val alunoId = getAlunoIdFromToken(token)
+            
             ModuloEntity.find { 
                 (Modulos.produtoId eq produto.id) and (Modulos.isActive eq true) 
             }.sortedBy { it.ordem }.map { modulo ->
-                ModuloResponse(
-                    id = modulo.id.value.toString(),
+                val moduloId = modulo.id.value.toString()
+                
+                // Calcular progresso do módulo se o aluno estiver logado
+                val progressoModulo = if (alunoId != null) {
+                    calcularProgressoModulo(alunoId, moduloId)
+                } else null
+                
+                PublicModuloResponse(
+                    id = moduloId,
                     titulo = modulo.titulo,
                     descricao = modulo.descricao,
                     ordem = modulo.ordem,
                     capaUrl = modulo.capaUrl,
                     videoIntroUrl = modulo.videoIntroUrl,
                     produtoId = produto.id.value.toString(),
-                    aulas = emptyList() // Aulas serão carregadas separadamente
+                    aulas = emptyList(), // Aulas serão carregadas separadamente
+                    progressoModulo = progressoModulo
                 )
             }
         }
     }
     
-    fun getModulo(moduloId: String, professorId: String): ModuloResponse {
+    fun getModulo(moduloId: String, professorId: String, token: String? = null): PublicModuloResponse {
         return transaction {
             val modulo = ModuloEntity.find { 
                 (Modulos.id eq UUID.fromString(moduloId)) and (Modulos.isActive eq true) 
@@ -218,7 +231,15 @@ class PublicService {
                 throw NotFoundException("Módulo não encontrado")
             }
             
-            ModuloResponse(
+            // Verificar se há um aluno logado
+            val alunoId = getAlunoIdFromToken(token)
+            
+            // Calcular progresso do módulo se o aluno estiver logado
+            val progressoModulo = if (alunoId != null) {
+                calcularProgressoModulo(alunoId, moduloId)
+            } else null
+            
+            PublicModuloResponse(
                 id = modulo.id.value.toString(),
                 titulo = modulo.titulo,
                 descricao = modulo.descricao,
@@ -226,14 +247,15 @@ class PublicService {
                 capaUrl = modulo.capaUrl,
                 videoIntroUrl = modulo.videoIntroUrl,
                 produtoId = modulo.produto.id.value.toString(),
-                aulas = emptyList() // Aulas serão carregadas separadamente
+                aulas = emptyList(), // Aulas serão carregadas separadamente
+                progressoModulo = progressoModulo
             )
         }
     }
     
     // ========== AULAS ==========
     
-    fun listAulasByModulo(moduloId: String, professorId: String): List<PublicAulaResponse> {
+    fun listAulasByModulo(moduloId: String, professorId: String, token: String? = null): List<PublicAulaResponse> {
         return transaction {
             val modulo = ModuloEntity.find { 
                 (Modulos.id eq UUID.fromString(moduloId)) and (Modulos.isActive eq true) 
@@ -244,16 +266,32 @@ class PublicService {
                 throw NotFoundException("Módulo não encontrado")
             }
             
+            // Verificar se há um aluno logado
+            val alunoId = getAlunoIdFromToken(token)
+            
             AulaEntity.find { (Aulas.moduloId eq modulo.id) and (Aulas.isActive eq true) }
                 .sortedBy { it.ordem }
                 .map { aula ->
+                    val aulaId = aula.id.value.toString()
+                    val planoId = aula.plano.id.value.toString()
+                    
+                    // Verificar se o aluno tem acesso a esta aula
+                    val temAcesso = alunoId?.let { 
+                        alunoTemAcessoAoPlano(it, planoId) 
+                    } ?: false
+                    
+                    // Obter progresso do aluno se estiver logado e tiver acesso
+                    val progresso = if (alunoId != null && temAcesso) {
+                        getProgressoAula(alunoId, aulaId)
+                    } else null
+                    
                     PublicAulaResponse(
-                        id = aula.id.value.toString(),
+                        id = aulaId,
                         titulo = aula.titulo,
                         descricao = aula.descricao,
                         ordem = aula.ordem,
                         tipoConteudo = aula.tipoConteudo,
-                        planoId = aula.plano.id.value.toString(),
+                        planoId = planoId,
                         moduloId = modulo.id.value.toString(),
                         // Não incluímos o conteúdo nas listagens públicas
                         temConteudo = hasConteudo(aula.id.value),
@@ -273,13 +311,17 @@ class PublicService {
                         equipamentosNecessarios = aula.equipamentosNecessarios,
                         duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
                         intensidade = aula.intensidade,
-                        observacoesTreino = aula.observacoesTreino
+                        observacoesTreino = aula.observacoesTreino,
+                        
+                        // Campos para alunos logados
+                        temAcesso = temAcesso,
+                        progresso = progresso
                     )
                 }
         }
     }
     
-    fun getAula(aulaId: String, professorId: String): PublicAulaResponse {
+    fun getAula(aulaId: String, professorId: String, token: String? = null): PublicAulaResponse {
         return transaction {
             val aula = AulaEntity.find { (Aulas.id eq UUID.fromString(aulaId)) and (Aulas.isActive eq true) }
                 .firstOrNull() ?: throw NotFoundException("Aula não encontrada")
@@ -289,13 +331,28 @@ class PublicService {
                 throw NotFoundException("Aula não encontrada")
             }
             
+            val planoId = aula.plano.id.value.toString()
+            
+            // Verificar se há um aluno logado
+            val alunoId = getAlunoIdFromToken(token)
+            
+            // Verificar se o aluno tem acesso a esta aula
+            val temAcesso = alunoId?.let { 
+                alunoTemAcessoAoPlano(it, planoId) 
+            } ?: false
+            
+            // Obter progresso do aluno se estiver logado e tiver acesso
+            val progresso = if (alunoId != null && temAcesso) {
+                getProgressoAula(alunoId, aulaId)
+            } else null
+            
             PublicAulaResponse(
                 id = aula.id.value.toString(),
                 titulo = aula.titulo,
                 descricao = aula.descricao,
                 ordem = aula.ordem,
                 tipoConteudo = aula.tipoConteudo,
-                planoId = aula.plano.id.value.toString(),
+                planoId = planoId,
                 moduloId = aula.modulo.id.value.toString(),
                 temConteudo = hasConteudo(aula.id.value),
                 
@@ -314,7 +371,11 @@ class PublicService {
                 equipamentosNecessarios = aula.equipamentosNecessarios,
                 duracaoTreinoMinutos = aula.duracaoTreinoMinutos,
                 intensidade = aula.intensidade,
-                observacoesTreino = aula.observacoesTreino
+                observacoesTreino = aula.observacoesTreino,
+                
+                // Campos para alunos logados
+                temAcesso = temAcesso,
+                progresso = progresso
             )
         }
     }
@@ -334,11 +395,115 @@ class PublicService {
             }.firstOrNull() != null
         }
     }
+    
+    /**
+     * Extrai o ID do aluno de um token JWT, se válido
+     */
+    private fun getAlunoIdFromToken(token: String?): String? {
+        if (token.isNullOrBlank()) return null
+        
+        return try {
+            val cleanToken = if (token.startsWith("Bearer ")) {
+                token.substring(7)
+            } else {
+                token
+            }
+            
+            val verifier = com.auth0.jwt.JWT
+                .require(com.auth0.jwt.algorithms.Algorithm.HMAC256(JwtConfig.getSecret()))
+                .withIssuer(JwtConfig.getIssuer())
+                .withAudience(JwtConfig.getAudience())
+                .build()
+            
+            val decodedJWT = verifier.verify(cleanToken)
+            val role = decodedJWT.getClaim("role")?.asString()
+            
+            if (role == "ALUNO") {
+                decodedJWT.getClaim("userId")?.asString()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+    
+    /**
+     * Verifica se um aluno tem acesso a um plano específico
+     */
+    private fun alunoTemAcessoAoPlano(alunoId: String, planoId: String): Boolean {
+        return transaction {
+            InscricaoEntity.find {
+                (Inscricoes.alunoId eq UUID.fromString(alunoId)) and
+                (Inscricoes.planoId eq UUID.fromString(planoId)) and
+                (Inscricoes.status eq StatusInscricao.ATIVA) and
+                (Inscricoes.isActive eq true)
+            }.firstOrNull() != null
+        }
+    }
+    
+    /**
+     * Obtém o progresso de um aluno em uma aula específica
+     */
+    private fun getProgressoAula(alunoId: String, aulaId: String): ProgressoAulaInfo? {
+        return transaction {
+            ProgressoAulaEntity.find {
+                (ProgressosAula.alunoId eq UUID.fromString(alunoId)) and
+                (ProgressosAula.aulaId eq UUID.fromString(aulaId)) and
+                (ProgressosAula.isActive eq true)
+            }.firstOrNull()?.let { progresso ->
+                ProgressoAulaInfo(
+                    minutosTotaisAssistidos = progresso.minutosTotaisAssistidos,
+                    ultimoMinutoAssistido = progresso.ultimoMinutoAssistido,
+                    percentualConcluido = progresso.percentualConcluido,
+                    concluida = progresso.concluida,
+                    dataUltimaVisualizacao = progresso.dataUltimaVisualizacao
+                )
+            }
+        }
+    }
+    
+    /**
+     * Calcula o progresso de um aluno em um módulo específico
+     */
+    private fun calcularProgressoModulo(alunoId: String, moduloId: String): ProgressoModuloInfo? {
+        return transaction {
+            // Buscar todas as aulas do módulo
+            val aulas = AulaEntity.find { 
+                (Aulas.moduloId eq UUID.fromString(moduloId)) and (Aulas.isActive eq true) 
+            }.toList()
+            
+            if (aulas.isEmpty()) return@transaction null
+            
+            // Buscar progressos do aluno para essas aulas
+            val progressos = ProgressoAulaEntity.find {
+                (ProgressosAula.alunoId eq UUID.fromString(alunoId)) and
+                (ProgressosAula.isActive eq true)
+            }.filter { progresso ->
+                aulas.any { aula -> aula.id == progresso.aula.id }
+            }
+            
+            val totalAulas = aulas.size
+            val aulasAssistidas = progressos.count { it.minutosTotaisAssistidos > 0 }
+            val aulasConcluidas = progressos.count { it.concluida }
+            val percentualConcluido = if (totalAulas > 0) {
+                (aulasConcluidas * 100) / totalAulas
+            } else 0
+            
+            ProgressoModuloInfo(
+                totalAulas = totalAulas,
+                aulasAssistidas = aulasAssistidas,
+                aulasConcluidas = aulasConcluidas,
+                percentualConcluido = percentualConcluido
+            )
+        }
+    }
 }
 
 /**
  * Response para aulas em contexto público.
  * Não inclui o conteúdo real, apenas metadados.
+ * Inclui informações de acesso e progresso quando o aluno está logado.
  */
 @kotlinx.serialization.Serializable
 data class PublicAulaResponse(
@@ -366,5 +531,51 @@ data class PublicAulaResponse(
     val equipamentosNecessarios: String? = null,
     val duracaoTreinoMinutos: Int? = null,
     val intensidade: Int? = null,
-    val observacoesTreino: String? = null
+    val observacoesTreino: String? = null,
+    
+    // Campos para alunos logados
+    val temAcesso: Boolean = false, // Se o aluno tem acesso a esta aula
+    val progresso: ProgressoAulaInfo? = null // Progresso do aluno nesta aula
+)
+
+/**
+ * Response para módulos em contexto público.
+ * Inclui informações de progresso quando o aluno está logado.
+ */
+@kotlinx.serialization.Serializable
+data class PublicModuloResponse(
+    val id: String,
+    val titulo: String,
+    val descricao: String,
+    val ordem: Int,
+    val capaUrl: String? = null,
+    val videoIntroUrl: String? = null,
+    val produtoId: String,
+    val aulas: List<PublicAulaResponse> = emptyList(),
+    
+    // Campos para alunos logados
+    val progressoModulo: ProgressoModuloInfo? = null // Progresso do aluno neste módulo
+)
+
+/**
+ * Informações de progresso do aluno em uma aula
+ */
+@kotlinx.serialization.Serializable
+data class ProgressoAulaInfo(
+    val minutosTotaisAssistidos: Int = 0,
+    val ultimoMinutoAssistido: Int = 0,
+    val percentualConcluido: Int = 0,
+    val concluida: Boolean = false,
+    val dataUltimaVisualizacao: kotlinx.datetime.Instant? = null
+)
+
+/**
+ * Informações de progresso do aluno em um módulo
+ */
+@kotlinx.serialization.Serializable
+data class ProgressoModuloInfo(
+    val totalAulas: Int = 0,
+    val aulasAssistidas: Int = 0,
+    val aulasConcluidas: Int = 0,
+    val percentualConcluido: Int = 0
 )

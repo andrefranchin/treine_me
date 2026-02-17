@@ -101,7 +101,10 @@ fun Route.publicRoutes() {
                 ApiResponse.error("ID do produto é obrigatório")
             )
             
-            val response = publicService.listModulosByProduto(produtoId, professorId)
+            // Token opcional do aluno para verificar permissões e progresso
+            val token = call.request.headers["Authorization"]
+            
+            val response = publicService.listModulosByProduto(produtoId, professorId, token)
             call.respond(ApiResponse.success(response))
         }
         
@@ -113,7 +116,10 @@ fun Route.publicRoutes() {
                 ApiResponse.error("ID do módulo é obrigatório")
             )
             
-            val response = publicService.getModulo(moduloId, professorId)
+            // Token opcional do aluno para verificar permissões e progresso
+            val token = call.request.headers["Authorization"]
+            
+            val response = publicService.getModulo(moduloId, professorId, token)
             call.respond(ApiResponse.success(response))
         }
         
@@ -127,7 +133,10 @@ fun Route.publicRoutes() {
                 ApiResponse.error("ID do módulo é obrigatório")
             )
             
-            val response = publicService.listAulasByModulo(moduloId, professorId)
+            // Token opcional do aluno para verificar permissões e progresso
+            val token = call.request.headers["Authorization"]
+            
+            val response = publicService.listAulasByModulo(moduloId, professorId, token)
             call.respond(ApiResponse.success(response))
         }
         
@@ -139,7 +148,10 @@ fun Route.publicRoutes() {
                 ApiResponse.error("ID da aula é obrigatório")
             )
             
-            val response = publicService.getAula(aulaId, professorId)
+            // Token opcional do aluno para verificar permissões e progresso
+            val token = call.request.headers["Authorization"]
+            
+            val response = publicService.getAula(aulaId, professorId, token)
             call.respond(ApiResponse.success(response))
         }
     }
